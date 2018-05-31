@@ -1,20 +1,13 @@
 {
 	"id" : "snips",
-	"name" : "Snips Voice Control",
+	"name" : "Snips Voice Assistant",
 	"description" : "Snips voice control plugin, which allows you execute command by using your voice",
 	"licence" : "AGPL",
 	"author" : "Coor Fang",
 	"require" : "3.2",
-	"category" : "Automation",
-	"hasDependency" : false,
-	"hasOwnDeamon" : false,
-	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
-	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
-	"link" : {
-		"forum":"Lien vers le forum",
-		"video" : "Lien vers une video",
-	},
-	"language" : ["fr_FR","en_US","de_DE","sp_SP","ru_RU","id_ID","it_IT"],
-	"compatibility" : ["Jeedomboard","Smart","RPI/RPI2","Docker","DIY","mobile"]
+	"category" : "automation",
+	"changelog" : "",
+	"documentation" : "",
+	"language" : "",
+	"compatibility" : ""
 }

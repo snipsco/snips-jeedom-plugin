@@ -14,6 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
+$("#table_cmd").delegate(".findAction", 'click', function () {
+    var el = $(this);
+    jeedom.cmd.getSelectModal({cmd: {type: 'action'}}, function (result) {
+        var calcul = el.closest('tr').find('.cmdAttr[data-l1key=configuration][data-l2key=' + el.data('input') + ']');
+        calcul.value(result.human);
+        //calcul.atCaret('insert',result.human)
+    });
+});
 
 
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
@@ -28,15 +36,17 @@ function addCmdToTable(_cmd) {
         _cmd.configuration = {};
     }
     var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
-    tr += '<td>';
+    tr += '<td style="vertical-align:middle;">';
     tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
-    tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" style="width : 140px;" placeholder="{{Nom}}">';
+    tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" style="width : 300px;" placeholder="{{Intent Name(Case sensitive)}}" readonly="readonly">';
     tr += '</td>';
-    tr += '<td>';
-    tr += '<span class="type" type="' + init(_cmd.type) + '">' + jeedom.cmd.availableType() + '</span>';
-    tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>';
+    tr += '<td style="vertical-align:middle;">';
+    ////////////
+    tr += '<div><div style="float: left;"><input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="request" style="width : 300px;" placeholder="{{Match an action or script}}"></div>';
+    tr += '<div style="align: right;"><a class="btn btn-default btn-sm findAction" data-input="request" style="align: right;"><i class="fa fa-list-alt "></i></a></div></div>';
+    ////////////
     tr += '</td>';
-    tr += '<td>';
+    tr += '<td style="vertical-align:middle;">';
     if (is_numeric(_cmd.id)) {
         tr += '<a class="btn btn-default btn-xs cmdAction" data-action="configure"><i class="fa fa-cogs"></i></a> ';
         tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fa fa-rss"></i> {{Tester}}</a>';
