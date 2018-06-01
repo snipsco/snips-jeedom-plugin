@@ -42,8 +42,8 @@ function addCmdToTable(_cmd) {
     tr += '</td>';
     tr += '<td style="vertical-align:middle;">';
     ////////////
-    tr += '<div><div style="float: left;"><input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="request" style="width : 300px;" placeholder="{{Match an action or script}}"></div>';
-    tr += '<div style="align: right;"><a class="btn btn-default btn-sm findAction" data-input="request" style="align: right;"><i class="fa fa-list-alt "></i></a></div></div>';
+    tr += '<div><div style="float: left;"><input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="command" style="width : 300px;" placeholder="{{Match an action or script}}"></div>';
+    tr += '<div style="align: right;"><a class="btn btn-default btn-sm findAction" data-input="command" style="align: right;"><i class="fa fa-list-alt "></i></a></div></div>';
     ////////////
     tr += '</td>';
     tr += '<td style="vertical-align:middle;">';

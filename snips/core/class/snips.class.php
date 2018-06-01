@@ -22,11 +22,24 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 class snips extends eqLogic {
 
     /*     * ***********************Methode static*************************** */
+    public static function health() {
+        $return = array();
+        $socket = socket_create(AF_INET, SOCK_STREAM, 0);
+        $server = socket_connect ($socket , config::byKey('mqttAddr', 'snips', '127.0.0.1'), config::byKey('mqttPort', 'snips', '1883'));
+        $return[] = array(
+          'test' => __('Mosquitto', __FILE__),
+          'result' => ($server) ? __('OK', __FILE__) : __('NOK', __FILE__),
+          'advice' => ($server) ? '' : __('Indique si Mosquitto est disponible', __FILE__),
+          'state' => $server,
+        );
+        return $return;
+    }
+    
     public static function deamon_info() {
         $return = array();
         $return['log'] = '';
         $return['state'] = 'nok';
-        $cron = cron::byClassAndFunction('MQTT', 'daemon');
+        $cron = cron::byClassAndFunction('snips', 'daemon');
         if (is_object($cron) && $cron->running()) {
             $return['state'] = 'ok';
         }
@@ -44,7 +57,7 @@ class snips extends eqLogic {
             throw new Exception(__('Please check your configuration', __FILE__));
         }
 
-        $cron = cron::byClassAndFunction('MQTT', 'daemon');
+        $cron = cron::byClassAndFunction('snips', 'daemon');
 
         if (!is_object($cron)) {
             throw new Exception(__('Can not find task corn', __FILE__));
@@ -53,7 +66,7 @@ class snips extends eqLogic {
     }
 
     public static function deamon_stop() {
-        $cron = cron::byClassAndFunction('MQTT', 'daemon');
+        $cron = cron::byClassAndFunction('snips', 'daemon');
         if (!is_object($cron)) {
             throw new Exception(__('Can not find taks corn', __FILE__));
         }
@@ -75,32 +88,31 @@ class snips extends eqLogic {
     }
 
     public static function dependancy_install() {
-        log::add('Snips','info','Installation of dependences');
+        log::add('snips','info','Installation of dependences');
         $resource_path = realpath(dirname(__FILE__) . '/../../resources');
         passthru('sudo /bin/bash ' . $resource_path . '/install.sh ' . $resource_path . ' > ' . log::getPathToLog('MQTT_dep') . ' 2>&1 &');
         return true;
     }
-
+    
     public static function daemon() {
-        log::add('Snips', 'info', 'Connection Parameters, Host : ' . config::byKey('mqttAddr', 'Snips', '127.0.0.1') . ', Port : ' . config::byKey('mqttPort', 'Snips', '1883'));
+        log::add('snips', 'info', 'Connection Parameters, Host : ' . config::byKey('mqttAddr', 'snips', '127.0.0.1') . ', Port : ' . config::byKey('mqttPort', 'snips', '1883'));
 
-        $client = new Mosquitto\Client("Jeedom_Snips");
-        $client->onConnect('Snips::connect');
-        $client->onDisconnect('Snips::disconnect');
-        $client->onSubscribe('Snips::subscribe');
-        $client->onMessage('Snips::message');
-        $client->onLog('Snips::logmq');
+        $client = new Mosquitto\Client("Jeedom_snips");
+        $client->onConnect('snips::connect');
+        $client->onDisconnect('snips::disconnect');
+        $client->onSubscribe('snips::subscribe');
+        $client->onMessage('snips::message');
+        $client->onLog('snips::logmq');
         $client->setWill('/jeedom', "Client died :-(", 1, 0);
         
         
         try {
-            /*
-            if (config::byKey('mqttUser', 'Snips', 'none') != 'none') {
-                $client->setCredentials(config::byKey('mqttUser', 'Snips'), config::byKey('mqttPass', 'Snips'));
-            }
-            */
-
-            $client->connect(config::byKey('mqttAddr', 'Snips', '127.0.0.1'), config::byKey('mqttPort', 'Snips', '1883'), 60);
+            
+            //if (config::byKey('mqttUser', 'snips', 'none') != 'none') {
+            //    $client->setCredentials(config::byKey('mqttUser', 'snips'), config::byKey('mqttPass', 'snips'));
+            //}
+            
+            $client->connect(config::byKey('mqttAddr', 'snips', '127.0.0.1'), config::byKey('mqttPort', 'snips', '1883'), 60);
 
             $topics = array();
             $topics = self::getTopics();
@@ -108,68 +120,59 @@ class snips extends eqLogic {
             foreach($topics as $topic){
                 $client->subscribe($topic, 0); // Subcribe to all intents with QoC = 0
 
-                log::add('Snips', 'debug', 'Subscribe to topic ' . $topic);
+                log::add('snips', 'debug', 'Subscribe to topic ' . $topic);
             }
             //$client->loopForever();
             while (true) { $client->loop(); }
         }
         catch (Exception $e){
-          log::add('Snips', 'error', $e->getMessage());
+            log::add('snips', 'error', $e->getMessage());
         }
     }
     
     public static function connect( $r, $message ) {
-        log::add('Snips', 'info', 'Connected to mosquitto with code ' . $r . ' ' . $message);
-        config::save('status', '1',  'Snips');
+        log::add('snips', 'info', 'Connected to mosquitto with code ' . $r . ' ' . $message);
+        config::save('status', '1',  'snips');
     }
 
     public static function disconnect( $r ) {
-        log::add('Snips', 'debug', 'Disconnected to mosquitto with code ' . $r);
-        config::save('status', '0',  'Snips');
+        log::add('snips', 'debug', 'Disconnected to mosquitto with code ' . $r);
+        config::save('status', '0',  'snips');
     }
 
     public static function subscribe( ) {
-        log::add('Snips', 'debug', 'Subscribe to topics');
+        log::add('snips', 'debug', 'Subscribe to topics');
     }
 
     public static function logmq( $code, $str ) {
         if (strpos($str,'PINGREQ') === false && strpos($str,'PINGRESP') === false) {
-            log::add('Snips', 'debug', $code . ' : ' . $str);
+            log::add('snips', 'debug', $code . ' : ' . $str);
         }
     }
 
     public static function message( $message ) {
-        $intents = self::getIntents()
+        $topics = self::getTopics()
 
-        if(in_array($message->topic, $intents) === false){
-            log::add('Snips', 'debug', 'Snips mqtt client received something but not an intent');
+        if(in_array($message->topic, $topics) === false){
+            log::add('snips', 'debug', 'snips mqtt client received something but not an intent');
             return;
+        } else{
+            log::add('snips', 'debug', 'Intent received: '.$message->topic.' with payload: '.$message->payload.);
+
+            $cmd = $this->getCmd(null, str_replace('hermes/intent/','',$message->topic))
+            if (is_object($cmd)) { //elle existe et on lance la commande
+                $cmd->execCmd();
+            } else {
+                log::add('snips', 'debug', 'can not execute this command');
+            }
         }
+
+
+
+        ////React with coresponding actions. 
 
     }
 
-
-    /*
-     * Fonction exécutée automatiquement toutes les minutes par Jeedom
-      public static function cron() {
-
-      }
-     */
-
-
-    /*
-     * Fonction exécutée automatiquement toutes les heures par Jeedom
-      public static function cronHourly() {
-
-      }
-     */
-
-    /*
-     * Fonction exécutée automatiquement tous les jours par Jeedom
-      public static function cronDaily() {
-
-      }
-     */
     public function getIntents(){
         ////////Change when the Json file is available
         $intents = array("lightsTurnOff","lightsTurnUp","lightsTurnOnSet","lightsTurnDown");
@@ -205,7 +208,7 @@ class snips extends eqLogic {
     public function postSave() {
         $intents = self::getIntents();
 
-        log::add('Snips', 'debug', 'Intents detected.');
+        //log::add('snips', 'debug', 'Intents detected.');
 
         foreach($intents as $intent){
             $item = $this->getCmd(null, $intent);
@@ -277,8 +280,12 @@ class snipsCmd extends cmd {
       }
      */
 
-    public function execute($_options = array()) {
-        
+    public function execute($_options = null) {
+
+        $received_intent = $this->getLogicalId();
+        $target_command = $this->getConfiguration('command');
+
+        log::add('snips', 'debug', 'Command Handler has been entered with intent: '.$received_intent.' and its related command'.$target_command.' will be execuit');
     }
 
     /*     * **********************Getteur Setteur*************************** */

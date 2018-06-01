@@ -6,6 +6,8 @@
 	"author" : "Coor Fang",
 	"require" : "3.2",
 	"category" : "automation",
+	"hasDependency" : 1,
+	"hasOwnDeamon" : 1,
 	"changelog" : "",
 	"documentation" : "",
 	"language" : "",
