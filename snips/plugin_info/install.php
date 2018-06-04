@@ -19,16 +19,47 @@
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function snips_install() {
-    
+    $cron = cron::byClassAndFunction('snips', 'daemon');
+    if (!is_object($cron)) {
+        $cron = new cron();
+        $cron->setClass('snips');
+        $cron->setFunction('daemon');
+        $cron->setEnable(1);
+        $cron->setDeamon(1);
+        $cron->setSchedule('* * * * *');
+        $cron->setTimeout('1440');
+        $cron->save();
+    }
 }
 
 function snips_update() {
-    
+    $cron = cron::byClassAndFunction('snips', 'daemon');
+    if (!is_object($cron)) {
+        $cron = new cron();
+        $cron->setClass('snips');
+        $cron->setFunction('daemon');
+        $cron->setEnable(1);
+        $cron->setDeamon(1);
+        $cron->setSchedule('* * * * *');
+        $cron->setTimeout('1440');
+        $cron->save();
+    }
 }
 
 
 function snips_remove() {
-    
+    $cron = cron::byClassAndFunction('snips', 'daemon');
+    if (is_object($cron)) {
+        $cron->stop();
+        $cron->remove();
+    }
+
+    snips::debug('Deleted Snips Voice assistant!');
+
+    //log::add('snips','info','Suppression extension');
+    $resource_path = realpath(dirname(__FILE__) . '/../resources');
+    passthru('sudo /bin/bash ' . $resource_path . '/remove.sh ' . $resource_path . ' > ' . log::getPathToLog('MQTT_dep') . ' 2>&1 &');
+    return true;
 }
 
 ?>
