@@ -189,8 +189,14 @@ class snips extends eqLogic {
 
             if (is_object($cmd)) { 
 
-                log::add('snips', 'debug', 'LogicalId:'.$cmd->getName().'(Message Call Back)');
                 
+
+                $data = json_decode($message->payload);
+                $session_id = $data->{"sessionId"};
+                $cmd->setValue($session_id);
+
+                log::add('snips', 'debug', 'LogicalId:'.$cmd->getName().'sessionId:'.$session_id.'(Message Call Back)');
+
                 $cmd->execute();
 
             } else { 
@@ -206,6 +212,47 @@ class snips extends eqLogic {
         ////React with coresponding actions. 
 
     }
+
+    public static function sayFeedback($session_id, $text){
+        $topic = 'hermes/dialogueManager/endSession';
+        $payload = array('text' => $text, "sessionId" => $session_id);
+
+        self::publish($topic, json_encode($payload));
+    }
+
+    public static function publish($topic, $payload){
+        $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
+        $port = intval(config::byKey('mqttPort', 'snips', '1883'));
+
+        $client = new Mosquitto\Client('JeedomSnipsPub');
+
+        $client->connect($addr, $port, 60);
+
+        $client->publish($topic, $payload);
+        for ($i = 0; $i < 100; $i++) {
+      
+            $client->loop(1);
+        }
+
+        $client->disconnect();
+        unset($client);
+    }
+
+
+    public static function parseSessionId($message){
+
+        $data = json_decode($message);
+
+        return $data['sessionId'];
+    }
+
+    public static function parseSlots($message){
+        $data = json_decode($message);
+
+        return $data["slots"];
+    }
+
+
 
     //add log
     public function debug($info){
@@ -291,6 +338,7 @@ class snipsCmd extends cmd {
 
         $received_intent = $this->getLogicalId();
         $target_command = $this->getConfiguration('command');
+        $sessionId = $this->getValue();
 
         log::add('snips', 'debug', 'Command Handler has been entered with intent: ['.$received_intent.'] and its related command id: ['.$target_command.'] will be execute!');
 
@@ -298,7 +346,11 @@ class snipsCmd extends cmd {
 
         $cmd->execute();
 
-        
+        $say = 'Your command '. $cmd->getId() .' has been execute successfully.';
+
+        log::add('snips', 'debug', 'will publish, raw message: '. $message .' and text: '.$say);
+
+        snips::sayFeedback($sessionId, $say);
     }
 }
 

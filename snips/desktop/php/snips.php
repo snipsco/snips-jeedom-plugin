@@ -38,7 +38,7 @@ foreach ($eqLogics as $eqLogic) {
     <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Configuration}}</span>
   </div>
   </div>
-  <legend><i class="fa fa-table"></i> {{My Assistants}}</legend>
+  <legend><i class="fa fa-table"></i> {{My Skills}}</legend>
 <div class="eqLogicThumbnailContainer">
     <?php
 foreach ($eqLogics as $eqLogic) {
