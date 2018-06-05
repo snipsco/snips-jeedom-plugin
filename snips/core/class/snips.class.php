@@ -182,14 +182,12 @@ class snips extends eqLogic {
 
             self::debug('Intent received: ['.$intent.'] with payload: '.$message->payload);
 
-            //Start to response to the reactions
+            //Start to find the actions command object
 
             $cmds = cmd::byLogicalId($intent);
             $cmd = $cmds[0];
 
             if (is_object($cmd)) { 
-
-                
 
                 $data = json_decode($message->payload);
                 $session_id = $data->{"sessionId"};
@@ -197,6 +195,7 @@ class snips extends eqLogic {
 
                 log::add('snips', 'debug', 'LogicalId:'.$cmd->getName().'sessionId:'.$session_id.'(Message Call Back)');
 
+                ////React with coresponding actions. 
                 $cmd->execute();
 
             } else { 
@@ -204,13 +203,8 @@ class snips extends eqLogic {
                 log::add('snips', 'debug', 'Device found: '.gettype($cmd));
                 log::add('snips', 'debug', 'This command may not exist!');
             }
-
-            //}
-
-
         }
-        ////React with coresponding actions. 
-
+        
     }
 
     public static function sayFeedback($session_id, $text){
@@ -238,7 +232,6 @@ class snips extends eqLogic {
         unset($client);
     }
 
-
     public static function parseSessionId($message){
 
         $data = json_decode($message);
@@ -251,8 +244,6 @@ class snips extends eqLogic {
 
         return $data["slots"];
     }
-
-
 
     //add log
     public function debug($info){
@@ -346,7 +337,7 @@ class snipsCmd extends cmd {
 
         $cmd->execute();
 
-        $say = 'Your command '. $cmd->getId() .' has been execute successfully.';
+        $say = 'Your command '. $cmd->getId() .' has been executed successfully.';
 
         log::add('snips', 'debug', 'will publish, raw message: '. $message .' and text: '.$say);
 
