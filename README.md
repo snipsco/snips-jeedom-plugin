@@ -17,8 +17,8 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 
 # Develop Diary
 5, Jun, 2018
--[x] Add voice feed back once an action has been triggered.
--[x] Unified the idea of skills management.  
+- [x] Add voice feed back once an action has been triggered.
+- [x] Unified the idea of skills management.  
 
 4, Jun, 2018
 - [x] Beta version has been done.
