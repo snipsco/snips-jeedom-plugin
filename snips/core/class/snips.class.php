@@ -269,6 +269,9 @@ class snips extends eqLogic {
 
     }
 
+    public function freshSkills(){
+        self::debug('fresh function has been entred! : )');
+    }
     /*     * *********************Méthodes d'instance************************* */
 
     public function preInsert() {
