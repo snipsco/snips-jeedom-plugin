@@ -58,7 +58,7 @@ class snips extends eqLogic {
         return $return;
     }
 
-    public static function deamon_start($_debug = false) {
+    public static function deamon_start() {
         self::deamon_stop();
         $deamon_info = self::deamon_info();
         if ($deamon_info['launchable'] != 'ok') {
@@ -251,9 +251,30 @@ class snips extends eqLogic {
     }
 
     public function getIntents(){
-        ////////Change when the Json file is available
-        $intents = array("lightsTurnOff","lightsTurnUp","lightsTurnOnSet","lightsTurnDown");
-        return $intents;
+
+        $intents_file = "/usr/share/snips/assistant/assistant.json";
+        $json_string = file_get_contents($intents_file);
+        $json_obj = json_decode($json_string,true);
+
+        $intents = $json_obj["intents"];
+
+        $intents_slots = array();
+
+        foreach($intents as $intent){
+
+            $slots = array();
+
+            foreach($intent["slots"] as $slot){
+
+                array_push($slots, $slot["name"]);
+                
+            }
+            $intents_slots[$intent["name"]] = $slots;
+
+            unset($slots);
+        }
+
+        return json_encode($intents_slots);
     }
 
     public function getTopics(){
