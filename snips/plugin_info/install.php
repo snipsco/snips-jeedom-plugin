@@ -46,7 +46,6 @@ function snips_update() {
     }
 }
 
-
 function snips_remove() {
     $cron = cron::byClassAndFunction('snips', 'daemon');
     if (is_object($cron)) {
@@ -54,7 +53,7 @@ function snips_remove() {
         $cron->remove();
     }
 
-    snips::debug('Deleted Snips Voice assistant!');
+    snips::debug('Removed Snips Voice assistant!');
 
     //log::add('snips','info','Suppression extension');
     $resource_path = realpath(dirname(__FILE__) . '/../resources');

@@ -24,9 +24,10 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
     
-    ajax::init();
-
-
+    if (init('action') == 'discover') {
+		snips::refreshSkills(init('mode'));
+		ajax::success();
+	}
 
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
