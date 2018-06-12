@@ -156,7 +156,10 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
       <table id="table_cmd" class="table table-bordered table-condensed">
           <thead>
               <tr>
-                  <th style="width: 180px">{{Intent}}</th><th style="width: 215px">{{slots}}</th><th>{{Command}}</th><th>{{Setting}}</th>
+                  <th style="width: 160px;">{{Intent}}</th>
+                  <th style="width: 400px;">{{Slots Configuration}}</th>
+                  <th style="">{{Command}}</th>
+                  <th style="width: 65px;">{{Setting}}</th>
               </tr>
           </thead>
 
@@ -173,6 +176,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
 <?php include_file('desktop', 'snips', 'js', 'snips');?>
 <?php include_file('core', 'plugin.template', 'js');?>
+<?php include_file('desktop', 'snips', 'css', 'snips'); ?>
 
 <!--Passing necessary data to javascript-->
 <script>

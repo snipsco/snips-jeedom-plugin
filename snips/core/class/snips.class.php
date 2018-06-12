@@ -266,7 +266,11 @@ class snips extends eqLogic {
 
             foreach($intent["slots"] as $slot){
 
-                array_push($slots, $slot["name"]);
+                if($slot["required"] == true){
+                    $slots[] = $slot["name"].' *';
+                }else{
+                    $slots[] = $slot["name"];
+                }
                 
             }
             $intents_slots[$intent["name"]] = $slots;
@@ -348,6 +352,7 @@ class snips extends eqLogic {
 }
 
 class snipsCmd extends cmd {
+    
 
     public function execute($_options = null) {
 

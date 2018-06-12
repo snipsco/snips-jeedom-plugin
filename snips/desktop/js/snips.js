@@ -162,8 +162,10 @@ function updateSlots(parent_tr_id, _snips_intents){
     var div = '';
     for(slot in intents[intent]){
 
-        div += '<span> <input readonly="readonly" class="cmdAttr form-control input-sm" style="width: 100px;  display:inline;" value="'+intents[intent][slot]+'"/>';
-        div += '<input class="cmdAttr form-control input-sm" style="width: 100px;  display:inline;" placeholder="value"/></span>';
+        div += '<div> <input readonly="readonly" class="cmdAttr form-control input-sm" style="width: 100px;  display:inline;" value="'+intents[intent][slot]+'">';
+        div += '<input class="cmdAttr form-control input-sm" style="width: 100px;  display:inline;" placeholder="value">';
+        div += '<div style="display: inline-blockl;vertical-align: middle;margin-left: 5px;"><input type="checkbox" id="checkbox" class="checkbox" style="display: none;"><div class="checkbox-wrapper"><label for="checkbox" class="checkbox-label"></label></div></div>';
+        div += '</div>';
     }
     //console.log('Target element id is: '+'slots'+parent_tr_id);
     $('#slots_'+parent_tr_id).append(div);
