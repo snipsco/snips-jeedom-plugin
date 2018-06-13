@@ -267,7 +267,7 @@ class snips extends eqLogic {
             foreach($intent["slots"] as $slot){
 
                 if($slot["required"] == true){
-                    $slots[] = $slot["name"].' *';
+                    $slots[] = $slot["name"];//find bug and change
                 }else{
                     $slots[] = $slot["name"];
                 }

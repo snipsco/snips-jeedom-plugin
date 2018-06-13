@@ -35,6 +35,27 @@ $("#table_cmd").delegate(".findSlotInfo", 'click', function () {
     });
 });
 
+////////////////////////This is the checkbox used to specify slots type
+$(document).on('change', '.isValue', function(){
+    var checkbox = $(this);
+    console.log('isValue function has been executed with :'+checkbox.attr('id'));
+
+    if(checkbox.is(":checked")){
+        var input = checkbox.closest('tr').find('input.invalue[id=' + checkbox.attr('id') + '_bak]');
+        input.attr('placeholder',"Value");
+        input.attr('readonly',"readonly");
+        console.log('checked '+input.attr('placeholder'));
+
+    }else{
+        var input = checkbox.closest('tr').find("input.invalue");
+        input.attr('placeholder',"Location");
+        input.removeAttr("readonly");
+        console.log('unchecked '+input.attr('placeholder'));
+
+    }
+});
+
+
 ////////////////////////This is the function used to add an intent-command mapping
 $("#addIntent").on('click', function(event) { console.log("Insert function"); addNewIntent(); });
 
@@ -90,7 +111,13 @@ function addNewIntent(_cmd) {
         _cmd.configuration = {};
     }
 
+    //Generate an unique id for new row, which is used for locating this new row
     var temp_id = Math.round(Math.random() * 10000000);
+    var ids = $(document).find('tr').attr('id');
+
+    while($.inArray(temp_id, ids) + 1){ 
+        temp_id = Math.round(Math.random() * 10000000);
+    }
 
     var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" name="' + init(_cmd.id) + '" id="' + temp_id + '">';
     tr += '<td style="vertical-align:middle;">';
@@ -167,26 +194,17 @@ function updateSlots(parent_tr_id, _snips_intents){
     var div = '';
     for(slot in intents[intent]){
 
-        div += '<div> <input readonly="readonly" class="cmdAttr form-control input-sm" style="width: 100px;  display:inline;" value="'+intents[intent][slot]+'">';
-        div += '<input class="cmdAttr form-control input-sm" style="width: 100px;  display:inline;" placeholder="value">';
+        div += '<div><input readonly="readonly" class="cmdAttr form-control input-sm" style="width: 100px;  display:inline;" value="'+intents[intent][slot]+'">';
+        div += '<input class="cmdAttr form-control input-sm invalue" id="che_'+parent_tr_id+'_'+intent+'_'+intents[intent][slot]+'_bak" style="width: 100px;  display:inline;" placeholder="Location">';
         div += '<div style="display: inline;vertical-align: middle;margin-left: 5px;">';
-        div += '<input type="checkbox" class="cmdAttr" id="che_'+parent_tr_id+'_'+intent+'_'+intents[intent][slot]+'">Value';
+        div += '<input type="checkbox" onchange="updateSlotsConfig('+parent_tr_id+' ,\''+intent+'\', \''+intents[intent][slot]+'\')"class="cmdAttr isValue" id="che_'+parent_tr_id+'_'+intent+'_'+intents[intent][slot]+'">Value';
         div += '<div id="div_'+parent_tr_id+'_'+intent+'_'+intents[intent][slot]+'"></div></div>';
         div += '</div>';
 
         
     }
-    //console.log('Target element id is: '+'slots'+parent_tr_id);
+
     $('#slots_'+parent_tr_id).append(div);
-
-    for(each in intents[intent]){
-        $("#che_"+parent_tr_id+"_"+intent+"_"+intents[intent][each]).on('change', function (){
-
-            updateSlotsConfig(parent_tr_id ,intent, intents[intent][each]);
-
-        });
-        console.log("Added this #che_"+parent_tr_id+"_"+intent+"_"+intents[intent][each]);
-    }
     
 }
 
@@ -194,15 +212,18 @@ function updateSlots(parent_tr_id, _snips_intents){
 function updateSlotsConfig(parent_tr_id, intent, slot){
 
     console.log("update config function has been executed!");
+
     $('#div_'+parent_tr_id+'_'+intent+'_'+slot).empty();
+
     var div = '';
 
     if ($('#che_'+parent_tr_id+'_'+intent+'_'+slot).is(":checked"))
     {
         console.log("This is a value");
-        div += '<div><div style="float: left;"><input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="'+slot+'" style="width : 300px;" placeholder="{{Give slot value to this}}"></div>';
+        div += '<div><div style="float: left;"><input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="'+slot+'" style="width : 300px;" placeholder="{{Assign this value to an info}}"></div>';
         div += '<div style="align: right;"><a class="btn btn-default btn-sm findSlotInfo" data-input="'+slot+'" style="align: right;"><i class="fa fa-list-alt "></i></a></div></div>';
     }else{
+        console.log('#che_'+parent_tr_id+'_'+intent+'_'+slot+' is being detected');
         console.log("This is a location");
         div += '<div style="float: left;"><input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="'+slot+'" type="hidden" value="location"></div>';
     }
