@@ -156,9 +156,10 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
       <table id="table_cmd" class="table table-bordered table-condensed">
           <thead>
               <tr>
-                  <th style="width: 160px;">{{Intent}}</th>
+                  <th style="width: 200px;">{{Name}}</th>
+                  <th style="width: 250px;">{{Intent}}</th>
                   <th style="width: 400px;">{{Slots Configuration}}</th>
-                  <th style="">{{Command}}</th>
+                  <th style="">{{Action}}</th>
                   <th style="width: 65px;">{{Setting}}</th>
               </tr>
           </thead>
