@@ -15,6 +15,8 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
+////--------------------Binding--------------------////
+
 ////////////////////////This is the button used to choose action command for a intent  
 $("#table_cmd").delegate(".findAction", 'click', function () {
     var el = $(this);
@@ -23,6 +25,58 @@ $("#table_cmd").delegate(".findAction", 'click', function () {
         calcul.value(result.human);
         //calcul.atCaret('insert',result.human)
     });
+});
+
+////////////////////////This is button used to choose info command for an slot
+$("#table_cmd").delegate(".findInfo",'click', function(){
+    var el = $(this);
+    jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function (result) {
+        var calcul = el.closest('span').find('.cmdAttr[data-l1key=configuration][data-l2key='+el.data("input")+'][data-l3key=value]');
+        calcul.value(result.human);
+    });
+});
+
+////////////////////////This is check box button used to change type
+$("#table_cmd").delegate(".chose-slot-type",'change', function(){
+    var el = $(this);
+
+    var type = el.closest('span').find('.infoBarType');
+    var checkbox = el.closest('span').find('.chose-slot-type[type=checkbox]');
+    var icon = el.closest('span').find('label').find('i');
+
+    var infobox = el.closest('div').find('.inputInfo');
+    var infobutton = el.closest('div').find('.findInfo');
+    
+    console.log(type);
+    console.log(checkbox);
+    console.log(icon);
+    console.log(infobox);
+    console.log(infobutton);
+    //debugger;
+
+    if(el.is(":checked")){ // This is a value
+        // Change the content of the type box to value
+        type.val('value');
+        // Change the style of check button - label tag
+        icon.removeClass('fa-location-arrow');
+        icon.addClass('fa-tachometer');
+        // Clear the info command input bar
+        infobox.val('');
+        infobox.attr('placeholder', 'Info command to receive this slot value');
+        // Make info command choose button appear, 
+        infobutton.attr('style', 'display: inline');
+    }else{ // This is a location 
+        // Change the content of the type box to location 
+        type.val('location');
+        // Change the style of check button - label tag
+        icon.removeClass('fa-tachometer');
+        icon.addClass('fa-location-arrow');
+        // Clear the info command input bar
+        infobox.val('');
+        infobox.attr('placeholder', 'Location key word, e.g: bedroom');
+        // Make info command choost button disappear
+        infobutton.attr('style', 'display: none');
+    }
 });
 
 ////////////////////////This is the button used to choose info command for a slots 
@@ -62,102 +116,134 @@ $(document).on('change', '.isValue', function(){
     }
 });
 
-
-$(document).bind('input propertychange', '.locinput', function(){
-    console.log("add mark function has been entered!");
-
-    var input = $("input:focus");
-
-    //var checkbox = $(this).closest('div').find('input.isValue');
-    //var checkbox = $(this).siblings().find('input.isValue');
-
-    var txt = input.val();
-
-    console.log("value:" + txt);
-    console.log("value:" + txt.indexOf('%'));
-
-    if(txt.indexOf('%')!=0){
-        input.val('%'+txt);
-    }
-    
-});
-
 ////////////////////////This is the function used to add an intent-command mapping
-$("#addIntent").on('click', function(event) { console.log("Insert function"); addNewIntent(); });
+$("#addIntent").on('click', function(event) { insertMappingToTable(); });
 
 ////////////////////////This is the function used to sort up command table
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
 
+
+////--------------------Functions--------------------////
+
 ////////////////////////This is the function will be called by JeeDom system when display exist commands
 function addCmdToTable(_cmd) {
-    if (!isset(_cmd)) {
-        var _cmd = {configuration: {}};
-    }
-    if (!isset(_cmd.configuration)) {
-        _cmd.configuration = {};
-    }
+
     var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" name="cmd_' + init(_cmd.id) + '">';
-
-    // Name 
-    tr += '<td style="vertical-align:middle;">';
-    tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>'; //Indicate the id of this row
-    tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" style="width : 200px;">';
-    tr += '<div style="float: left;">            </div>';
-    tr += '</td>';
-
     // Intent (configurstion - intent) readonly
-    tr += '<td style="vertical-align:middle;">';
-    tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="intent" style="width : 250px;" readonly="readonly">';
+    tr += '<td>';
+    tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>'; //Indicate the id of this row
+    tr += '<input class="cmdAttr form-control input-sm" '+
+            'data-l1key="configuration" '+
+            'data-l2key="intent" '+
+            'readonly="readonly">';
     tr += '</td>';
     
-    // Slots (configuration - 'sloname' - loc/infoCmdId) input or choose from modale 
+    // Slots (configuration - 'slotname' - loc/infoCmdId) input or choose from modale 
     tr += '<td>';
-    tr += '<div style="float: left;">'+listExistSlotsConfig(_cmd.name, _snips_intents)+'</div>';
+    tr += listExistSlotsConfig(_cmd, _snips_intents); // Change to '_cmd.configuration.intent'
     tr += '</td>';
 
     // Action (configuration - command - actionCmdId) Choose from modale
-    tr += '<td style="vertical-align:middle;">';
-    tr += '<div><div style="float: left;"><input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="command" style="width : 300px;" placeholder="{{Match an action or script}}"></div>';
-    tr += '<div style="align: right;"><a class="btn btn-default btn-sm findAction" data-input="command" style="align: right;"><i class="fa fa-list-alt "></i></a></div></div>';
+    tr += '<td>';
+    tr += '<input class="cmdAttr form-control input-sm" '+
+            'data-l1key="configuration"'+
+            'data-l2key="action"'+
+            'placeholder="{{Match an action or script}}">';
+    tr += '<a class="btn btn-default btn-sm findAction" data-input="action">'+
+            '<i class="fa fa-list-alt "></i></a>';
     tr += '</td>';
     
+    // Feedback sound (This area is used to input a feedback text)
+    tr += '<td>';
+    tr += '<input class="cmdAttr form-control input-sm" '+
+            'data-l1key="configuration"'+
+            'data-l2key="feedback"'+
+            'placeholder="{{Add some text as feedback sound}}">';
+    tr += '<a class="btn btn-default btn-sm findAction">'+
+            '<i class="fa fa-play"></i></a>';
+    tr += '</td>';
+
     // Configuration
     tr += '<td style="vertical-align:middle;">';
     if (is_numeric(_cmd.id)) {
-        tr += '<a class="btn btn-primary btn-xs cmdAction" data-action="configure"><i class="fa fa-cogs"></i></a> ';
+        tr += '<a class="btn btn-primary btn-xs cmdAction" data-action="configure">'+
+                '<i class="fa fa-cogs"></i></a> ';
     }
-    tr += '<a class="btn btn-danger btn-xs cmdAction pull-right cursor" data-action="remove"><i class="fa fa-minus-circle"></i></a> ';
+    tr += '<a class="btn btn-danger btn-xs cmdAction pull-right cursor" data-action="remove">'+
+            '<i class="fa fa-minus-circle"></i></a> ';
     tr += '</td>';
     tr += '</tr>';
+
     $('#table_cmd tbody').append(tr);
     $('#table_cmd tbody tr:last').setValues(_cmd, '.cmdAttr');
-    if (isset(_cmd.type)) {
-        $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init(_cmd.type));
-    }
-    jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
 }
 
 ////////////////////////This is the function used to find slots name of an exist intent
-function listExistSlotsConfig(intent, _snips_intents){
+function listExistSlotsConfig(_cmd, _snips_intents){
+    // Use Id to allocate a DOM, Later on should be changed to JQuery selector
+    var intent = _cmd.configuration.intent;
+    var slots = _snips_intents[intent]; // List the slot from dataset, other no way to identify it from configuration
 
-    var div = "";
-    /*for(slot in _snips_intents[intent]){
+    var div = '';
 
-        div += '<div><input readonly="readonly" class="cmdAttr form-control input-sm" style="width: 150px;  display:inline;" value="'+intents[intent][slot]+'">';
-        div += '<input class="cmdAttr form-control input-sm invalue" id="che_'+parent_tr_id+'_'+intent+'_'+intents[intent][slot]+'_bak" style="width: 150px;  display:inline;" placeholder="Location">';
-        //div += '<div style="display: inline;vertical-align: middle;margin-left: 5px;">';
-        div += '<input style="display: none;" type="checkbox" onchange="updateSlotsConfig('+parent_tr_id+' ,\''+intent+'\', \''+intents[intent][slot]+'\')"class="cmdAttr isValue" id="che_'+parent_tr_id+'_'+intent+'_'+intents[intent][slot]+'">';
-        div += '<label style="margin-bottom: 0px;" for="che_'+parent_tr_id+'_'+intent+'_'+intents[intent][slot]+'" id="che_'+parent_tr_id+'_'+intent+'_'+intents[intent][slot]+'_lab">';
-        div += '<a class="btn btn-success btn-sm" style="align: right; "><i class="fa fa-chevron-down"></i></a></label>';
-        div += '<div id="div_'+parent_tr_id+'_'+intent+'_'+intents[intent][slot]+'"></div>';
-        div += '</div>';
-    }*/
+    for(n in slots){
+        // start to build a island 
+        div += '<div class="island-slot-configuration">';
+        // #1 [Name:] [slots] [Type:] [Location] [change type]
+        div += '<span class="slotsInfo">';
+        div += '<a class="btn btn-default btn-sm infoTab">Name:</a>';
+        div += '<input readonly="readonly" class="cmdAttr form-control input-sm infoBar" value="'+slots[n]+'">';
 
+        div += '<a class="btn btn-default btn-sm infoTab">Type:</a>';
+        div += '<input readonly="readonly" class="cmdAttr form-control input-sm infoBarType"'+
+                'data-l1key="configuration"'+
+                'data-l2key="'+slots[n]+'"'+
+                'data-l3key="type" >';
+        if(_cmd.configuration[slots[n]].type == 'location'){
+            div += '<input class="chose-slot-type" type="checkbox" id="slot_type_check_'+init(_cmd.id)+'">';
+            div += '<label for="slot_type_check_'+init(_cmd.id)+'">';
+            div += '<a class="btn btn-success btn-sm isLocationButton" data-input="'+slots[n]+'">'+
+                    '<i class="fa fa-tachometer"></i></a></label>';
+
+        }else if(_cmd.configuration[slots[n]].type == 'value'){
+            div += '<input class="chose-slot-type" type="checkbox" id="slot_type_check_'+init(_cmd.id)+'" checked>';
+            div += '<label for="slot_type_check_'+init(_cmd.id)+'">';
+            div += '<a class="btn btn-success btn-sm isValueButton" data-input="'+slots[n]+'">'+
+                    '<i class="fa fa-location-arrow"></i></a></label>';
+            
+        }
+        div += '</span>';
+
+        // #2 [slot configuration value - info command or locaiton]
+        div += '<span class="slotInput">';
+        div += '<input class="cmdAttr form-control input-sm inputInfo"'+
+                'placeholder="{{Assign this value to an info}}"'+
+                'data-l1key="configuration"'+
+                'data-l2key="'+slots[n]+'"'+
+                'data-l3key="value" >';
+
+        div += '<a class="btn btn-default btn-sm findInfo" data-input="'+slots[n]+'">'+
+                '<i class="fa fa-list-alt "></i></a>';
+        div += '</span>';
+    
+        // close this island
+        div += '</div>';  
+    }   
     return div;
 }
 
+
+
+
+
+
+
+
+
+///////////////////////////////////////////Not UPDATE YET
+
 ////////////////////////This is the function used to add a new line of intent-command mapping
-function addNewIntent(_cmd) {
+function insertMappingToTable(_cmd) {
     if (!isset(_cmd)) {
         //var _cmd = {type: 'info', subtype: 'string', configuration: {}};
         var _cmd = {configuration: {}};
@@ -175,11 +261,6 @@ function addNewIntent(_cmd) {
     }
 
     var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" name="' + init(_cmd.id) + '" id="' + temp_id + '">';
-
-    // Name 
-    tr += '<td style="vertical-align:middle;">';
-    tr += '<div style="float: left;">            </div>';
-    tr += '</td>';
 
     // Intent 
     tr += '<td style="vertical-align:middle;">';
@@ -289,11 +370,10 @@ function updateSlotsConfig(parent_tr_id, intent, slot){
     }else{
         console.log('#che_'+parent_tr_id+'_'+intent+'_'+slot+' is being detected');
         console.log("This is a location");
-        div += '<div style="float: left;"><input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="'+slot+'" type="hidden" value="location"></div>';
+        //div += '<div style="float: left;"><input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="'+slot+'" type="hidden" value="location"></div>';
     }
 
     $('#div_'+parent_tr_id+'_'+intent+'_'+slot).append(div);
-
 }
 
 

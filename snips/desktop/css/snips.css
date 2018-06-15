@@ -1,2 +1,51 @@
+.island-slot-configuration{
+	margin: 20px auto;
+	width: 455px;
+}
+
+.island-slot-configuration *{
+	/*margin-left: 5px;*/
+}
 
 
+
+.island-slot-configuration .chose-slot-type{
+	position: absolute;
+    left: -9999px;
+}
+
+.island-slot-configuration .infoTab{
+	float: left;
+	width: 60px;
+	height: 30px;
+	display: inline;
+}
+
+.island-slot-configuration .infoBar{
+	float: left;
+	width: 200px;
+	display: inline;
+}
+
+.island-slot-configuration .infoBarType{
+	float: left;
+	width: 100px;
+	display: inline;
+}
+
+.island-slot-configuration .isValueButton{
+	float: left;
+	display: inline;
+}
+
+.island-slot-configuration label{
+	margin-bottom: 0px;
+}
+
+.island-slot-configuration .slotInput input{
+	width: 420px;
+	display: inline;
+}
+.island-slot-configuration .slotInput a{
+	display: inline;
+}

@@ -267,7 +267,9 @@ class snips extends eqLogic {
             foreach($intent["slots"] as $slot){
 
                 if($slot["required"] == true){
-                    $slots[] = $slot["name"];//find bug and change
+                    $slots[] = $slot["name"]; 
+                    //Required or not should be identified by last character of this slot, but using '*' will have bugs. 
+                    //Should find another way to seperate 
                 }else{
                     $slots[] = $slot["name"];
                 }
@@ -282,11 +284,11 @@ class snips extends eqLogic {
     }
 
     public function getTopics(){
-
-        $intents = self::getIntents();
+         
+        $intents = json_decode(self::getIntents(), true);
 
         $topics = array();
-        foreach($intents as $intent){
+        foreach($intents as $intent => $slot){
             array_push($topics, 'hermes/intent/'.$intent);
         }
 
@@ -316,21 +318,38 @@ class snips extends eqLogic {
 
         //self::setLogicalId($logicalId);
 
-        $intents = self::getIntents();
+        $intents = json_decode(self::getIntents(), true);
 
         //log::add('snips', 'debug', 'Intents detected.');
 
-        foreach($intents as $intent){
-            $item = $this->getCmd(null, $intent);
-            if (!is_object($item)) {
-                $item = new snipsCmd();
-                $item->setName(__($intent, __FILE__));
+        foreach($intents as $intent => $slots){
+
+            $rand = rand(1, 999999);
+
+            $snipsObj = $this->getCmd(null, 'Snips_'.$intent.'_'.$rand); //getCmd(  $_type = null,   $_logicalId = null,   $_visible = null,   $_multiple = false)
+
+            if (!is_object($snipsObj)) {
+                $snipsObj = new snipsCmd();
+                $snipsObj->setLogicalId('Snips_'.$intent.'_'.$rand);
+                $snipsObj->setName('Snips_'.$intent.'_'.$rand);
             }
-            $item->setLogicalId($intent);
-            $item->setEqLogic_id($this->getId());
-            $item->setType('info');
-            $item->setSubType('string');
-            $item->save();
+
+            $snipsObj->setEqLogic_id($this->getId());
+            $snipsObj->setType('Snips_Intent');
+            $snipsObj->setSubType('string');
+            $snipsObj->setConfiguration('intent', $intent);
+
+            foreach($slots as $slot){
+
+                $content = array();
+
+                $content['type'] = 'location';
+                $content['value'] = '%Unset Location%';
+                $snipsObj->setConfiguration( $slot, $content);
+
+                unset($content);
+            }
+            $snipsObj->save();
         }
     }
 
@@ -353,11 +372,11 @@ class snips extends eqLogic {
 
 class snipsCmd extends cmd {
     
-
+    // Rewrite
     public function execute($_options = null) {
 
         $received_intent = $this->getLogicalId();
-        $target_command = $this->getConfiguration('command');
+        $target_command = $this->getConfiguration('action');
         $sessionId = $this->getValue();
 
         log::add('snips', 'debug', 'Command Handler has been entered with intent: ['.$received_intent.'] and its related command id: ['.$target_command.'] will be execute!');
