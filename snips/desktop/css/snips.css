@@ -36,6 +36,13 @@
 .island-slot-configuration .isValueButton{
 	float: left;
 	display: inline;
+	width: 34px;
+}
+
+.island-slot-configuration .isLocationButton{
+	float: left;
+	display: inline;
+	width: 34px;
 }
 
 .island-slot-configuration label{

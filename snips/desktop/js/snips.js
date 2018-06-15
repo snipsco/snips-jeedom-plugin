@@ -46,7 +46,7 @@ $("#table_cmd").delegate(".chose-slot-type",'change', function(){
 
     var infobox = el.closest('div').find('.inputInfo');
     var infobutton = el.closest('div').find('.findInfo');
-    
+
     console.log(type);
     console.log(checkbox);
     console.log(icon);
@@ -58,8 +58,8 @@ $("#table_cmd").delegate(".chose-slot-type",'change', function(){
         // Change the content of the type box to value
         type.val('value');
         // Change the style of check button - label tag
-        icon.removeClass('fa-location-arrow');
-        icon.addClass('fa-tachometer');
+        icon.removeClass('fa-tachometer');
+        icon.addClass('fa-location-arrow');
         // Clear the info command input bar
         infobox.val('');
         infobox.attr('placeholder', 'Info command to receive this slot value');
@@ -69,8 +69,8 @@ $("#table_cmd").delegate(".chose-slot-type",'change', function(){
         // Change the content of the type box to location 
         type.val('location');
         // Change the style of check button - label tag
-        icon.removeClass('fa-tachometer');
-        icon.addClass('fa-location-arrow');
+        icon.removeClass('fa-location-arrow');
+        icon.addClass('fa-tachometer');
         // Clear the info command input bar
         infobox.val('');
         infobox.attr('placeholder', 'Location key word, e.g: bedroom');
@@ -90,7 +90,7 @@ $("#table_cmd").delegate(".findSlotInfo", 'click', function () {
 });
 
 ////////////////////////This is the checkbox used to specify slots type
-$(document).on('change', '.isValue', function(){
+/*$(document).on('change', '.isValue', function(){
     var checkbox = $(this);
     console.log('isValue function has been executed with :'+checkbox.attr('id'));
 
@@ -114,7 +114,7 @@ $(document).on('change', '.isValue', function(){
         console.log('unchecked '+input.attr('placeholder'));
 
     }
-});
+});*/
 
 ////////////////////////This is the function used to add an intent-command mapping
 $("#addIntent").on('click', function(event) { insertMappingToTable(); });
@@ -200,34 +200,48 @@ function listExistSlotsConfig(_cmd, _snips_intents){
                 'data-l2key="'+slots[n]+'"'+
                 'data-l3key="type" >';
         if(_cmd.configuration[slots[n]].type == 'location'){
-            div += '<input class="chose-slot-type" type="checkbox" id="slot_type_check_'+init(_cmd.id)+'">';
-            div += '<label for="slot_type_check_'+init(_cmd.id)+'">';
+            div += '<input class="chose-slot-type" type="checkbox" id="slot_type_check_'+init(_cmd.id)+'_'+slots[n]+'">';
+            div += '<label for="slot_type_check_'+init(_cmd.id)+'_'+slots[n]+'">';
             div += '<a class="btn btn-success btn-sm isLocationButton" data-input="'+slots[n]+'">'+
                     '<i class="fa fa-tachometer"></i></a></label>';
+            div += '</span>';
+
+                // #2 [slot configuration value - info command or locaiton]
+                div += '<span class="slotInput">';
+                div += '<input class="cmdAttr form-control input-sm inputInfo"'+
+                        'placeholder="{{Assign this value to an info}}"'+
+                        'data-l1key="configuration"'+
+                        'data-l2key="'+slots[n]+'"'+
+                        'data-l3key="value" >';
+
+                div += '<a class="btn btn-default btn-sm findInfo" data-input="'+slots[n]+'" style="display: none;">'+
+                        '<i class="fa fa-list-alt "></i></a>';
+                div += '</span>';
 
         }else if(_cmd.configuration[slots[n]].type == 'value'){
-            div += '<input class="chose-slot-type" type="checkbox" id="slot_type_check_'+init(_cmd.id)+'" checked>';
-            div += '<label for="slot_type_check_'+init(_cmd.id)+'">';
+            div += '<input class="chose-slot-type" type="checkbox" id="slot_type_check_'+init(_cmd.id)+'_'+slots[n]+'" checked>';
+            div += '<label for="slot_type_check_'+init(_cmd.id)+'_'+slots[n]+'">';
             div += '<a class="btn btn-success btn-sm isValueButton" data-input="'+slots[n]+'">'+
                     '<i class="fa fa-location-arrow"></i></a></label>';
+            div += '</span>';
+
+                // #2 [slot configuration value - info command or locaiton]
+                div += '<span class="slotInput">';
+                div += '<input class="cmdAttr form-control input-sm inputInfo"'+
+                        'placeholder="{{Assign this value to an info}}"'+
+                        'data-l1key="configuration"'+
+                        'data-l2key="'+slots[n]+'"'+
+                        'data-l3key="value" >';
+
+                div += '<a class="btn btn-default btn-sm findInfo" data-input="'+slots[n]+'" style="display: inline;">'+
+                        '<i class="fa fa-list-alt "></i></a>';
+                div += '</span>';
             
         }
-        div += '</span>';
-
-        // #2 [slot configuration value - info command or locaiton]
-        div += '<span class="slotInput">';
-        div += '<input class="cmdAttr form-control input-sm inputInfo"'+
-                'placeholder="{{Assign this value to an info}}"'+
-                'data-l1key="configuration"'+
-                'data-l2key="'+slots[n]+'"'+
-                'data-l3key="value" >';
-
-        div += '<a class="btn btn-default btn-sm findInfo" data-input="'+slots[n]+'">'+
-                '<i class="fa fa-list-alt "></i></a>';
-        div += '</span>';
-    
+        
         // close this island
-        div += '</div>';  
+        div += '</div>';
+  
     }   
     return div;
 }
