@@ -1,3 +1,8 @@
+.island-intent{
+	margin: 20px auto;
+	width:210px;
+}
+
 .island-slot-configuration{
 	margin: 20px auto;
 	width: 455px;
@@ -6,8 +11,6 @@
 .island-slot-configuration *{
 	/*margin-left: 5px;*/
 }
-
-
 
 .island-slot-configuration .chose-slot-type{
 	position: absolute;
@@ -21,7 +24,7 @@
 	display: inline;
 }
 
-.island-slot-configuration .infoBar{
+.island-slot-configuration .infoBar, .island-intent .intentNameBar{
 	float: left;
 	width: 200px;
 	display: inline;
@@ -54,5 +57,33 @@
 	display: inline;
 }
 .island-slot-configuration .slotInput a{
+	display: inline;
+}
+
+.island-action{
+	margin: 20px auto;
+	/*width:210px;*/
+}
+
+.island-action input{
+	float: left;
+	display: inline;
+	width:300px;
+}
+
+.island-action a{
+	float: left;
+	display: inline;
+}
+
+.island-feedback{
+	margin: 20px auto;
+	/*width:210px;*/
+}
+
+.island-feedback textarea{
+	resize: none;
+	width:250px;
+	height: 70px;
 	display: inline;
 }

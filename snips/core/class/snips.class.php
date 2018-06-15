@@ -107,7 +107,7 @@ class snips extends eqLogic {
     public static function daemon() {
         
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
-        $port = intval(config::byKey('mqttPort', 'snips', '1883'));
+        $port = intval(config::byKey('mqttPort', 'snips', 1883));
 
         self::debug('Connection Parameters, Host : ' . $addr . ', Port : ' . $port);
 
@@ -319,12 +319,12 @@ class snips extends eqLogic {
         //self::setLogicalId($logicalId);
 
         $intents = json_decode(self::getIntents(), true);
-
         //log::add('snips', 'debug', 'Intents detected.');
 
         foreach($intents as $intent => $slots){
 
-            $rand = rand(1, 999999);
+            //$rand = rand(1, 999999);
+            $rand = 0;
 
             $snipsObj = $this->getCmd(null, 'Snips_'.$intent.'_'.$rand); //getCmd(  $_type = null,   $_logicalId = null,   $_visible = null,   $_multiple = false)
 
@@ -335,16 +335,17 @@ class snips extends eqLogic {
             }
 
             $snipsObj->setEqLogic_id($this->getId());
-            $snipsObj->setType('Snips_Intent');
+            $snipsObj->setType('info');//Snips_Intent
             $snipsObj->setSubType('string');
             $snipsObj->setConfiguration('intent', $intent);
+            $snipsObj->setConfiguration('feedback', '');
 
             foreach($slots as $slot){
 
                 $content = array();
 
                 $content['type'] = 'location';
-                $content['value'] = '%Unset Location%';
+                $content['value'] = '';
                 $snipsObj->setConfiguration( $slot, $content);
 
                 unset($content);

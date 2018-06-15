@@ -137,18 +137,18 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
   <div role="tabpanel" class="tab-pane" id="commandtab">
 
-      <div class="alert alert-info" style="margin: 10px 0pxl"> 
+      <!-- <div class="alert alert-info" style="margin: 10px 0pxl"> 
         <h3 class="panel-title" style="padding: 10px 0px;">
           <a style="text-decoration:none;">Tips</a>
         </h3>
             <p>- Match each intent with a specific device command.</p>
             <p>- Put '*' if the slot is not concerned.</p>
             <p>- Example:</p>
-            <p>  Intent: lightsTurnOff Slots: house_room = living room Command:#[Apartment][Test Lamp][Off]# </p>
+            <p>  Intent: lightsTurnOff Slots: house_room = living room Command:[Apartment][Test Lamp][Off]</p>
             <p>- Explanation:</p>
             <p>  When the snips reveive intent 'lightsTurnOff' with slot value 'living room', the lights in Appartment named Test Lamp will be turned off. </p>
 
-      </div>
+      </div> -->
 
       <a class="btn btn-success btn-sm cmdAction pull-left" id="addIntent" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Attach a new intent-command mapping}}</a><br/><br/>
     
@@ -156,11 +156,11 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
       <table id="table_cmd" class="table table-bordered table-condensed">
           <thead>
               <tr>
-                  <th style="width: auto;">{{Intent}}</th>
-                  <th style="width: auto;">{{Slots Configuration}}</th>
-                  <th style="width: auto;">{{Action}}</th>
-                  <th style="width: auto">{{Feedback}}</th>
-                  <th style="width: auto;">{{Setting}}</th>
+                  <th style="width: 210px;">{{Intent}}</th>
+                  <th style="width: 400px;">{{Slots Configuration}}</th>
+                  <th style="width: 350px;">{{Action}}</th>
+                  <th style="width: 260px">{{Feedback}}</th>
+                  <th style="width: 300px;">{{Setting}}</th>
               </tr>
           </thead>
 

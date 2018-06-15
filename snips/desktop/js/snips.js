@@ -47,11 +47,11 @@ $("#table_cmd").delegate(".chose-slot-type",'change', function(){
     var infobox = el.closest('div').find('.inputInfo');
     var infobutton = el.closest('div').find('.findInfo');
 
-    console.log(type);
-    console.log(checkbox);
-    console.log(icon);
-    console.log(infobox);
-    console.log(infobutton);
+    // console.log(type);
+    // console.log(checkbox);
+    // console.log(icon);
+    // console.log(infobox);
+    // console.log(infobutton);
     //debugger;
 
     if(el.is(":checked")){ // This is a value
@@ -130,13 +130,13 @@ function addCmdToTable(_cmd) {
 
     var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '" name="cmd_' + init(_cmd.id) + '">';
     // Intent (configurstion - intent) readonly
-    tr += '<td>';
+    tr += '<td><div class="island-intent">';
     tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>'; //Indicate the id of this row
-    tr += '<input class="cmdAttr form-control input-sm" '+
+    tr += '<input class="cmdAttr form-control input-sm intentNameBar" '+
             'data-l1key="configuration" '+
             'data-l2key="intent" '+
             'readonly="readonly">';
-    tr += '</td>';
+    tr += '</div></td>';
     
     // Slots (configuration - 'slotname' - loc/infoCmdId) input or choose from modale 
     tr += '<td>';
@@ -144,38 +144,41 @@ function addCmdToTable(_cmd) {
     tr += '</td>';
 
     // Action (configuration - command - actionCmdId) Choose from modale
-    tr += '<td>';
+    tr += '<td><div class="island-action">';
     tr += '<input class="cmdAttr form-control input-sm" '+
             'data-l1key="configuration"'+
             'data-l2key="action"'+
             'placeholder="{{Match an action or script}}">';
     tr += '<a class="btn btn-default btn-sm findAction" data-input="action">'+
             '<i class="fa fa-list-alt "></i></a>';
-    tr += '</td>';
+    tr += '</div></td>';
     
     // Feedback sound (This area is used to input a feedback text)
-    tr += '<td>';
-    tr += '<input class="cmdAttr form-control input-sm" '+
+    tr += '<td><div class="island-feedback">';
+    tr += '<textarea class="cmdAttr form-control input-sm" '+
             'data-l1key="configuration"'+
             'data-l2key="feedback"'+
-            'placeholder="{{Add some text as feedback sound}}">';
-    tr += '<a class="btn btn-default btn-sm findAction">'+
+            'placeholder="{{Add some text as feedback sound}}"></textarea>';
+    tr += '<a class="btn btn-default btn-sm">'+
             '<i class="fa fa-play"></i></a>';
-    tr += '</td>';
+    tr += '<a class="btn btn-default btn-sm pull-right">'+
+            '<i class="fa jeedom-lumiere-off"></i></a>';
+    tr += '</div></td>';
 
     // Configuration
-    tr += '<td style="vertical-align:middle;">';
+    tr += '<td><div class="island-configuration">';
     if (is_numeric(_cmd.id)) {
         tr += '<a class="btn btn-primary btn-xs cmdAction" data-action="configure">'+
                 '<i class="fa fa-cogs"></i></a> ';
     }
     tr += '<a class="btn btn-danger btn-xs cmdAction pull-right cursor" data-action="remove">'+
             '<i class="fa fa-minus-circle"></i></a> ';
-    tr += '</td>';
+    tr += '</div></td>';
     tr += '</tr>';
 
     $('#table_cmd tbody').append(tr);
     $('#table_cmd tbody tr:last').setValues(_cmd, '.cmdAttr');
+    jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
 }
 
 ////////////////////////This is the function used to find slots name of an exist intent
