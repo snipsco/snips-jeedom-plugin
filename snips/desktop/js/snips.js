@@ -133,8 +133,8 @@ function addCmdToTable(_cmd) {
     tr += '<td><div class="island-intent">';
     tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>'; //Indicate the id of this row
     tr += '<input class="cmdAttr form-control input-sm intentNameBar" '+
-            'data-l1key="configuration" '+
-            'data-l2key="intent" '+
+            'data-l1key="subType" '+
+            ' '+ // data-l2key=""
             'readonly="readonly">';
     tr += '</div></td>';
     
@@ -161,7 +161,7 @@ function addCmdToTable(_cmd) {
             'placeholder="{{Add some text as feedback sound}}"></textarea>';
     tr += '<a class="btn btn-default btn-sm">'+
             '<i class="fa fa-play"></i></a>';
-    tr += '<a class="btn btn-default btn-sm pull-right">'+
+    tr += '<a class="btn btn-default btn-sm pull-left">'+
             '<i class="fa jeedom-lumiere-off"></i></a>';
     tr += '</div></td>';
 
