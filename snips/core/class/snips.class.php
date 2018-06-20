@@ -201,7 +201,7 @@ class snips extends eqLogic {
 
             $selected_cmds = array();
  
-            if(!empty($cmds_with_this_intent)){ // if this intent from is an offical 'Smart Light' skill. Change later.
+            if(!empty($cmds_with_this_intent)){ // if this intent form is an offical 'Smart Light' skill. Change later.
                 snips::debug('cmds_with_this_intent: not empty');
                 
                 // Select all the matched commands
@@ -270,16 +270,26 @@ class snips extends eqLogic {
 
                                 $eq_id = $info_cmd->getEqLogic_id();
 
-                                snips::debug('eq is: '.$eq_id);
+                                snips::debug('eq id is: '.$eq_id);
 
-                                $eq = eqLogic::byLogicalId($eq_id, 'philipsHue');
+                                /// Problem is here !!!
+                                $eqLogic = eqLogic::byId($eq_id);
 
-                                snips::debug('eq is: '.$eq);
+                                snips::debug('eq is: '.gettype($eqLogic));
 
-                                $eq->checkAndUpdateCmd($info_cmd->getLogicalId, $slots_value['intensity_number']);
+                                snips::debug('before value: '.$info_cmd->getValue());
+                                snips::debug('data is '.$slots_value['intensity_number']);
 
-                                snips::debug('eq is: '.$eq->getName());
-                                snips::debug('cmd is: '.$info_cmd->getName());
+                                $options = array('slider' => $slots_value['intensity_number']);
+                                $test_cmd = cmd::byId(105);
+
+                                $test_cmd->execCmd($options);
+                                //$r = $eqLogic->checkAndUpdateCmd($info_cmd, $slots_value['intensity_number']);
+                                //$info_cmd->setValue($slots_value['intensity_number']);
+
+                                snips::debug('result is: '.$r);
+                                snips::debug('eq is: '.$eqLogic->getName());
+                                snips::debug('cmd is: '.$info_cmd->getName()); //
                                 snips::debug('after value: '.$info_cmd->getValue());
                             }
                             unset($temp_slots);
@@ -412,7 +422,6 @@ class snips extends eqLogic {
         //$logicalId = this->getName();
 
         //self::setLogicalId($logicalId);
-
         $intents = json_decode(self::getIntents(), true);
         //log::add('snips', 'debug', 'Intents detected.');
 
