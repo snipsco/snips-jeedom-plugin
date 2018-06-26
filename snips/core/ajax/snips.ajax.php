@@ -21,15 +21,22 @@ try {
     include_file('core', 'authentification', 'php');
 
     if (!isConnect('admin')) {
-        throw new Exception(__('401 - Accès non autorisé', __FILE__));
+        throw new Exception(__('401 - Unauthorized access', __FILE__));
     }
     
-    if (init('action') == 'discover') {
-		snips::refreshSkills(init('mode'));
+    if (init('action') == 'reload') {
+        log::add('ajax', 'info', 'snips, reload');
+		snips::reloadAssistant();
 		ajax::success();
 	}
 
-    throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
+    if (init('action') == 'removeAll') {
+        log::add('ajax', 'info', 'snips, remove all');
+        snips::deleteAssistant();
+        ajax::success();
+    }
+
+    throw new Exception(__('No method corresponding to : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {
     ajax::error(displayExeption($e), $e->getCode());

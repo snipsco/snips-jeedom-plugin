@@ -14,8 +14,6 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-MODE_LIST = null;
-
 ////--------------------Events Binding--------------------////
 
 //--This is the function used to add an intent-command mapping
@@ -71,15 +69,9 @@ $("body").off('click', '.bt_removeAction').on( 'click', '.bt_removeAction',funct
     $(this).closest('.' + type).remove();
 });
 
-//--This is the function used to remove a condition
-$("body").off('click', '.bt_removeCondition').on( 'click', '.bt_removeCondition',function () {
-    var type = $(this).attr('data-type');
-    $(this).closest('.' + type).remove();
-});
-
 //--This is the function used to add condition for binding
 $("#div_bindings").off('click','.bt_addCondition').on('click','.bt_addCondition',  function () {
-    addCondition({}, $(this).closest('.binding'));
+    //addAction({}, 'condition', '{{Condition}}', $(this).closest('.binding'));
 });
 
 //--This is the function used to add action to binding
@@ -161,7 +153,7 @@ $("#div_bindings").sortable({axis: "y", cursor: "move", items: ".binding", place
 $('.reload').on('click', function () {
 	$('#div_alert').showAlert({message: 'Reloading all the skills', level: 'warning'});
 	$.ajax({
-                type: "POST", // method to transmit request
+                type: "POST", // méthode de transmission des données au fichier php
                 url: "plugins/snips/core/ajax/snips.ajax.php", 
                 data: {
                     action: "reload",
@@ -177,7 +169,6 @@ $('.reload').on('click', function () {
                         return;
                     }
                     $('#div_alert').showAlert({message: 'Successfully reloaded!', level: 'success'});
-                    location.reload();
                 }
             });
 });
@@ -202,7 +193,6 @@ $('.removeAll').on('click', function () {
                         return;
                     }
                     $('#div_alert').showAlert({message: 'Successfully removed all the skills!', level: 'success'});
-                    location.reload();
                 }
             });
 });
@@ -243,8 +233,8 @@ function saveEqLogic(_eqLogic) {
     _eqLogic.configuration.bindings = [];
     $('#div_bindings .binding').each(function () {
         var binding = $(this).getValues('.bindingAttr')[0];
-        binding.condition = $(this).find('.condition').getValues('.expressionAttr');
-        binding.action = $(this).find('.action').getValues('.expressionAttr');
+        binding.Condition = $(this).find('.Condition').getValues('.expressionAttr');
+        binding.Action = $(this).find('.Action').getValues('.expressionAttr');
         _eqLogic.configuration.bindings.push(binding);
     });
     return _eqLogic;
@@ -294,14 +284,14 @@ function addBinding(_binding) {
     	div += '<div class="col-sm-2">';
     	if(!_binding.isActive){
     		div += '<span>';
-    		div += '<input style="display:none;" class="bindingAttr isActivated" type="checkbox" id="isActivated_'+ random +'" data-l1key="enable">';
+    		div += '<input style="display:none;" class="isActivated" type="checkbox" id="isActivated_'+ random +'" data-l1key="emable">';
             div += '<label for="isActivated_'+ random +'">';
             div += '<a class="btn btn-success btn-sm">Enable</a>';
             div += '</span>';
 	    	div += '</div>';
     	}else{
     		div += '<span>';
-    		div += '<input style="display:none;" class="bindingAttr isActivated" type="checkbox" id="isActivated_'+ random +'" data-l1key="enable" checked>';
+    		div += '<input style="display:none;" class="isActivated" type="checkbox" id="isActivated_'+ random +'" data-l1key="emable" checked>';
             div += '<label for="isActivated_'+ random +'">';
             div += '<a class="btn btn-danger btn-sm">Disable</a>';
             div += '</span>';
@@ -323,14 +313,14 @@ function addBinding(_binding) {
 	div += '<hr/>';
 
     //** Condition Section
-    div += '<div><strong>{{Condition(s)}}</strong></div>';
-    div += '<div class="div_condition"></div>';
+    div += '<div><span>{{Condition(s)}}</span></div>';
+    div += '<div class="div_Condition"></div>';
 
     div += '<hr/>';
 
     //** Action Section
-    div += '<div><strong>{{Action(s)}}</strong></div>';
-    div += '<div class="div_action"></div>';
+    div += '<div><span>{{Action(s)}}</span></div>';
+    div += '<div class="div_Action"></div>';
 
     div += '</form>';
     div += '</div>';
@@ -341,28 +331,28 @@ function addBinding(_binding) {
     $('#div_bindings').append(div);
     $('#div_bindings .binding:last').setValues(_binding, '.bindingAttr');
 
-    if (is_array(_binding.condition)) {
-        for (var i in _binding.condition) {
-            addCondition(_binding.condition[i], $('#div_bindings .binding:last'));
+    if (is_array(_binding.Condition)) {
+        for (var i in _binding.Condition) {
+            addCondition(_binding.Condition[i], $('#div_bindings .binding:last'));
         }
     } else {
-        if ($.trim(_binding.condition) != '') {
-            addCondition(_binding.condition[i], $('#div_bindings .binding:last'));
+        if ($.trim(_binding.Condition) != '') {
+            addCondition(_binding.Condition[i], $('#div_bindings .binding:last'));
         }
     }
 
-    if (is_array(_binding.action)) {
-        for (var i in _binding.action) {
-            addAction(_binding.action[i], $('#div_bindings .binding:last'));
+    if (is_array(_binding.Action)) {
+        for (var i in _binding.Action) {
+            addAction(_binding.Action[i], $('#div_bindings .binding:last'));
         }
     } else {
-        if ($.trim(_binding.action) != '') {
-            addAction(_binding.action, $('#div_bindings .binding:last'));
+        if ($.trim(_binding.Action) != '') {
+            addAction(_binding.Action, $('#div_bindings .binding:last'));
         }
     }
     $('.collapse').collapse();
-    $("#div_bindings .binding:last .div_condition").sortable({axis: "y", cursor: "move", items: ".condition", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
-    $("#div_bindings .binding:last .div_action").sortable({axis: "y", cursor: "move", items: ".action", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
+    $("#div_bindings .binding:last .div_Condition").sortable({axis: "y", cursor: "move", items: ".Condition", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
+    $("#div_bindings .binding:last .div_Action").sortable({axis: "y", cursor: "move", items: ".Action", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
     
 }
 
@@ -403,87 +393,22 @@ function addAction(_action, _el) {
     div += '</div>';
 
     if (isset(_el)) {
-        _el.find('.div_action').append(div);
+        _el.find('.div_Action').append(div);
         _el.find('.action:last').setValues(_action, '.expressionAttr');
 
     } else {
-        $('#div_action').append(div);
-        $('#div_action .action:last').setValues(_action, '.expressionAttr');
+        $('#div_Action').append(div);
+        $('#div_Action .action:last').setValues(_action, '.expressionAttr');
     }
 
     actionOptions.push({
-        expression : init(_action.cmd, ''),
-        options : _action.options,
+        expression : init(action.cmd, ''),
+        options : action.options,
         id : actionOption_id
     });
 }
 
 //--This function is used to add condition
-function addCondition(_condition, _el){
-	if (!isset(_condition)) {
-        _condition = {};
-    }
-    if (!isset(_condition.options)) {
-        _condition.options = {};
-    }
+function addCondition(){
 
-    var div = '<div class="condition">';
-    div += '<div class="form-group ">';
-
-    div += '<div class="col-sm-5">';
-    div += '<div class="input-group input-group-sm">';
-
-    div += '<span class="input-group-btn">';
-    div += '<a class="btn btn-default bt_removeCondition btn-sm" data-type="condition"><i class="fa fa-minus-circle"></i></a>';
-    div += '</span>';
-
-    div += '<span class="input-group-addon">If</span>';
-    div += '<select class="form-control input-sm">';
-    div += '<option value="0">Select a Slot &#8681;</option>';
-    div += '</select>';
-    div += '<span class="input-group-addon">=</span>';
-    div += '<input class="form-control">';
-    div += '</div>';
-    div += '</div>';
-
-
-
-    // div += '<div class="col-sm-4">';
-    // div += '<div class="input-group">';
-    // div += '<span class="input-group-btn">';
-    // div += '<a class="btn btn-default bt_removeAction btn-sm" data-type="action"><i class="fa fa-minus-circle"></i></a>';
-    // div += '</span>';
-    // div += '<input class="expressionAttr form-control input-sm" data-l1key="cmd" data-type="action" />';
-    // div += '<span class="input-group-btn">';
-    // div += '<a class="btn btn-default btn-sm listAction" data-type="action" title="{{Select an action}}"><i class="fa fa-tasks"></i></a>';
-    // div += '<a class="btn btn-default btn-sm listCmdAction" data-type="action"><i class="fa fa-list-alt"></i></a>';
-    // div += '</span>';
-    // div += '</div>';
-    // div += '</div>';
-
-    // var actionOption_id = uniqId();
-    // div += '<div class="col-sm-5 actionOptions" id="'+actionOption_id+'">';
-    // div += '</div>';
-
-    // div += '<div class="col-sm-1">';
-    // div += '<input type="checkbox" class="expressionAttr" data-l1key="options" data-l2key="enable" checked title="{{Enable this action}}" />';
-    // div += '<a>Enable</a>';
-    // div += '</div>';
-
-    // div += '</div>';
-
-    if (isset(_el)) {
-        _el.find('.div_condition').append(div);
-        _el.find('.condition:last').setValues(_condition, '.expressionAttr');
-
-    } else {
-        $('#div_condition').append(div);
-        $('#div_condition .condition:last').setValues(_condition, '.expressionAttr');
-    }
-
-    // actionOptions.push({
-    //     expression : init(_action.cmd, ''),
-    //     options : _action.options,
-    //     id : actionOption_id
-    // });
 }

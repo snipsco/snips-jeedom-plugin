@@ -19,6 +19,9 @@
 /* * ***************************Includes********************************* */
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
+include 'ChromePhp.php';
+//ChromePhp::log('Hello console!');
+
 class snips extends eqLogic {
 
     /*     * ***********************Methode static*************************** */
@@ -84,7 +87,7 @@ class snips extends eqLogic {
 
     public static function dependancy_info() {
         $return = array();
-        $return['log'] = 'MQTT_dep';
+        $return['log'] = 'SNIPS_dep';
         $return['state'] = 'nok';
         $cmd = "dpkg -l | grep mosquitto";
         exec($cmd, $output, $return_var);
@@ -356,12 +359,13 @@ class snips extends eqLogic {
     }
 
     //add log
-    public function debug($info){
-        //log::add('snips', 'info', $info);
-        fwrite(STDOUT, $info.'\n');
+    public static function debug($info){
+        ChromePhp::log($info);
+        //log::add('snips', 'debug', $info);
+        //fwrite(STDOUT, $info.'\n');
     }
 
-    public function getIntents(){
+    public static function getIntents(){
 
         $intents_file = "/usr/share/snips/assistant/assistant.json";
         $json_string = file_get_contents($intents_file);
@@ -394,7 +398,7 @@ class snips extends eqLogic {
         return json_encode($intents_slots);
     }
 
-    public function getTopics(){
+    public static function getTopics(){
          
         $intents = json_decode(self::getIntents(), true);
 
@@ -409,9 +413,55 @@ class snips extends eqLogic {
 
     }
 
-    public function freshSkills(){
-        self::debug('fresh function has been entred! : )');
+    public static function reloadAssistant(){
+        self::debug("reload assistant");
+        // Add all the intents to configuration
+        $intents = json_decode(self::getIntents(), true);
+
+        self::debug('Current intents is :'.gettype($intents));
+
+        foreach($intents as $intent => $slot){
+
+            self::debug('Creating intent equipment: '.$intent);
+
+            if(is_object(snips::byLogicalId($intent, 'snips'))){
+                return;
+            }else{
+                $elogic = new snips();
+                $elogic->setEqType_name('snips');
+                $elogic->setLogicalId($intent);
+                $elogic->setName($intent);
+                $elogic->setIsEnable(1);
+                $elogic->save();
+
+                
+            }
+            
+            
+        }
+
     }
+
+    public static function deleteAssistant(){
+        self::debug("remove assistant");
+
+        $eqLogics = eqLogic::byType('snips');
+
+        self::debug('Current equiopments is :'.gettype($eqLogics));
+
+        foreach($eqLogics as $eq){
+            self::debug('Removing equipment: '.$eq->getName());
+            $cmds = snipsCmd::byEqLogicId($eq->getLogicalId);
+
+            foreach ($cmds as $cmd) {
+                self::debug('Removing cmd: '.$cmd->getName());
+                $cmd->remove();
+            }
+            
+            $eq->remove();
+        }
+    }
+
     /*     * *********************Méthodes d'instance************************* */
 
     public function preInsert() {
@@ -419,46 +469,47 @@ class snips extends eqLogic {
     }
 
     public function postInsert() {
-        //$logicalId = this->getName();
+        // //$logicalId = this->getName();
 
-        //self::setLogicalId($logicalId);
-        $intents = json_decode(self::getIntents(), true);
-        //log::add('snips', 'debug', 'Intents detected.');
+        // //self::setLogicalId($logicalId);
+        // $intents = json_decode(self::getIntents(), true);
+        // //log::add('snips', 'debug', 'Intents detected.');
 
-        foreach($intents as $intent => $slots){
+        // foreach($intents as $intent => $slots){
 
-            self::debug('Creating mapping for '.$intent.'with slots '.$slots);
+        //     self::debug('Creating mapping for '.$intent.'with slots '.$slots);
 
-            $rand = rand(1, 999999);
-            //$rand = 0;
+        //     $rand = rand(1, 999999);
+        //     //$rand = 0;
 
-            $snipsObj = $this->getCmd(null, 'Snips_'.$intent.'_'.$rand); //getCmd(  $_type = null,   $_logicalId = null,   $_visible = null,   $_multiple = false)
+        //     $snipsObj = $this->getCmd(null, 'Snips_'.$intent.'_'.$rand); //getCmd(  $_type = null,   $_logicalId = null,   $_visible = null,   $_multiple = false)
 
-            if (!is_object($snipsObj)) {
-                $snipsObj = new snipsCmd();
-                $snipsObj->setLogicalId('Snips_'.$intent.'_'.$rand);
-                $snipsObj->setName('Snips_'.$intent.'_'.$rand);
-            }
+        //     if (!is_object($snipsObj)) {
+        //         $snipsObj = new snipsCmd();
+        //         $snipsObj->setLogicalId('Snips_'.$intent.'_'.$rand);
+        //         $snipsObj->setName('Snips_'.$intent.'_'.$rand);
+        //     }
 
-            $snipsObj->setEqLogic_id($this->getId());
-            $snipsObj->setType('snips_intent');//Snips_Intent
-            $snipsObj->setSubType($intent);
-            $snipsObj->setConfiguration('intent', $intent);
-            $snipsObj->setConfiguration('action', '');
-            $snipsObj->setConfiguration('feedback', '');
+        //     $snipsObj->setEqLogic_id($this->getId());
+        //     $snipsObj->setType('snips_intent');//Snips_Intent
+        //     $snipsObj->setSubType($intent);
+        //     $snipsObj->setConfiguration('intent', $intent); // intent name
+        //     $snipsObj->setConfiguration('actionCmd', ''); // target action command
+        //     $sniosObj->setConfiguration('actionVal',''); // target action command value (if slider/ color/ etc..)
+        //     $sniosObj->setConfiguration('actionLocSlot',''); // slot to represent locaton
+        //     $sniosObj->setConfiguration('actionLocVal',''); // pre-defined location value
+        //     $snipsObj->setConfiguration('actionTts', '');  // action feedback sound
+        //     $snipsObj->setConfiguration('actionTtsEnable', '1');  // action feedback sound
 
-            foreach($slots as $slot){
-
-                $content = array();
-
-                $content['type'] = 'location';
-                $content['value'] = '';
-                $snipsObj->setConfiguration( $slot, $content);
-
-                unset($content);
-            }
-            $snipsObj->save();
-        }    
+        //     /*foreach($slots as $slot){
+        //         $content = array();
+        //         $content['type'] = 'location';
+        //         $content['value'] = '';
+        //         $snipsObj->setConfiguration( $slot, $content);
+        //         unset($content);
+        //     }
+        //     $snipsObj->save();
+        // }    */
     }
 
     public function preSave() {

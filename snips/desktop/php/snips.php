@@ -18,7 +18,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
     <div class="col-lg-2 col-md-3 col-sm-4">
         <div class="bs-sidebar">
             <ul id="ul_eqLogic" class="nav nav-list bs-sidenav">
-                <a class="btn btn-default eqLogicAction" style="width : 100%;margin-top : 5px;margin-bottom: 5px;" data-action="add"><i class="fa fa-plus-circle"></i> {{Add an Assistant}}</a>
+                
                 <li class="filter" style="margin-bottom: 5px;"><input class="filter form-control input-sm" placeholder="{{Rechercher}}" style="width: 100%"/></li>
                   <?php
                   foreach ($eqLogics as $eqLogic) {
@@ -39,25 +39,31 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
   <!--Management of plugin-->
   <div class="eqLogicThumbnailContainer">
 
-      <div class="cursor eqLogicAction" data-action="add" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="fa fa-refresh" style="font-size : 6em;color:#f0ad4e;"></i>
+      <div class="cursor eqLogicAction reload" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+        <i class="fa fa-refresh" style="font-size : 6em;color:#5cb85c;"></i>
         <br>
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02">{{Add Test}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#5cb85c">{{Reload}}</span>
       </div>
 
+      <div class="cursor eqLogicAction removeAll" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+        <i class="fa divers-slightly" style="font-size : 6em;color:#c9302c;"></i>
+        <br>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#c9302c">{{Remove All}}</span>
+      </div>
 
       <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
-        <i class="fa fa-wrench" style="font-size : 6em;color:#767676;"></i>
+        <i class="fa fa-wrench" style="font-size : 6em;color:#337ab7;"></i>
         <br>
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Configuration}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#337ab7">{{Configuration}}</span>
       </div>
 
 
   </div>
-  <legend><i class="fa fa-bolt"></i> {{My Skills}}</legend>
+  <legend><i class="fa fa-bolt"></i> {{All Intents}}</legend>
 
-  <!--Management of All the skills(Objects)-->
+  <!--Management of All the Intents (Objects)-->
   <div class="eqLogicThumbnailContainer">
+
     <?php
       foreach ($eqLogics as $eqLogic) {
       	$opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
@@ -72,103 +78,53 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 </div>
 
 <div class="col-lg-10 col-md-9 col-sm-8 eqLogic" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
-	<a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fa fa-check-circle"></i> {{Save}}</a>
-  <a class="btn btn-danger eqLogicAction pull-right" data-action="remove"><i class="fa fa-minus-circle"></i> {{Delete}}</a>
+  <a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fa fa-check-circle"></i> {{Save}}</a>
   <a class="btn btn-default eqLogicAction pull-right" data-action="configure"><i class="fa fa-cogs"></i> {{Pre-Configuration}}</a>
   <ul class="nav nav-tabs" role="tablist">
+
+
+
     <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
+
+
+
     <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Settings}}</a></li>
-    <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
+
+
   </ul>
+
+
   <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
     <div role="tabpanel" class="tab-pane active" id="eqlogictab">
       <br/>
+
+
     <form class="form-horizontal">
         <fieldset>
+          <legend>{{Intent Configuration}}</legend>
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{Name of Assistant}}</label>
-                <div class="col-sm-3">
+                <label class="col-sm-1 control-label">{{Intent Name}}</label>
+                <div class="col-sm-2">
                     <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
-                    <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Smart Snips}}"/>
+                    <input type="text" class="eqLogicAttr form-control" data-l1key="name" disabled="disabled" "/>
                 </div>
+
+                <label class="col-sm-1 control-label">{{Status}}</label>
+                <div class="col-sm-2">
+                  <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Active}}</label>
+                  <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
+                </div>
+
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label" >{{Parent Object}}</label>
-                <div class="col-sm-3">
-                    <select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id">
-                        <option value="">{{Any}}</option>
-                        <?php
-                            foreach (object::all() as $object) {
-                                echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
-                            }
-                        ?>
-                   </select>
-               </div>
-           </div>
-	   <div class="form-group">
-                <label class="col-sm-3 control-label">{{Category}}</label>
-                <div class="col-sm-9" style="vertical-align: middle">
-                 <?php
-                    foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
-                    echo '<label class="checkbox-inline">';
-                    echo '<input type="checkbox" class="eqLogicAttr" data-l1key="category" data-l2key="' . $key . '" />' . $value['name'];
-                    echo '</label>';
-                    }
-                  ?>
-               </div>
-           </div>
-	<div class="form-group">
-		<label class="col-sm-3 control-label">{{Status}}</label>
-		<div class="col-sm-9">
-			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Active}}</label>
-			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
-		</div>
-	</div>
-       <div class="form-group">
-        <label class="col-sm-3 control-label">{{Assistant Directory}}</label>
-        <div class="col-sm-3">
-            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="intentSetAddr" placeholder="/var/share/snips/assistant"/>
-        </div>
-    </div>
+            
+        <legend>{{Action Binding}}</legend>
+        <a class="btn btn-success btn-sm cmdAction pull-left" id="bt_addNewBinding" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Attach a new configuration}}</a><br/><br/>
+    
+
+        <div id="div_bindings" style="padding-top: 10px;"></div>
 </fieldset>
 </form>
 </div>
-
-
-  <div role="tabpanel" class="tab-pane" id="commandtab">
-
-      <div class="alert alert-info" style="margin: 10px 0pxl"> 
-        <h3 class="panel-title" style="padding: 10px 0px;">
-          <a style="text-decoration:none;">Tips</a>
-        </h3>
-            <p>- Match each intent with a specific device command.</p>
-            <p>- Put '*' if the slot is not concerned.</p>
-            <p>- Example:</p>
-            <p>  Intent: lightsTurnOff Slots: house_room = living room Command:[Apartment][Test Lamp][Off]</p>
-            <p>- Explanation:</p>
-            <p>  When the snips reveive intent 'lightsTurnOff' with slot value 'living room', the lights in Appartment named Test Lamp will be turned off. </p>
-
-      </div>
-
-      <a class="btn btn-success btn-sm cmdAction pull-left" id="addIntent" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Attach a new intent-command mapping}}</a><br/><br/>
-    
-
-      <table id="table_cmd" class="table table-bordered table-condensed">
-          <thead>
-              <tr>
-                  <th style="width: 210px;">{{Intent}}</th>
-                  <th style="width: 400px;">{{Slots Configuration}}</th>
-                  <th style="width: 350px;">{{Action}}</th>
-                  <th style="width: 250px">{{Feedback}}</th>
-                  <th style="width: auto;">{{Setting}}</th>
-              </tr>
-          </thead>
-
-          <tbody>
-
-          </tbody>
-      </table>
-  </div>
 
 </div>
 
