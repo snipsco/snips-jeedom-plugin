@@ -25,14 +25,17 @@ try {
     }
     
     if (init('action') == 'reload') {
-        log::add('ajax', 'info', 'snips, reload');
 		snips::reloadAssistant();
 		ajax::success();
 	}
 
     if (init('action') == 'removeAll') {
-        log::add('ajax', 'info', 'snips, remove all');
         snips::deleteAssistant();
+        ajax::success();
+    }
+
+    if (init('action') == 'playFeedback') {
+        snips::sayFeedback(init('text'));
         ajax::success();
     }
 

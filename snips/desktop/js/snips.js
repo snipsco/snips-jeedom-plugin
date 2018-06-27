@@ -15,8 +15,52 @@
  */
 
 MODE_LIST = null;
+INTENT = null; 
 
 ////--------------------Events Binding--------------------////
+//--This is used to import all the available slots when the page is ready.
+$(document).on('change', '#intentName', function() {
+	$('#availableSlots').empty();
+
+	console.log('loading slots');
+	INTENT = $('#intentName').val();
+	console.log('Current intent:'+INTENT);
+
+	var slots = _snips_intents[INTENT];
+	var input = '';
+
+	for(n in slots){
+		input += '<span class="btn btn-sm btn-default" style="font-size : 1em;">'+slots[n]+'</span>';
+	}
+    $('#availableSlots').append(input);  // 任何需要执行的js特效 
+});
+
+//--This is the function used to hack system command select modal
+
+// $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function() {
+// 	console.log('input object changed captured, value is:'+$(this).find("option:selected").text());
+
+// 	if($(this).find("option:selected").text() == 'snips-intents'){
+// 		$('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
+// 		'<tr>'+
+//             '<th style="width: 150px;">Object</th>'+
+//             '<th style="width: 150px;">Intents</th>'+
+//             '<th style="width: 150px;">Slots</th>'+
+//         '</tr>'
+// 			);
+
+// 	}else{
+// 		$('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
+// 		'<tr>'+
+//             '<th style="width: 150px;">Object</th>'+
+//             '<th style="width: 150px;">Device</th>'+
+//             '<th style="width: 150px;">Command</th>'+
+//         '</tr>'
+// 			);
+
+
+// 	}
+// });
 
 //--This is the function used to add an intent-command mapping
 $('#bt_addNewBinding').off('click').on('click', function () {
@@ -207,6 +251,32 @@ $('.removeAll').on('click', function () {
             });
 });
 
+//--This function is used to preview the feedback speech
+$("#div_bindings").delegate(".playFeedback",'click', function(){
+
+	console.log('Play feedback');
+	$.ajax({
+                type: "POST", // méthode de transmission des données au fichier php
+                url: "plugins/snips/core/ajax/snips.ajax.php", 
+                data: {
+                    action: "playFeedback",
+                    text: $(this).closest('div').find('textarea').val(),
+                },
+                dataType: 'json',
+                global: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { 
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        return;
+                    }
+                }
+            });
+});
+
+
 ////--------------------Syetem function rewrite--------------------////
 function printEqLogic(_eqLogic) {
     $('#div_bindings').empty();
@@ -243,7 +313,7 @@ function saveEqLogic(_eqLogic) {
     _eqLogic.configuration.bindings = [];
     $('#div_bindings .binding').each(function () {
         var binding = $(this).getValues('.bindingAttr')[0];
-        binding.condition = $(this).find('.condition').getValues('.expressionAttr');
+        binding.condition = $(this).find('.condition').getValues('.conditionAttr');
         binding.action = $(this).find('.action').getValues('.expressionAttr');
         _eqLogic.configuration.bindings.push(binding);
     });
@@ -280,6 +350,7 @@ function addBinding(_binding) {
     div += '<div id="collapse' + random + '" class="panel-collapse collapse in">';
     div += '<div class="panel-body">';
     div += '<div class="well">';
+
     div += '<form class="form-horizontal" role="form">';
 
 		//** Basic infomation -- Name
@@ -320,6 +391,7 @@ function addBinding(_binding) {
     	div += '</div>';
 
 	div += '</div>';
+
 	div += '<hr/>';
 
     //** Condition Section
@@ -331,6 +403,23 @@ function addBinding(_binding) {
     //** Action Section
     div += '<div><strong>{{Action(s)}}</strong></div>';
     div += '<div class="div_action"></div>';
+
+    div += '<hr/>';
+
+    //** Action Section
+    div += '<div><strong>{{Feedback Tts}}</strong></div>';
+    div += '<div class="div_feedback input-group">';
+
+    div += '<textarea class="tags bindingAttr form-control ta_autosize"'+
+    		'data-l1key="tts" rows="1"'+
+    		'style="resize: none; overflow: hidden; word-wrap: break-word; height: 30px;"'+
+    		'placeholder="Speech text">';
+   	div += '</textarea>';
+
+   	div += '<span class="input-group-btn"><a class="btn btn-default btn-sm playFeedback"><i class="fa fa-play"></i></a></span>';
+
+    div += '</div>';
+
 
     div += '</form>';
     div += '</div>';
@@ -433,16 +522,29 @@ function addCondition(_condition, _el){
     div += '<div class="col-sm-5">';
     div += '<div class="input-group input-group-sm">';
 
+    // remove button 
     div += '<span class="input-group-btn">';
     div += '<a class="btn btn-default bt_removeCondition btn-sm" data-type="condition"><i class="fa fa-minus-circle"></i></a>';
     div += '</span>';
 
+    // IF
     div += '<span class="input-group-addon">If</span>';
-    div += '<select class="form-control input-sm">';
+
+    // pre operante
+    div += '<select class="conditionAttr form-control input-sm" data-l1key="pre">';
     div += '<option value="0">Select a Slot &#8681;</option>';
+
+		for(x in _snips_intents[INTENT]){
+			div += '<option value="'+_snips_intents[INTENT][x]+'">'+_snips_intents[INTENT][x]+'</option>';
+		}
+
     div += '</select>';
-    div += '<span class="input-group-addon">=</span>';
-    div += '<input class="form-control">';
+
+    // EQUAL TO =
+    div += '<span class="conditionAttr input-group-addon" data-l1key="relation">=</span>';
+
+    // aft operante
+    div += '<input class="conditionAttr form-control" data-l1key="aft">';
     div += '</div>';
     div += '</div>';
 
@@ -474,11 +576,11 @@ function addCondition(_condition, _el){
 
     if (isset(_el)) {
         _el.find('.div_condition').append(div);
-        _el.find('.condition:last').setValues(_condition, '.expressionAttr');
+        _el.find('.condition:last').setValues(_condition, '.conditionAttr');
 
     } else {
         $('#div_condition').append(div);
-        $('#div_condition .condition:last').setValues(_condition, '.expressionAttr');
+        $('#div_condition .condition:last').setValues(_condition, '.conditionAttr');
     }
 
     // actionOptions.push({

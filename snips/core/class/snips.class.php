@@ -20,6 +20,10 @@
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 include 'ChromePhp.php';
+
+ini_set("display_errors","On");
+error_reporting(E_ALL);
+
 //ChromePhp::log('Hello console!');
 
 class snips extends eqLogic {
@@ -256,7 +260,7 @@ class snips extends eqLogic {
 
                         $action_cmd->execute();
 
-                        snips::sayFeedback($session_id, $cmd->getConfiguration('feedback'));
+                        snips::sayFeedback($cmd->getConfiguration('feedback'), $session_id);
                     }
 
                     // Set value to its info command
@@ -319,11 +323,21 @@ class snips extends eqLogic {
         }
     }
 
-    public static function sayFeedback($session_id, $text){
-        $topic = 'hermes/dialogueManager/endSession';
-        $payload = array('text' => $text, "sessionId" => $session_id);
+    public static function sayFeedback($text, $session_id = null){
+        if($session_id == null){
+            ChromePhp::log('Only say: '.$text);
+            $topic = 'hermes/tts/say';
+            $payload = array('text' => $text, "siteId" => "default");
 
-        self::publish($topic, json_encode($payload));
+            self::publish($topic, json_encode($payload));
+        }else{
+            ChromePhp::log('Endsession say: '.$text);
+            $topic = 'hermes/dialogueManager/endSession';
+            $payload = array('text' => $text, "sessionId" => $session_id);
+
+            self::publish($topic, json_encode($payload));
+        }
+       
     }
 
     public static function publish($topic, $payload){
@@ -414,27 +428,28 @@ class snips extends eqLogic {
     }
 
     public static function reloadAssistant(){
-        self::debug("reload assistant");
+        //self::debug("reload assistant");
         // Add all the intents to configuration
         $intents = json_decode(self::getIntents(), true);
 
-        self::debug('Current intents is :'.gettype($intents));
+        //self::debug('Current intents is :'.gettype($intents));
 
-        foreach($intents as $intent => $slot){
+        foreach($intents as $intent => $slots){
 
-            self::debug('Creating intent equipment: '.$intent);
+            //self::debug('Creating intent equipment: '.$intent);
 
             if(is_object(snips::byLogicalId($intent, 'snips'))){
                 return;
             }else{
+                // Create intent as devices 
                 $elogic = new snips();
                 $elogic->setEqType_name('snips');
                 $elogic->setLogicalId($intent);
                 $elogic->setName($intent);
                 $elogic->setIsEnable(1);
+                $elogic->setConfiguration('slots', $slots);
+                $elogic->setObject_id(object::byName('snips-intents')->getId());
                 $elogic->save();
-
-                
             }
             
             
@@ -443,23 +458,25 @@ class snips extends eqLogic {
     }
 
     public static function deleteAssistant(){
-        self::debug("remove assistant");
+        //self::debug("remove assistant");
 
         $eqLogics = eqLogic::byType('snips');
 
-        self::debug('Current equiopments is :'.gettype($eqLogics));
+        //self::debug('Current equiopments is :'.gettype($eqLogics));
 
         foreach($eqLogics as $eq){
-            self::debug('Removing equipment: '.$eq->getName());
+            //self::debug('Removing equipment: '.$eq->getName());
             $cmds = snipsCmd::byEqLogicId($eq->getLogicalId);
 
             foreach ($cmds as $cmd) {
-                self::debug('Removing cmd: '.$cmd->getName());
+                //self::debug('Removing cmd: '.$cmd->getName());
                 $cmd->remove();
             }
             
             $eq->remove();
         }
+
+
     }
 
     /*     * *********************Méthodes d'instance************************* */
@@ -517,7 +534,38 @@ class snips extends eqLogic {
     }
 
     public function postSave() {
-        
+
+        $intent = $this->getLogicalId();
+
+        //self::debug('postSave, intent name:'.$intent);
+
+        $intentSet = $this->getConfiguration('slots');
+
+        //self::debug('postSave, intentSet is:'.$intentSet);
+
+        foreach ($intentSet as $slot) {
+
+            self::debug('postSave, recreate cmd name:'.$slot);
+            self::debug('postSave, $slot type is:'.gettype($slot));
+
+            $slotCmd = $this->getCmd('snips', $slot);
+            
+            self::debug('postSave, $slotCmd:');
+            self::debug('postSave, $slotCmd type:'.gettype($slotCmd));
+
+            if (!is_object($slotCmd)) {
+                $slotCmd = new snipsCmd();
+                $slotCmd->setLogicalId($slot);
+                $slotCmd->setName($slot);
+            }
+
+            
+            $slotCmd->setEqType('snips');
+            $slotCmd->setEqLogic_id($this->getId());
+            $slotCmd->setType('info');
+            $slotCmd->setSubType('string');
+            $slotCmd->save();
+        }
     }
 
     public function preUpdate() {
@@ -557,7 +605,7 @@ class snipsCmd extends cmd {
 
         self::debug('will publish, raw message: '. $message .' and text: '.$say);
 
-        snips::sayFeedback($sessionId, $say);
+        snips::sayFeedback($say, $sessionId);
     }
 }
 

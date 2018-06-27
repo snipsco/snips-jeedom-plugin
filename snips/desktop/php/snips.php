@@ -105,8 +105,8 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
             <div class="form-group">
                 <label class="col-sm-1 control-label">{{Intent Name}}</label>
                 <div class="col-sm-2">
-                    <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
-                    <input type="text" class="eqLogicAttr form-control" data-l1key="name" disabled="disabled" "/>
+                    <input type="text" class="eqLogicAttr form-control" id="intentId" data-l1key="id" style="display : none;" />
+                    <input type="text" class="eqLogicAttr form-control" id="intentName" data-l1key="name" disabled="disabled" "/>
                 </div>
 
                 <label class="col-sm-1 control-label">{{Status}}</label>
@@ -117,6 +117,14 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
             </div>
             
+            <div class="form-group">
+                <label class="col-sm-1 control-label">{{Available Slots}}</label>
+                <div class="col-sm-6">
+                    <div id="availableSlots"> </div>
+                </div>
+
+            </div>
+
         <legend>{{Action Binding}}</legend>
         <a class="btn btn-success btn-sm cmdAction pull-left" id="bt_addNewBinding" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Attach a new configuration}}</a><br/><br/>
     
