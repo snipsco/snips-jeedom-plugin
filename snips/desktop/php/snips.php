@@ -48,12 +48,14 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
       <div class="cursor eqLogicAction removeAll" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <i class="fa divers-slightly" style="font-size : 6em;color:#c9302c;"></i>
         <br>
+
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#c9302c">{{Remove All}}</span>
       </div>
 
       <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
         <i class="fa fa-wrench" style="font-size : 6em;color:#337ab7;"></i>
         <br>
+
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#337ab7">{{Configuration}}</span>
       </div>
 
@@ -84,11 +86,11 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
 
 
-    <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
+    <li role="presentation"><a class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
 
 
 
-    <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Settings}}</a></li>
+    <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Settings}}</a></li>
 
 
   </ul>
@@ -120,7 +122,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
             <div class="form-group">
                 <label class="col-sm-1 control-label">{{Available Slots}}</label>
                 <div class="col-sm-6">
-                    <div id="availableSlots"> </div>
+                    <div id="table_cmd"> </div>
                 </div>
 
             </div>

@@ -22,45 +22,32 @@ INTENT = null;
 $(document).on('change', '#intentName', function() {
 	$('#availableSlots').empty();
 
-	console.log('loading slots');
-	INTENT = $('#intentName').val();
-	console.log('Current intent:'+INTENT);
-
-	var slots = _snips_intents[INTENT];
-	var input = '';
-
-	for(n in slots){
-		input += '<span class="btn btn-sm btn-default" style="font-size : 1em;">'+slots[n]+'</span>';
-	}
-    $('#availableSlots').append(input);  // 任何需要执行的js特效 
+	INTENT = $('#intentName').val(); 
 });
 
 //--This is the function used to hack system command select modal
+$(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function() {
+	console.log('input object changed captured, value is:'+$(this).find("option:selected").text());
 
-// $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function() {
-// 	console.log('input object changed captured, value is:'+$(this).find("option:selected").text());
+	if($(this).find("option:selected").text() == 'snips-intents'){
+		$('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
+		'<tr>'+
+            '<th style="width: 150px;">Object</th>'+
+            '<th style="width: 150px;">Intents</th>'+
+            '<th style="width: 150px;">Slots</th>'+
+        '</tr>'
+			);
 
-// 	if($(this).find("option:selected").text() == 'snips-intents'){
-// 		$('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
-// 		'<tr>'+
-//             '<th style="width: 150px;">Object</th>'+
-//             '<th style="width: 150px;">Intents</th>'+
-//             '<th style="width: 150px;">Slots</th>'+
-//         '</tr>'
-// 			);
-
-// 	}else{
-// 		$('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
-// 		'<tr>'+
-//             '<th style="width: 150px;">Object</th>'+
-//             '<th style="width: 150px;">Device</th>'+
-//             '<th style="width: 150px;">Command</th>'+
-//         '</tr>'
-// 			);
-
-
-// 	}
-// });
+	}else{
+		$('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
+		'<tr>'+
+            '<th style="width: 150px;">Object</th>'+
+            '<th style="width: 150px;">Device</th>'+
+            '<th style="width: 150px;">Command</th>'+
+        '</tr>'
+			);
+	}
+});
 
 //--This is the function used to add an intent-command mapping
 $('#bt_addNewBinding').off('click').on('click', function () {
@@ -254,7 +241,7 @@ $('.removeAll').on('click', function () {
 //--This function is used to preview the feedback speech
 $("#div_bindings").delegate(".playFeedback",'click', function(){
 
-	console.log('Play feedback');
+	//console.log('Play feedback');
 	$.ajax({
                 type: "POST", // méthode de transmission des données au fichier php
                 url: "plugins/snips/core/ajax/snips.ajax.php", 
@@ -588,4 +575,25 @@ function addCondition(_condition, _el){
     //     options : _action.options,
     //     id : actionOption_id
     // });
+}
+
+function addCmdToTable(_cmd) {
+    if (!isset(_cmd)) {
+        var _cmd = {configuration: {}};
+    }
+    if (!isset(_cmd.configuration)) {
+        _cmd.configuration = {};
+    }
+
+    var tr = '<div class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="float:left;">';
+    tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
+    tr += '<span class="cmdAttr form-control input-sm" data-l1key="name" style="font-size : 1em;">';
+    tr += '</div>';
+
+    $('#table_cmd').append(tr);
+    $('#table_cmd div:last').setValues(_cmd, '.cmdAttr');
+    if (isset(_cmd.type)) {
+        $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init('info'));
+    }
+    jeedom.cmd.changeType($('#table_cmd div:last'), init('string'));
 }

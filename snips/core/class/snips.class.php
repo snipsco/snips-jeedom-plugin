@@ -72,7 +72,7 @@ class snips extends eqLogic {
             throw new Exception(__('Please check your configuration', __FILE__));
         }
 
-        $cron = cron::byClassAndFunction('snips', 'daemon');
+        $cron = cron::byClassAndFunction('snips', 'mqttClient');
 
         if (!is_object($cron)) {
             throw new Exception(__('Can not find task corn ', __FILE__));
@@ -81,7 +81,7 @@ class snips extends eqLogic {
     }
 
     public static function deamon_stop() {
-        $cron = cron::byClassAndFunction('snips', 'daemon');
+        $cron = cron::byClassAndFunction('snips', 'mqttClient');
 
         if (!is_object($cron)) {
             throw new Exception(__('Can not find taks corn', __FILE__));
@@ -111,7 +111,7 @@ class snips extends eqLogic {
         return true;
     }
     
-    public static function daemon() {
+    public static function mqttClient() {
         
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $port = intval(config::byKey('mqttPort', 'snips', '1883'));
@@ -530,42 +530,62 @@ class snips extends eqLogic {
     }
 
     public function preSave() {
-
+        
     }
 
     public function postSave() {
-
         $intent = $this->getLogicalId();
 
-        //self::debug('postSave, intent name:'.$intent);
+        self::debug('postSave, current equipment name:'.$intent);
 
-        $intentSet = $this->getConfiguration('slots');
+        //$slotSet = $this->getConfiguration('slots');
 
-        //self::debug('postSave, intentSet is:'.$intentSet);
-
-        foreach ($intentSet as $slot) {
-
-            self::debug('postSave, recreate cmd name:'.$slot);
-            self::debug('postSave, $slot type is:'.gettype($slot));
-
-            $slotCmd = $this->getCmd('snips', $slot);
-            
-            self::debug('postSave, $slotCmd:');
-            self::debug('postSave, $slotCmd type:'.gettype($slotCmd));
-
-            if (!is_object($slotCmd)) {
-                $slotCmd = new snipsCmd();
-                $slotCmd->setLogicalId($slot);
-                $slotCmd->setName($slot);
-            }
+        // foreach ($slotSet as $slot) {
 
             
-            $slotCmd->setEqType('snips');
-            $slotCmd->setEqLogic_id($this->getId());
-            $slotCmd->setType('info');
-            $slotCmd->setSubType('string');
-            $slotCmd->save();
+        // }
+        $slot = 'house_room';
+        $slotCmd = $this->getCmd(null, $slot);
+        if(!is_object($slotCmd)){
+            self::debug('postSave, NOT EXIST, Slot Name: '.$slot);
+            $slotCmd = new snipsCmd();
         }
+        $slotCmd->setName($slot);
+        $slotCmd->setEqLogic_id($this->getId());
+        $slotCmd->setLogicalId($slot);
+        $slotCmd->setType('info');
+        $slotCmd->setSubType('string');
+
+        $slotCmd->save();
+
+        $slot = 'intensity_number';
+        $slotCmd = $this->getCmd(null, $slot);
+        if(!is_object($slotCmd)){
+            self::debug('postSave, NOT EXIST, Slot Name: '.$slot);
+            $slotCmd = new snipsCmd();
+        }
+        $slotCmd->setName($slot);
+        $slotCmd->setEqLogic_id($this->getId());
+        $slotCmd->setLogicalId($slot);
+        $slotCmd->setType('info');
+        $slotCmd->setSubType('string');
+
+        $slotCmd->save();
+
+        $slot = 'intensity_percent';
+        $slotCmd = $this->getCmd(null, $slot);
+        if(!is_object($slotCmd)){
+            self::debug('postSave, NOT EXIST, Slot Name: '.$slot);
+            $slotCmd = new snipsCmd();
+        }
+        $slotCmd->setName($slot);
+        $slotCmd->setEqLogic_id($this->getId());
+        $slotCmd->setLogicalId($slot);
+        $slotCmd->setType('info');
+        $slotCmd->setSubType('string');
+
+        $slotCmd->save();
+
     }
 
     public function preUpdate() {
