@@ -23,6 +23,30 @@ $(document).on('change', '#intentName', function() {
 	INTENT = $('#intentName').val(); 
 });
 
+$(document).shortcuts({
+  "CTL S": {
+    keys: [17, 83],
+    desc: "save all the configurations",
+    func: function() { 
+    	$('#saveAll').click();
+    	console.log("You pressed CTL and S") }
+  },
+  "CMD S": {
+    keys: [91, 83],
+    desc: "save all the configurations",
+    func: function() { 
+    	$('#saveAll').click();
+    	console.log("You pressed CMD and S") }
+  },
+  "CMD S": {
+    keys: [93, 83],
+    desc: "save all the configurations",
+    func: function() { 
+    	$('#saveAll').click();
+    	console.log("You pressed CMD and S") }
+  }
+});
+
 //--This is the function used to hack system command select modal
 $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function() {
 	console.log('input object changed captured, value is:'+$(this).find("option:selected").text());

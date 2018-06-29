@@ -206,20 +206,20 @@ class snips extends eqLogic {
         $topics = snips::getTopics();
         $intents_slots = snips::getIntents();
 
-        //self::debug('receied message :'. $message);
-        //log::add('snips', 'info', $message->topic);
         snips::debug('received something');
         if(in_array($message->topic, $topics) == false){
-            //self::debug('snips mqtt client received something but not an intent');
+
             return;
         } 
         else{
             
-            $payload = json_decode($message->payload);
+            snips::findAndDoAction(json_decode($message->payload));
 
-            $intent_name = str_replace('hermes/intent/','',$message->topic);
-            $site_id = $payload->{'siteId'}; //default
-            $session_id = $payload->{'sessionId'};
+            //$payload = json_decode($message->payload);
+
+            // $intent_name = str_replace('hermes/intent/','',$message->topic);
+            // $site_id = $payload->{'siteId'}; //default
+            // $session_id = $payload->{'sessionId'};
 
             snips::debug('Intent received: ['.$intent_name.'] with payload: '.$message->payload);
 
@@ -234,118 +234,118 @@ class snips extends eqLogic {
 
             $selected_cmds = array();
  
-            if(!empty($cmds_with_this_intent)){ // if this intent form is an offical 'Smart Light' skill. Change later.
-                snips::debug('cmds_with_this_intent: not empty');
+            // if(!empty($cmds_with_this_intent)){ // if this intent form is an offical 'Smart Light' skill. Change later.
+            //     snips::debug('cmds_with_this_intent: not empty');
                 
-                // Select all the matched commands
-                if(isset($slots_value['house_room'])){
-                    snips::debug('house_room: not empty');
-                    foreach($cmds_with_this_intent as $cmd){
-                        $temp_slots = array();
-                        $temp_slots = $cmd->getConfiguration('house_room');
+            //     // Select all the matched commands
+            //     if(isset($slots_value['house_room'])){
+            //         snips::debug('house_room: not empty');
+            //         foreach($cmds_with_this_intent as $cmd){
+            //             $temp_slots = array();
+            //             $temp_slots = $cmd->getConfiguration('house_room');
 
-                        snips::debug('Target cmd type:'.gettype($cmd));
-                        snips::debug('Target cmd name: '.$cmd->getName());
-                        snips::debug('Target cmd room: '.$temp_slots['value']);
-                        snips::debug('Received room: '.$slots_value['house_room']);
+            //             snips::debug('Target cmd type:'.gettype($cmd));
+            //             snips::debug('Target cmd name: '.$cmd->getName());
+            //             snips::debug('Target cmd room: '.$temp_slots['value']);
+            //             snips::debug('Received room: '.$slots_value['house_room']);
 
-                        if($temp_slots['value'] == $slots_value['house_room']){
-                            $selected_cmds[] = $cmd; 
-                        }
+            //             if($temp_slots['value'] == $slots_value['house_room']){
+            //                 $selected_cmds[] = $cmd; 
+            //             }
 
-                        unset($temp_slots);
-                    }
-                }else{
-                    snips::debug('house_room: empty');
-                    foreach($cmds_with_this_intent as $cmd){
-                        $temp_slots = array();
-                        $temp_slots = $cmd->getConfiguration('house_room');
-                        if($temp_slots['value'] == 'default'){
-                            $selected_cmds[] = $cmd; 
-                        }
+            //             unset($temp_slots);
+            //         }
+            //     }else{
+            //         snips::debug('house_room: empty');
+            //         foreach($cmds_with_this_intent as $cmd){
+            //             $temp_slots = array();
+            //             $temp_slots = $cmd->getConfiguration('house_room');
+            //             if($temp_slots['value'] == 'default'){
+            //                 $selected_cmds[] = $cmd; 
+            //             }
 
-                        unset($temp_slots);
-                    }
-                }
+            //             unset($temp_slots);
+            //         }
+            //     }
 
-                snips::debug('Found commands!');
+            //     snips::debug('Found commands!');
 
-                //If there are commands have been selected
-                if(!empty($selected_cmds)){
-                    // Activate all the matched commands
-                    snips::debug('selected_cmds: not empty');
-                    snips::debug('there are '.count($selected_cmds).' cmds found');
-                    snips::debug('cmd is: '.gettype($cmd));
+            //     //If there are commands have been selected
+            //     if(!empty($selected_cmds)){
+            //         // Activate all the matched commands
+            //         snips::debug('selected_cmds: not empty');
+            //         snips::debug('there are '.count($selected_cmds).' cmds found');
+            //         snips::debug('cmd is: '.gettype($cmd));
 
-                    foreach($selected_cmds as $cmd){
+            //         foreach($selected_cmds as $cmd){
 
-                        snips::debug('cmd is: '.gettype($cmd));
-                        snips::debug('target_command: '.$target_command);
+            //             snips::debug('cmd is: '.gettype($cmd));
+            //             snips::debug('target_command: '.$target_command);
 
-                        $action_cmd = cmd::byId(str_replace('#','',$cmd->getConfiguration('action')));
+            //             $action_cmd = cmd::byId(str_replace('#','',$cmd->getConfiguration('action')));
 
-                        $action_cmd->execute();
+            //             $action_cmd->execute();
 
-                        snips::sayFeedback($cmd->getConfiguration('feedback'), $session_id);
-                    }
+            //             snips::sayFeedback($cmd->getConfiguration('feedback'), $session_id);
+            //         }
 
-                    // Set value to its info command
-                    if(isset($slots_value['intensity_number'])){
-                        snips::debug('intensity_number: not empty');
-                        foreach ($selected_cmds as $cmd) {
-                            $temp_slots = array();
-                            $temp_slots = $cmd->getConfiguration('intensity_number');
+            //         // Set value to its info command
+            //         if(isset($slots_value['intensity_number'])){
+            //             snips::debug('intensity_number: not empty');
+            //             foreach ($selected_cmds as $cmd) {
+            //                 $temp_slots = array();
+            //                 $temp_slots = $cmd->getConfiguration('intensity_number');
 
-                            if(isset($temp_slots['value'])){
+            //                 if(isset($temp_slots['value'])){
 
-                                $info_cmd = cmd::byId(str_replace('#','',$temp_slots['value']));
-                                //$info_cmd->setValue($slots_value['intensity_number']);
+            //                     $info_cmd = cmd::byId(str_replace('#','',$temp_slots['value']));
+            //                     //$info_cmd->setValue($slots_value['intensity_number']);
 
-                                $eq_id = $info_cmd->getEqLogic_id();
+            //                     $eq_id = $info_cmd->getEqLogic_id();
 
-                                snips::debug('eq id is: '.$eq_id);
+            //                     snips::debug('eq id is: '.$eq_id);
 
-                                /// Problem is here !!!
-                                $eqLogic = eqLogic::byId($eq_id);
+            //                     /// Problem is here !!!
+            //                     $eqLogic = eqLogic::byId($eq_id);
 
-                                snips::debug('eq is: '.gettype($eqLogic));
+            //                     snips::debug('eq is: '.gettype($eqLogic));
 
-                                snips::debug('before value: '.$info_cmd->getValue());
-                                snips::debug('data is '.$slots_value['intensity_number']);
+            //                     snips::debug('before value: '.$info_cmd->getValue());
+            //                     snips::debug('data is '.$slots_value['intensity_number']);
 
-                                $options = array('slider' => $slots_value['intensity_number']);
-                                $test_cmd = cmd::byId(105);
+            //                     $options = array('slider' => $slots_value['intensity_number']);
+            //                     $test_cmd = cmd::byId(105);
 
-                                $test_cmd->execCmd($options);
-                                //$r = $eqLogic->checkAndUpdateCmd($info_cmd, $slots_value['intensity_number']);
-                                //$info_cmd->setValue($slots_value['intensity_number']);
+            //                     $test_cmd->execCmd($options);
+            //                     //$r = $eqLogic->checkAndUpdateCmd($info_cmd, $slots_value['intensity_number']);
+            //                     //$info_cmd->setValue($slots_value['intensity_number']);
 
-                                snips::debug('result is: '.$r);
-                                snips::debug('eq is: '.$eqLogic->getName());
-                                snips::debug('cmd is: '.$info_cmd->getName()); //
-                                snips::debug('after value: '.$info_cmd->getValue());
-                            }
-                            unset($temp_slots);
-                        }
-                    }
+            //                     snips::debug('result is: '.$r);
+            //                     snips::debug('eq is: '.$eqLogic->getName());
+            //                     snips::debug('cmd is: '.$info_cmd->getName()); //
+            //                     snips::debug('after value: '.$info_cmd->getValue());
+            //                 }
+            //                 unset($temp_slots);
+            //             }
+            //         }
 
-                    if(isset($slots_value['intensity_percent'])){
-                        snips::debug('intensity_percent: not empty');
-                        foreach ($selected_cmds as $cmd) {
-                            $temp_slots = array();
-                            $temp_slots = $cmd->getConfiguration('intensity_percent');
+            //         if(isset($slots_value['intensity_percent'])){
+            //             snips::debug('intensity_percent: not empty');
+            //             foreach ($selected_cmds as $cmd) {
+            //                 $temp_slots = array();
+            //                 $temp_slots = $cmd->getConfiguration('intensity_percent');
 
 
-                            if(isset($temp_slots['value'])){
-                                $info_cmd = cmd::byId(str_replace('#','',$temp_slots['value']));
+            //                 if(isset($temp_slots['value'])){
+            //                     $info_cmd = cmd::byId(str_replace('#','',$temp_slots['value']));
 
-                                $info_cmd->setValue($slots_value['intensity_percent']);
-                            }
-                            unset($temp_slots);
-                        }
-                    }
-                }
-            }
+            //                     $info_cmd->setValue($slots_value['intensity_percent']);
+            //                 }
+            //                 unset($temp_slots);
+            //             }
+            //         }
+            //     }
+            // }
         }
     }
 
@@ -477,8 +477,6 @@ class snips extends eqLogic {
                 $elogic->setObject_id(object::byName('snips-intents')->getId());
                 $elogic->save();
             }
-            
-            
         }
 
     }
@@ -501,10 +499,65 @@ class snips extends eqLogic {
             
             $eq->remove();
         }
+    }
+
+    public static function findAndDoAction($payload){
+
+        $intent_name = $payload->{'intent'}->{'intentName'};
+
+        $site_id = $payload->{'siteId'}; // Value: default
+        $session_id = $payload->{'sessionId'};
+
+        $slots_values = array();
+        foreach ($payload->{'slots'} as $slot) {
+            if(is_string($slot->{'value'}->{'value'})){
+                // Not speace sensitive and case sensitive
+                $slots_value[$slot->{'slotName'}] = strtolower(str_replace(' ', '', $slot->{'value'}->{'value'}));
+            }else{
+                $slots_value[$slot->{'slotName'}] = $slot->{'value'}->{'value'};
+            }
+        }
+
+        // Get all the binding configuration by [intentName]
+        $eqLogic = snips::byEqLogicId($intent_name);
+
+        $bindings = $eqLogic->getConfiguration('bindings');
+
+        // Find bindings which does not require condition
+        $bindings_without_condition = array();
+        foreach ($bindings as $binding) {
+            if (empty($binding->{'condition'})) {
+                $bindings_without_condition[] = $binding;
+            }
+        } 
+
+        // Find bindings which has condition and match the coming data
+        $bindings_with_condition = array();
+        foreach ($bindings as $binding) {
+
+            $all_true_indicator = 1; 
+            foreach ($binding->{'condition'} as $condition) {
+                // Condition setup
+                $pre_value = $slots_values[$condition->{'pre'}];
+                $aft_value = strtolower(str_replace(' ', '', $condition->{'aft'}));
+
+                if($pre_value == $aft_value){
+                    $all_true_indicator *= 1;
+                }else{
+                    $all_true_indicator *= 0;
+                }
+
+            }
+            if($all_true_indicator){
+                $bindings_with_condition[] = $binding;
+            }
+        }
+
+        $bindings_to_perform = array_merge($bindings_without_condition, $bindings_with_condition);
+        // Execute [$bindings_with_condition] 
 
 
     }
-
     /*     * *********************Méthodes d'instance************************* */
 
     public function preInsert() {
@@ -577,7 +630,7 @@ class snips extends eqLogic {
             $slotCmd->setLogicalId($slot);
             $slotCmd->setType('info');
             $slotCmd->setSubType('string');
-
+            $slotCmd->setValue('NULL');
             $slotCmd->save();
         }
     }
