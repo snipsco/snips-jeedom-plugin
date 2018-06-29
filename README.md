@@ -14,7 +14,7 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [ ] Find out all the available devices automaticly
 - [x] All the intents shell be managed by its objects(Do not have to configure by user)
 - [ ] Make the slots information useful
-- [ ] Working separately with Snips site
+- [ ] Working separately with Snips site(Possible, but no test yet)
 - [x] Managing conditions
 
 # Develop Diary
@@ -24,6 +24,10 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 
 25, Jun, 2018
 - [x] Start building frontend for 3rd αVersion.
+
+22, Jun, 2018
+- [x] Redesigned working flow and archtecture. 
+- [x] Enable user to manage common conditions and mutil actions.
 
 18, Jun, 2018
 - [x] 2nd alpha version works.
