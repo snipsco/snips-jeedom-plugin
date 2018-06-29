@@ -19,11 +19,11 @@
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function snips_install() {
-    $cron = cron::byClassAndFunction('snips', 'daemon');
+    $cron = cron::byClassAndFunction('snips', 'mqttClient');
     if (!is_object($cron)) {
         $cron = new cron();
         $cron->setClass('snips');
-        $cron->setFunction('daemon');
+        $cron->setFunction('mqttClient');
         $cron->setEnable(1);
         $cron->setDeamon(1);
         $cron->setSchedule('* * * * *');
@@ -33,11 +33,11 @@ function snips_install() {
 }
 
 function snips_update() {
-    $cron = cron::byClassAndFunction('snips', 'daemon');
+    $cron = cron::byClassAndFunction('snips', 'mqttClient');
     if (!is_object($cron)) {
         $cron = new cron();
         $cron->setClass('snips');
-        $cron->setFunction('daemon');
+        $cron->setFunction('mqttClient');
         $cron->setEnable(1);
         $cron->setDeamon(1);
         $cron->setSchedule('* * * * *');
@@ -47,7 +47,7 @@ function snips_update() {
 }
 
 function snips_remove() {
-    $cron = cron::byClassAndFunction('snips', 'daemon');
+    $cron = cron::byClassAndFunction('snips', 'mqttClient');
     if (is_object($cron)) {
         $cron->stop();
         $cron->remove();
@@ -57,7 +57,7 @@ function snips_remove() {
 
     //log::add('snips','info','Suppression extension');
     $resource_path = realpath(dirname(__FILE__) . '/../resources');
-    passthru('sudo /bin/bash ' . $resource_path . '/remove.sh ' . $resource_path . ' > ' . log::getPathToLog('MQTT_dep') . ' 2>&1 &');
+    passthru('sudo /bin/bash ' . $resource_path . '/remove.sh ' . $resource_path . ' > ' . log::getPathToLog('SNIPS_dep') . ' 2>&1 &');
     return true;
 }
 

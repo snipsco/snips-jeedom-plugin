@@ -20,8 +20,6 @@ INTENT = null;
 ////--------------------Events Binding--------------------////
 //--This is used to import all the available slots when the page is ready.
 $(document).on('change', '#intentName', function() {
-	$('#availableSlots').empty();
-
 	INTENT = $('#intentName').val(); 
 });
 
@@ -215,27 +213,48 @@ $('.reload').on('click', function () {
 
 //--This function is used to remove all the loaded skills
 $('.removeAll').on('click', function () {
-	$('#div_alert').showAlert({message: 'Removing all the skills', level: 'danger'});
-	$.ajax({
-                type: "POST", // méthode de transmission des données au fichier php
-                url: "plugins/snips/core/ajax/snips.ajax.php", 
-                data: {
-                    action: "removeAll",
-                },
-                dataType: 'json',
-                global: false,
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) { 
-                    if (data.state != 'ok') {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                        return;
-                    }
-                    $('#div_alert').showAlert({message: 'Successfully removed all the skills!', level: 'success'});
-                    location.reload();
-                }
-            });
+	
+	bootbox.confirm({
+		message: "ATTENTION: This operation will delete all the intents and its binding records! Would you continue?",
+		buttons: {
+			confirm: {
+				label: 'Yes',
+				className: 'btn-success'
+			},
+			cancel: {
+				label: 'No',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+		if(result){
+				$('#div_alert').showAlert({message: 'Removing all the skills', level: 'danger'});
+
+				$.ajax({
+			                type: "POST", // méthode de transmission des données au fichier php
+			                url: "plugins/snips/core/ajax/snips.ajax.php", 
+			                data: {
+			                    action: "removeAll",
+			                },
+			                dataType: 'json',
+			                global: false,
+			                error: function (request, status, error) {
+			                    handleAjaxError(request, status, error);
+			                },
+			                success: function (data) { 
+			                    if (data.state != 'ok') {
+			                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+			                        return;
+			                    }
+			                    $('#div_alert').showAlert({message: 'Successfully removed all the skills!', level: 'success'});
+			                    location.reload();
+			                }
+			            });
+				}
+			}
+	});
+
+
 });
 
 //--This function is used to preview the feedback speech
@@ -263,6 +282,29 @@ $("#div_bindings").delegate(".playFeedback",'click', function(){
             });
 });
 
+//--This function is used to preview the feedback speech
+$('.resetMqtt').on('click', function(){
+
+	$.ajax({
+                type: "POST", // méthode de transmission des données au fichier php
+                url: "plugins/snips/core/ajax/snips.ajax.php", 
+                data: {
+                    action: "resetMqtt",
+                },
+                dataType: 'json',
+                global: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { 
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        return;
+                    }
+                    $('#div_alert').showAlert({message: 'reseting MQTT client', level: 'success'});
+                }
+            });
+});
 
 ////--------------------Syetem function rewrite--------------------////
 function printEqLogic(_eqLogic) {
@@ -587,7 +629,7 @@ function addCmdToTable(_cmd) {
 
     var tr = '<div class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="float:left;">';
     tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
-    tr += '<span class="cmdAttr form-control input-sm" data-l1key="name" style="font-size : 1em;">';
+    tr += '<span class="cmdAttr btn btn-sm btn-default" data-l1key="name" style="font-size : 1em;">';
     tr += '</div>';
 
     $('#table_cmd').append(tr);

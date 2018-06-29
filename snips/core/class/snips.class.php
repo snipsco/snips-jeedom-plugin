@@ -21,14 +21,40 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 include 'ChromePhp.php';
 
-ini_set("display_errors","On");
-error_reporting(E_ALL);
+//ini_set("display_errors","On");
+//error_reporting(E_ALL);
 
 //ChromePhp::log('Hello console!');
 
 class snips extends eqLogic {
 
     /*     * ***********************Methode static*************************** */
+    public static function resetMqtt(){
+
+        $cron = cron::byClassAndFunction('snips', 'deamon');
+        if (is_object($cron)) {
+
+            snips::debug('Removed snips cron: deamon');
+
+            $cron->stop();
+            $cron->remove();
+        }
+    
+        $cron = cron::byClassAndFunction('snips', 'mqttClient');
+        if (!is_object($cron)) {
+            $cron = new cron();
+            $cron->setClass('snips');
+            $cron->setFunction('mqttClient');
+            $cron->setEnable(1);
+            $cron->setDeamon(1);
+            $cron->setSchedule('* * * * *');
+            $cron->setTimeout('1440');
+            $cron->save();
+            snips::debug('Created snips cron: mqttClient');
+        }
+    }
+
+
     public static function health() {
         $return = array();
         $socket = socket_create(AF_INET, SOCK_STREAM, 0);
@@ -51,7 +77,7 @@ class snips extends eqLogic {
         $return = array();
         $return['log'] = '';
         $return['state'] = 'nok';
-        $cron = cron::byClassAndFunction('snips', 'daemon');
+        $cron = cron::byClassAndFunction('snips', 'mqttClient');
         if (is_object($cron) && $cron->running()) {
             $return['state'] = 'ok';
         }
@@ -374,9 +400,9 @@ class snips extends eqLogic {
 
     //add log
     public static function debug($info){
-        ChromePhp::log($info);
+        //ChromePhp::log($info);
         //log::add('snips', 'debug', $info);
-        //fwrite(STDOUT, $info.'\n');
+        fwrite(STDOUT, $info.'\n');
     }
 
     public static function getIntents(){
@@ -538,54 +564,22 @@ class snips extends eqLogic {
 
         self::debug('postSave, current equipment name:'.$intent);
 
-        //$slotSet = $this->getConfiguration('slots');
+        $slotSet = $this->getConfiguration('slots');
 
-        // foreach ($slotSet as $slot) {
+        foreach ($slotSet as $slot) {
+            $slotCmd = $this->getCmd(null, $slot);
+            if(!is_object($slotCmd)){
+                self::debug('postSave, NOT EXIST, Slot Name: '.$slot);
+                $slotCmd = new snipsCmd();
+            }
+            $slotCmd->setName($slot);
+            $slotCmd->setEqLogic_id($this->getId());
+            $slotCmd->setLogicalId($slot);
+            $slotCmd->setType('info');
+            $slotCmd->setSubType('string');
 
-            
-        // }
-        $slot = 'house_room';
-        $slotCmd = $this->getCmd(null, $slot);
-        if(!is_object($slotCmd)){
-            self::debug('postSave, NOT EXIST, Slot Name: '.$slot);
-            $slotCmd = new snipsCmd();
+            $slotCmd->save();
         }
-        $slotCmd->setName($slot);
-        $slotCmd->setEqLogic_id($this->getId());
-        $slotCmd->setLogicalId($slot);
-        $slotCmd->setType('info');
-        $slotCmd->setSubType('string');
-
-        $slotCmd->save();
-
-        $slot = 'intensity_number';
-        $slotCmd = $this->getCmd(null, $slot);
-        if(!is_object($slotCmd)){
-            self::debug('postSave, NOT EXIST, Slot Name: '.$slot);
-            $slotCmd = new snipsCmd();
-        }
-        $slotCmd->setName($slot);
-        $slotCmd->setEqLogic_id($this->getId());
-        $slotCmd->setLogicalId($slot);
-        $slotCmd->setType('info');
-        $slotCmd->setSubType('string');
-
-        $slotCmd->save();
-
-        $slot = 'intensity_percent';
-        $slotCmd = $this->getCmd(null, $slot);
-        if(!is_object($slotCmd)){
-            self::debug('postSave, NOT EXIST, Slot Name: '.$slot);
-            $slotCmd = new snipsCmd();
-        }
-        $slotCmd->setName($slot);
-        $slotCmd->setEqLogic_id($this->getId());
-        $slotCmd->setLogicalId($slot);
-        $slotCmd->setType('info');
-        $slotCmd->setSubType('string');
-
-        $slotCmd->save();
-
     }
 
     public function preUpdate() {

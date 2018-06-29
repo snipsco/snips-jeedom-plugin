@@ -39,6 +39,11 @@ try {
         ajax::success();
     }
 
+    if (init('action') == 'resetMqtt') {
+        snips::resetMqtt();
+        ajax::success();
+    }
+
     throw new Exception(__('No method corresponding to : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {

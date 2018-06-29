@@ -52,6 +52,15 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#c9302c">{{Remove All}}</span>
       </div>
 
+      
+      <div class="cursor eqLogicAction resetMqtt" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+        <i class="fa fa-keyboard-o" style="font-size : 6em;color:#ec971f;"></i>
+        <br>
+
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#ec971f">{{Reset MQTT}}</span>
+      </div>
+
+
       <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
         <i class="fa fa-wrench" style="font-size : 6em;color:#337ab7;"></i>
         <br>
