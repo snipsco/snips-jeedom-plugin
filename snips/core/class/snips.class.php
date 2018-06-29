@@ -449,16 +449,18 @@ class snips extends eqLogic {
         }
 
         
+        if(empty($bindings_with_condition)){
 
-        $bindings_to_perform = array_merge($bindings_without_condition, $bindings_with_condition);
+            $bindings_to_perform = $bindings_without_condition;
+        }else{
+            $bindings_to_perform = $bindings_with_condition;
+        }
+
         // Execute all the possible bindings
 
         snips::setSlotsCmd($slots_values, $intent_name);
 
         foreach ($bindings_to_perform as $binding) {
-
-            
-
             foreach ($binding['action'] as $action) {
 
                 $options = array();
@@ -471,6 +473,8 @@ class snips extends eqLogic {
                 scenarioExpression::createAndExec('action', $action['cmd'], $options);
 
             }
+
+            snips::sayFeedback($binding['tts'], $session_id);
         }
         snips::resetSlotsCmd($slots_values, $intent_name);
 
