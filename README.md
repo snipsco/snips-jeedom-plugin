@@ -10,12 +10,35 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 # Features
 - [x] Configurable MQTT client
 - [x] Receive all the intents and its slots from the bus
-- [ ] Load all the intents automaticly
+- [x] Load all the intents automaticly
 - [ ] Find out all the available devices automaticly
-- [ ] All the intents shell be managed by its objects(Do not have to configure by user)
+- [x] All the intents shell be managed by its objects(Do not have to configure by user)
 - [ ] Make the slots information useful
+- [ ] Working separately with Snips site(Possible, but no test yet)
+- [x] Managing conditions
 
 # Develop Diary
+29, Jun, 2018
+- [x] Add Ctrl+S shortcut suoport to save on the binding configuration page
+- [ ] Backend working
+
+28, Jun, 2018
+- [x] 3rd alpha version frontend is done.
+- [x] Fixed bugs, lossing binding rocords etc.. 
+
+25, Jun, 2018
+- [x] Start building frontend for 3rd αVersion.
+
+22, Jun, 2018
+- [x] Redesigned working flow and archtecture. 
+- [x] Enable user to manage common conditions and mutil actions.
+
+18, Jun, 2018
+- [x] 2nd alpha version works.
+
+8, Jun, 2018
+- [x] 1st alpha version is done.
+
 5, Jun, 2018
 - [x] Add voice feed back once an action has been triggered.
 - [x] Unified the idea of skills management.  
