@@ -23,30 +23,6 @@ $(document).on('change', '#intentName', function() {
 	INTENT = $('#intentName').val(); 
 });
 
-$(document).shortcuts({
-  "CTL S": {
-    keys: [17, 83],
-    desc: "save all the configurations",
-    func: function() { 
-    	$('#saveAll').click();
-    	console.log("You pressed CTL and S") }
-  },
-  "CMD S": {
-    keys: [91, 83],
-    desc: "save all the configurations",
-    func: function() { 
-    	$('#saveAll').click();
-    	console.log("You pressed CMD and S") }
-  },
-  "CMD S": {
-    keys: [93, 83],
-    desc: "save all the configurations",
-    func: function() { 
-    	$('#saveAll').click();
-    	console.log("You pressed CMD and S") }
-  }
-});
-
 //--This is the function used to hack system command select modal
 $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function() {
 	console.log('input object changed captured, value is:'+$(this).find("option:selected").text());
@@ -306,7 +282,7 @@ $("#div_bindings").delegate(".playFeedback",'click', function(){
             });
 });
 
-//--This function is used to preview the feedback speech
+//--This function is used to reset MQTT deamon
 $('.resetMqtt').on('click', function(){
 
 	$.ajax({
@@ -326,6 +302,30 @@ $('.resetMqtt').on('click', function(){
                         return;
                     }
                     $('#div_alert').showAlert({message: 'reseting MQTT client', level: 'success'});
+                }
+            });
+});
+
+//--This function is used to reset slot cmd value
+$('.resetSlotsCmd').on('click', function(){
+
+	$.ajax({
+                type: "POST", // méthode de transmission des données au fichier php
+                url: "plugins/snips/core/ajax/snips.ajax.php", 
+                data: {
+                    action: "resetSlotsCmd",
+                },
+                dataType: 'json',
+                global: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { 
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        return;
+                    }
+                    $('#div_alert').showAlert({message: 'reseting slot value to NULL', level: 'success'});
                 }
             });
 });
