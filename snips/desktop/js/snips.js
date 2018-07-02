@@ -330,6 +330,9 @@ $('.resetSlotsCmd').on('click', function(){
             });
 });
 
+
+
+
 ////--------------------Syetem function rewrite--------------------////
 function printEqLogic(_eqLogic) {
     $('#div_bindings').empty();
@@ -459,7 +462,7 @@ function addBinding(_binding) {
 
     div += '<hr/>';
 
-    //** Action Section
+    //** Feedback Section
     div += '<div><strong>{{Feedback Tts}}</strong></div>';
     div += '<div class="div_feedback input-group">';
 
@@ -583,13 +586,14 @@ function addCondition(_condition, _el){
     // IF
     div += '<span class="input-group-addon">If</span>';
 
+	var selectSlotsId = uniqId();
     // pre operante
-    div += '<select class="conditionAttr form-control input-sm" data-l1key="pre">';
-    div += '<option value="0">Select a Slot &#8681;</option>';
 
-		for(x in _snips_intents[INTENT]){
-			div += '<option value="'+_snips_intents[INTENT][x]+'">'+_snips_intents[INTENT][x]+'</option>';
-		}
+    div += '<select class="conditionAttr form-control input-sm" data-l1key="pre" id="'+selectSlotsId+'">';
+
+		// for(x in _snips_intents[INTENT]){
+		// 	div += '<option value="'+_snips_intents[INTENT][x]+'">'+_snips_intents[INTENT][x]+'</option>';
+		// }
 
     div += '</select>';
 
@@ -602,45 +606,20 @@ function addCondition(_condition, _el){
     div += '</div>';
 
 
-
-    // div += '<div class="col-sm-4">';
-    // div += '<div class="input-group">';
-    // div += '<span class="input-group-btn">';
-    // div += '<a class="btn btn-default bt_removeAction btn-sm" data-type="action"><i class="fa fa-minus-circle"></i></a>';
-    // div += '</span>';
-    // div += '<input class="expressionAttr form-control input-sm" data-l1key="cmd" data-type="action" />';
-    // div += '<span class="input-group-btn">';
-    // div += '<a class="btn btn-default btn-sm listAction" data-type="action" title="{{Select an action}}"><i class="fa fa-tasks"></i></a>';
-    // div += '<a class="btn btn-default btn-sm listCmdAction" data-type="action"><i class="fa fa-list-alt"></i></a>';
-    // div += '</span>';
-    // div += '</div>';
-    // div += '</div>';
-
-    // var actionOption_id = uniqId();
-    // div += '<div class="col-sm-5 actionOptions" id="'+actionOption_id+'">';
-    // div += '</div>';
-
-    // div += '<div class="col-sm-1">';
-    // div += '<input type="checkbox" class="expressionAttr" data-l1key="options" data-l2key="enable" checked title="{{Enable this action}}" />';
-    // div += '<a>Enable</a>';
-    // div += '</div>';
-
-    // div += '</div>';
-
     if (isset(_el)) {
         _el.find('.div_condition').append(div);
+        
+        displaySlots(selectSlotsId);
         _el.find('.condition:last').setValues(_condition, '.conditionAttr');
 
     } else {
         $('#div_condition').append(div);
+
+        displaySlots(selectSlotsId);
         $('#div_condition .condition:last').setValues(_condition, '.conditionAttr');
     }
 
-    // actionOptions.push({
-    //     expression : init(_action.cmd, ''),
-    //     options : _action.options,
-    //     id : actionOption_id
-    // });
+    
 }
 
 function addCmdToTable(_cmd) {
@@ -662,4 +641,24 @@ function addCmdToTable(_cmd) {
         $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init('info'));
     }
     jeedom.cmd.changeType($('#table_cmd div:last'), init('string'));
+}
+
+function displaySlots(_selectSlotsId){
+    jeedom.eqLogic.getCmd({
+        id: $('#intentId').val(),
+        async: false,
+        success: function (cmds) {
+            var result = '';
+            for (var i in cmds) {
+                if (cmds[i].type == 'info') {
+                    result += '<option value="' + cmds[i].id + '" data-type="' + cmds[i].type + '"  data-subType="' + cmds[i].subType + '" >#[' + cmds[i].name + ']#</option>';
+                }
+            }
+            var select = $('#'+_selectSlotsId);
+            select.empty();
+            var selectCmd = '<option value="-1">Select a Slot &#8681;</option>';
+            selectCmd += result;
+            select.append(selectCmd);
+        }
+    });
 }
