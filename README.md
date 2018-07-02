@@ -18,6 +18,10 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] Managing conditions
 
 # Develop Diary
+2, Jul, 2018
+- [x] Change the condition expression into info command format
+- [x] Test out exist bugs
+
 29, Jun, 2018
 - [x] Add Ctrl+S shortcut suoport to save on the binding configuration page
 - [ ] Backend working
