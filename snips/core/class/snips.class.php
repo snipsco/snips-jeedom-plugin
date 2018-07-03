@@ -480,51 +480,86 @@ class snips extends eqLogic {
 
             foreach ($bindings_to_perform as $binding) {
                 foreach ($binding['action'] as $action) {
-
+                    $execute = true;
                     $options = array();
-                    if (isset($action['options'])) {
+                    if(isset($action['options'])) {
                         $options = $action['options'];
+                        // check and du not execute if a raquired value is not set
+
+                        $slot_cmds = $eqLogic->getCmd();
+                        foreach ($slot_cmds as $cmd) {
+                            snips::debug('Checking command :'.'#'.$cmd->getId().'#');
+                            snips::debug('This command value :'.$cmd->getCache('value'));
+
+                            if (    in_array('#'.$cmd->getId().'#', $options) &&
+                                    $cmd->getCache('value','NULL') == 'NULL' ) 
+                            {
+
+                                $execute = false;
+                                break; 
+                            }
+                        }
                     }
-
-                    snips::debug('Executing cmd: '.$action['cmd']);
-
-                    scenarioExpression::createAndExec('action', $action['cmd'], $options);
+                    if($execute){
+                        scenarioExpression::createAndExec('action', $action['cmd'], $options);
+                        snips::sayFeedback($binding['tts'], $session_id);
+                    }else{
+                        snips::debug('Found binding configuration, but require values');
+                    }
 
                 }
 
-                snips::sayFeedback($binding['tts'], $session_id);
+                
             }
         }
 
-        snips::resetSlotsCmd($slots_values, $intent_name);
-
+        //snips::resetSlotsCmd($slots_values, $intent_name);
+        snips::resetSlotsCmd();
         /// ----- works
     }
 
     public static function setSlotsCmd($slots_values, $intent){
-
         snips::debug('Set slots cmd values');
-        
+
         $eq = eqLogic::byLogicalId($intent, 'snips');
 
         foreach ($slots_values as $slot => $value) {
 
             $eq->checkAndUpdateCmd($slot, $value);
 
-            snips::debug('Setting slots: '.$slot.' with value: '.$value);
-            //snips::debug('Result :'.$eq->getCmd($slot)->getValue());
+            //snips::debug('Setting slots: '.$slot.' with value: '.$value);
         }
     }
 
-    public static function resetSlotsCmd($slots_values, $intent){
-        snips::debug('Reset slots cmd values');
-        $eq = eqLogic::byLogicalId($intent, 'snips');
+    public static function resetSlotsCmd($slots_values = false , $intent = false){
+        if ($slots_values == false && $intent == false) {
+            snips::debug('Reset slots cmd values from control pannel');
+            $eqs = eqLogic::byType('snips');
 
-        foreach ($slots_values as $slot => $value) {
+            foreach ($eqs as $eq) {
+                $cmds = $eq->getCmd();
 
-            $eq->checkAndUpdateCmd($slot, '');
+                foreach ($cmds as $cmd) {
+                    $cmd->setCache('value', 'NULL');
+                    snips::debug('Reseting: '.$cmd->getName());
+                }
+            }
 
+            
+        }else{
+            snips::debug('Reset slots cmd values');
+
+            $eq = eqLogic::byLogicalId($intent, 'snips');
+
+            foreach ($slots_values as $slot => $value) {
+
+                $cmd = $eq->getCmd(null, $slot);
+                $cmd->setCache('value');
+                //$eq->checkAndUpdateCmd($slot, 'NULL');
+
+            } 
         }
+        
     }
 
     /*     * *********************Méthodes d'instance************************* */

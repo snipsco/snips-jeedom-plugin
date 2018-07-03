@@ -457,7 +457,7 @@ function addBinding(_binding) {
     div += '<hr/>';
 
     //** Action Section
-    div += '<div><strong>{{Action(s)}}</strong></div>';
+    div += '<div><strong>{{Action(s) (Multiple actions will be executed in order!)}}</strong></div>';
     div += '<div class="div_action"></div>';
 
     div += '<hr/>';
