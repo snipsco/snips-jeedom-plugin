@@ -484,13 +484,11 @@ class snips extends eqLogic {
                     $options = array();
                     if(isset($action['options'])) {
                         $options = $action['options'];
-                        // check and du not execute if a raquired value is not set
-
+                        
+                        /////////////////////////////////////////////////From here to check
                         $slot_cmds = $eqLogic->getCmd();
+                        // check and do not execute if a raquired value is not set
                         foreach ($slot_cmds as $cmd) {
-                            snips::debug('Checking command :'.'#'.$cmd->getId().'#');
-                            snips::debug('This command value :'.$cmd->getCache('value'));
-
                             if (    in_array('#'.$cmd->getId().'#', $options) &&
                                     $cmd->getCache('value','NULL') == 'NULL' ) 
                             {
@@ -499,12 +497,13 @@ class snips extends eqLogic {
                                 break; 
                             }
                         }
+                        
                     }
                     if($execute){
                         scenarioExpression::createAndExec('action', $action['cmd'], $options);
                         snips::sayFeedback($binding['tts'], $session_id);
                     }else{
-                        snips::debug('Found binding configuration, but require values');
+                        snips::debug('Found binding action, but require values');
                     }
 
                 }
