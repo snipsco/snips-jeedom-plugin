@@ -29,16 +29,6 @@ include 'ChromePhp.php';
 class snips extends eqLogic {
 
     /*     * ***********************Methode static*************************** */
-    public static function resetSlotsCmd($slots_values, $intent){
-        
-        $eq = eqLogic::byLogicalId($intent, 'snips');
-
-        foreach ($slots_values as $slot => $value) {
-
-            $eq->checkAndUpdateCmd($slot, '');
-
-        }
-    }
 
     public static function resetMqtt(){
 
@@ -402,6 +392,7 @@ class snips extends eqLogic {
 
         }
 
+        snips::setSlotsCmd($slots_values, $intent_name);
         //snips::debug('slots and value:'.var_dump($slots_values));
 
         // Get all the binding configuration by [intentName]
@@ -420,6 +411,7 @@ class snips extends eqLogic {
 
         }else{
             // Use snips binding configuration table
+
             // Find bindings which does not require condition
             $bindings_without_condition = array();
             foreach ($bindings as $binding) {
@@ -430,7 +422,7 @@ class snips extends eqLogic {
                 }
             } 
 
-            // Find bindings which has condition and match the coming data
+            // Find bindings which has condition and check with the coming data
             $bindings_with_condition = array();
             foreach ($bindings as $binding) {
 
@@ -438,14 +430,28 @@ class snips extends eqLogic {
                 foreach ($binding['condition'] as $condition) {
 
                     // Condition setup
-                    $pre_value = $slots_values[$condition['pre']]; // find received value by its name
+                    $cmd = cmd::byId($condition['pre']);
 
+                    snips::debug('Condition cmd found is : '.$cmd->getName());
+                    snips::debug('Condition cmd found is : '.$cmd->getId());
+                    snips::debug('Condition cmd value is : '.$cmd->getCache('value','NULL'));
+
+                    if (is_string($cmd->getCache('value','NULL'))) {
+                        $pre_value = strtolower(str_replace(' ', '', $cmd->getCache('value','NULL')));
+                    }else{
+                        $pre_value = $cmd->getCache('value','NULL');
+                    }
+
+                    snips::debug('Condition Pre value is : '.$pre_value);
+
+                    // If the condition is match to a string, desensitive of 'case' and 'speace'
                     if (is_string($condition['aft'])) {
                         $aft_value = strtolower(str_replace(' ', '', $condition['aft']));
                     }else{
                         $aft_value = $condition['aft'];
                     }
                     
+                    snips::debug('Condition Aft value is : '.$aft_value);
 
                     if($pre_value == $aft_value){
                         $all_true_indicator *= 1;
@@ -470,7 +476,7 @@ class snips extends eqLogic {
 
             // Execute all the possible bindings
 
-            snips::setSlotsCmd($slots_values, $intent_name);
+            
 
             foreach ($bindings_to_perform as $binding) {
                 foreach ($binding['action'] as $action) {
@@ -488,15 +494,16 @@ class snips extends eqLogic {
 
                 snips::sayFeedback($binding['tts'], $session_id);
             }
-            snips::resetSlotsCmd($slots_values, $intent_name);
         }
 
-        
+        //snips::resetSlotsCmd($slots_values, $intent_name);
 
         /// ----- works
     }
 
     public static function setSlotsCmd($slots_values, $intent){
+
+        snips::debug('Set slots cmd values');
         
         $eq = eqLogic::byLogicalId($intent, 'snips');
 
@@ -506,6 +513,17 @@ class snips extends eqLogic {
 
             snips::debug('Setting slots: '.$slot.' with value: '.$value);
             //snips::debug('Result :'.$eq->getCmd($slot)->getValue());
+        }
+    }
+
+    public static function resetSlotsCmd($slots_values, $intent){
+        snips::debug('Reset slots cmd values');
+        $eq = eqLogic::byLogicalId($intent, 'snips');
+
+        foreach ($slots_values as $slot => $value) {
+
+            $eq->checkAndUpdateCmd($slot, '');
+
         }
     }
 
