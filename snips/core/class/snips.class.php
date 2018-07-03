@@ -496,7 +496,7 @@ class snips extends eqLogic {
             }
         }
 
-        //snips::resetSlotsCmd($slots_values, $intent_name);
+        snips::resetSlotsCmd($slots_values, $intent_name);
 
         /// ----- works
     }
