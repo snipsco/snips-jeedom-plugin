@@ -385,6 +385,7 @@ class snips extends eqLogic {
         $intent_name = $payload->{'intent'}->{'intentName'};
         $site_id = $payload->{'siteId'}; // Value: default
         $session_id = $payload->{'sessionId'};
+        $query_input = $payload->{'input'};
 
         snips::debug('findAndDoAction, Intent:'.$intent_name.' siteId:'.$site_id.' sessionId:'.$session_id);
 
@@ -408,75 +409,89 @@ class snips extends eqLogic {
 
         $bindings = $eqLogic->getConfiguration('bindings');
 
-        // Find bindings which does not require condition
-        $bindings_without_condition = array();
-        foreach ($bindings as $binding) {
-            
-            if (empty($binding['condition'])) {
-                $bindings_without_condition[] = $binding;
-                snips::debug('NC binding s name: '.$binding['name']);
-            }
-        } 
+        // If this equipment is enabled, go with snips configuration, otherwise send input text to interaction
+        if(!$eqLogic->getIsEnable()){
+            // Use system interaction querys 
+            $param = array();
+            // Send to interaction Queryer 
+            $reply = interactQuery::tryToReply($query_input, $param);
+            // Play feedback text
+            snips::sayFeedback($reply['reply'], $session_id);
 
-        // Find bindings which has condition and match the coming data
-        $bindings_with_condition = array();
-        foreach ($bindings as $binding) {
-
-            $all_true_indicator = 1; 
-            foreach ($binding['condition'] as $condition) {
-
-                // Condition setup
-                $pre_value = $slots_values[$condition['pre']]; // find received value by its name
-
-                if (is_string($condition['aft'])) {
-                    $aft_value = strtolower(str_replace(' ', '', $condition['aft']));
-                }else{
-                    $aft_value = $condition['aft'];
-                }
+        }else{
+            // Use snips binding configuration table
+            // Find bindings which does not require condition
+            $bindings_without_condition = array();
+            foreach ($bindings as $binding) {
                 
+                if (empty($binding['condition'])) {
+                    $bindings_without_condition[] = $binding;
+                    snips::debug('NC binding s name: '.$binding['name']);
+                }
+            } 
 
-                if($pre_value == $aft_value){
-                    $all_true_indicator *= 1;
-                }else{
-                    $all_true_indicator *= 0;
+            // Find bindings which has condition and match the coming data
+            $bindings_with_condition = array();
+            foreach ($bindings as $binding) {
+
+                $all_true_indicator = 1; 
+                foreach ($binding['condition'] as $condition) {
+
+                    // Condition setup
+                    $pre_value = $slots_values[$condition['pre']]; // find received value by its name
+
+                    if (is_string($condition['aft'])) {
+                        $aft_value = strtolower(str_replace(' ', '', $condition['aft']));
+                    }else{
+                        $aft_value = $condition['aft'];
+                    }
+                    
+
+                    if($pre_value == $aft_value){
+                        $all_true_indicator *= 1;
+                    }else{
+                        $all_true_indicator *= 0;
+                    }
+
+                }
+                if($all_true_indicator){
+                    $bindings_with_condition[] = $binding;
+                    snips::debug('HC binding s name: '.$binding['name']);
+                }
+            }
+
+            
+            if(empty($bindings_with_condition)){
+
+                $bindings_to_perform = $bindings_without_condition;
+            }else{
+                $bindings_to_perform = $bindings_with_condition;
+            }
+
+            // Execute all the possible bindings
+
+            snips::setSlotsCmd($slots_values, $intent_name);
+
+            foreach ($bindings_to_perform as $binding) {
+                foreach ($binding['action'] as $action) {
+
+                    $options = array();
+                    if (isset($action['options'])) {
+                        $options = $action['options'];
+                    }
+
+                    snips::debug('Executing cmd: '.$action['cmd']);
+
+                    scenarioExpression::createAndExec('action', $action['cmd'], $options);
+
                 }
 
+                snips::sayFeedback($binding['tts'], $session_id);
             }
-            if($all_true_indicator){
-                $bindings_with_condition[] = $binding;
-                snips::debug('HC binding s name: '.$binding['name']);
-            }
+            snips::resetSlotsCmd($slots_values, $intent_name);
         }
 
         
-        if(empty($bindings_with_condition)){
-
-            $bindings_to_perform = $bindings_without_condition;
-        }else{
-            $bindings_to_perform = $bindings_with_condition;
-        }
-
-        // Execute all the possible bindings
-
-        snips::setSlotsCmd($slots_values, $intent_name);
-
-        foreach ($bindings_to_perform as $binding) {
-            foreach ($binding['action'] as $action) {
-
-                $options = array();
-                if (isset($action['options'])) {
-                    $options = $action['options'];
-                }
-
-                snips::debug('Executing cmd: '.$action['cmd']);
-
-                scenarioExpression::createAndExec('action', $action['cmd'], $options);
-
-            }
-
-            snips::sayFeedback($binding['tts'], $session_id);
-        }
-        snips::resetSlotsCmd($slots_values, $intent_name);
 
         /// ----- works
     }

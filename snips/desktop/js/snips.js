@@ -632,7 +632,7 @@ function addCmdToTable(_cmd) {
 
     var tr = '<div class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="float:left;">';
     tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
-    tr += '<span class="cmdAttr label label-info" data-l1key="name" style="font-size : 1em;">';
+    tr += '<span class="cmdAttr label label-primary" data-l1key="name" style="font-size : 1em;">';
     tr += '</div>';
 
     $('#table_cmd').append(tr);
