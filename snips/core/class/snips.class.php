@@ -268,10 +268,10 @@ class snips extends eqLogic {
     }
 
     //add log
-    public static function debug($info){
-        //ChromePhp::log($info);
+    public static function debug($info, $in_console = false){
+        if($in_console){ChromePhp::log($info);}
         //log::add('snips', 'debug', $info);
-        fwrite(STDOUT, $info.'\n');
+        else{fwrite(STDOUT, $info.'\n');}
     }
 
     public static function getIntents(){
@@ -468,16 +468,12 @@ class snips extends eqLogic {
 
             
             if(empty($bindings_with_condition)){
-
                 $bindings_to_perform = $bindings_without_condition;
             }else{
                 $bindings_to_perform = $bindings_with_condition;
             }
 
             // Execute all the possible bindings
-
-            
-
             foreach ($bindings_to_perform as $binding) {
                 foreach ($binding['action'] as $action) {
                     $execute = true;
@@ -492,7 +488,6 @@ class snips extends eqLogic {
                             if (    in_array('#'.$cmd->getId().'#', $options) &&
                                     $cmd->getCache('value','NULL') == 'NULL' ) 
                             {
-
                                 $execute = false;
                                 break; 
                             }
@@ -612,20 +607,53 @@ class snips extends eqLogic {
     }
 
     public function preSave() {
+        // Check the necessary slot for each binding
+        $bindings = $this->getConfiguration('bindings');
         
+        foreach ($bindings as $key => $binding) {
+            snips::debug('Binding :'.$binding['name'], true);
+            $necessary_slots = array();
+
+            $conditions = $binding['condition'];
+            foreach ($conditions as $condition) {
+                if(!in_array(cmd::byId($condition['pre'])->getName(), $necessary_slots)){
+                    $necessary_slots[] = cmd::byId($condition['pre'])->getName();
+                    snips::debug('Find a untracked slot :'.cmd::byId($condition['pre'])->getName(), true);
+                }
+            }
+
+            $actions = $binding['action'];
+            foreach ($actions as $action) {
+                $options = $action['options'];
+                foreach ($options as $option) {
+                    if (preg_match("/^#.*#$/", $option)) {
+                    if (in_array(cmd::byId(str_replace('#', '', $option))->getName(), $slotSet)) {
+                    if (!in_array(cmd::byId(str_replace('#', '', $option))->getName(), $necessary_slots)) {
+                        $necessary_slots[] = cmd::byId(str_replace('#', '', $option))->getName();
+                        snips::debug('Find a untracked slot :'.cmd::byId(str_replace('#', '', $option))->getName(), true);
+                    }
+                    }
+                    }   
+                }
+            }
+            $bindings[$key]['nsr_slots'] = $necessary_slots;
+            unset($necessary_slots);
+            //snips::debug('Untracked slot :'.var_dump($necessary_slots), true);
+        }
+
+        $this->setConfiguration('bindings', $bindings);
     }
 
     public function postSave() {
+        // Do after saving configurations
+
         $intent = $this->getLogicalId();
 
-        self::debug('postSave, current equipment name:'.$intent);
-
         $slotSet = $this->getConfiguration('slots');
-
+        // Generate related slots(Info command)
         foreach ($slotSet as $slot) {
             $slotCmd = $this->getCmd(null, $slot);
             if(!is_object($slotCmd)){
-                self::debug('postSave, NOT EXIST, Slot Name: '.$slot);
                 $slotCmd = new snipsCmd();
             }
             $slotCmd->setName($slot);
@@ -636,6 +664,9 @@ class snips extends eqLogic {
             $slotCmd->setValue('NULL');
             $slotCmd->save();
         }
+
+        
+        //$this->save();
     }
 
     public function preUpdate() {

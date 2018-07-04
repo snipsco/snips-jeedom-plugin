@@ -148,7 +148,7 @@ $('#div_bindings').off('click','.bt_duplicateBinding').on('click','.bt_duplicate
     });
 });
 
-//-- Not clear yet
+//-- Hidden tabs
 $('.nav-tabs li a').off('click').on('click',function(){
      setTimeout(function(){ 
         taAutosize();
@@ -366,6 +366,7 @@ function saveEqLogic(_eqLogic) {
     if (!isset(_eqLogic.configuration)) {
     	_eqLogic.configuration = {};
     }
+    
     _eqLogic.configuration.bindings = [];
     $('#div_bindings .binding').each(function () {
         var binding = $(this).getValues('.bindingAttr')[0];
@@ -378,7 +379,7 @@ function saveEqLogic(_eqLogic) {
 
 ////--------------------Snips Functions--------------------////
 
-//
+//-- Add binding configurations to table
 function addBinding(_binding) {
     if (init(_binding.name) == '') {
         return;
@@ -425,14 +426,14 @@ function addBinding(_binding) {
             div += '<label for="isActivated_'+ random +'">';
             div += '<a class="btn btn-success btn-sm">Enable</a>';
             div += '</span>';
-	    	div += '</div>';
+	    div += '</div>';
     	}else{
     		div += '<span>';
     		div += '<input style="display:none;" class="bindingAttr isActivated" type="checkbox" id="isActivated_'+ random +'" data-l1key="enable" checked>';
             div += '<label for="isActivated_'+ random +'">';
             div += '<a class="btn btn-danger btn-sm">Disable</a>';
             div += '</span>';
-	    	div += '</div>';
+	    div += '</div>';
     	}
     	
     	//** Managing operations 
@@ -446,7 +447,21 @@ function addBinding(_binding) {
     	div += '</div>';
     	div += '</div>';
 
-	div += '</div>';
+        div += '</div>';
+
+        // Required slots
+        if (isset(_binding.nsr_slots)) {
+            div += '<div class="form-group">';
+
+            div += '<label class="col-sm-1 control-label">{{Necessary Slots:}}</label>';
+            div += '<div class="col-sm-3">';
+            for(x in _binding.nsr_slots){
+                div += '<span class="label label-success" style="margin-right: 10px; font-size: 1em;">'+_binding.nsr_slots[x]+'</span>';
+            }
+            div += '</div>';
+
+            div += '</div>';  
+        }
 
 	div += '<hr/>';
 
