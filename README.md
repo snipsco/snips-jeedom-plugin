@@ -18,6 +18,10 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] Managing conditions
 
 # Develop Diary
+3, Jul, 2018
+- [x] Fixed bug: executing command without a correct value.
+- [x] Add feature: support using system interaction.
+
 2, Jul, 2018
 - [x] Change the condition expression into info command format
 - [x] Test out exist bugs
