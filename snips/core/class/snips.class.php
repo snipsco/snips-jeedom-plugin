@@ -607,18 +607,17 @@ class snips extends eqLogic {
     }
 
     public function preSave() {
-        // Check the necessary slot for each binding
+        $slotSet = $this->getConfiguration('slots');
+
         $bindings = $this->getConfiguration('bindings');
         
         foreach ($bindings as $key => $binding) {
-            snips::debug('Binding :'.$binding['name'], true);
             $necessary_slots = array();
 
             $conditions = $binding['condition'];
             foreach ($conditions as $condition) {
                 if(!in_array(cmd::byId($condition['pre'])->getName(), $necessary_slots)){
                     $necessary_slots[] = cmd::byId($condition['pre'])->getName();
-                    snips::debug('Find a untracked slot :'.cmd::byId($condition['pre'])->getName(), true);
                 }
             }
 
@@ -630,18 +629,22 @@ class snips extends eqLogic {
                     if (in_array(cmd::byId(str_replace('#', '', $option))->getName(), $slotSet)) {
                     if (!in_array(cmd::byId(str_replace('#', '', $option))->getName(), $necessary_slots)) {
                         $necessary_slots[] = cmd::byId(str_replace('#', '', $option))->getName();
-                        snips::debug('Find a untracked slot :'.cmd::byId(str_replace('#', '', $option))->getName(), true);
                     }
                     }
                     }   
                 }
             }
-            $bindings[$key]['nsr_slots'] = $necessary_slots;
+
+            if (!empty($necessary_slots)) {
+                $bindings[$key]['nsr_slots'] = $necessary_slots;
+            }
+            
             unset($necessary_slots);
             //snips::debug('Untracked slot :'.var_dump($necessary_slots), true);
         }
 
         $this->setConfiguration('bindings', $bindings);
+
     }
 
     public function postSave() {
@@ -665,6 +668,7 @@ class snips extends eqLogic {
             $slotCmd->save();
         }
 
+        // Check the necessary slot for each binding
         
         //$this->save();
     }
