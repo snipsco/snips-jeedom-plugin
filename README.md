@@ -18,6 +18,10 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] Managing conditions
 
 # Develop Diary
+4, Jul, 2018
+- [x] Clearfeid backend binding configuration selecting logic. 
+- [x] Add feature that can tell the user which slots is necessary for a specific binding.
+
 3, Jul, 2018
 - [x] Fixed bug: executing command without a correct value.
 - [x] Add feature: support using system interaction.
