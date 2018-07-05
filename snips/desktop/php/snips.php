@@ -128,20 +128,22 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
                     <input type="text" class="eqLogicAttr form-control" id="intentName" data-l1key="name" disabled="disabled" "/>
                 </div>
 
-                <label class="col-sm-1 control-label">{{Status}}</label>
-                <div class="col-sm-2">
-                  <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Active}}</label>
-                  <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
-                </div>
 
-            </div>
-            
-            <div class="form-group">
                 <label class="col-sm-1 control-label">{{Available Slots}}</label>
                 <div class="col-sm-6">
                     <div id="table_cmd"> </div>
                 </div>
 
+                
+
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-1 control-label">{{Interaction}}</label>
+                <div class="col-sm-2">
+                  <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Not Apply}}</label>
+                  <input type="checkbox" checked data-toggle="toggle">
+                </div>
             </div>
 
         <legend>{{Action Binding}}</legend>
@@ -162,6 +164,8 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 <?php include_file('core', 'plugin.template', 'js');?>
 <?php include_file('desktop', 'snips', 'css', 'snips'); ?>
 
+<?php include_file('3rdparty', 'bootstrap2-toggle.min', 'css', 'snips'); ?>
+<?php include_file('3rdparty', 'bootstrap2-toggle.min', 'js', 'snips'); ?>
 <!--Passing necessary data to javascript-->
 <script>
   var _snips_intents = <?php echo snips::getIntents();?>

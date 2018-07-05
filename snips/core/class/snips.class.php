@@ -490,14 +490,14 @@ class snips extends eqLogic {
 
                     if($action['options']['enable']){
                         scenarioExpression::createAndExec('action', $action['cmd'], $options);
-                        snips::sayFeedback($binding['tts'], $session_id);
+                        
                     }else{
                         snips::debug('Found binding action, but it is not enabled');
                     }
 
                 }
-
-                
+                // Feed back when all the action are done
+                snips::sayFeedback($binding['tts'], $session_id);   
             }
         }
 
