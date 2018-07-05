@@ -440,10 +440,10 @@ function addBinding(_binding) {
     	div += '<div class="col-sm-4">';
     	div += '<label class="col-sm-1 control-label">{{Manage:}}</label>';
     	div += '<div class="btn-group pull-right" role="group">';
-    	div += '<a class="btn btn-sm btn-primary bt_removeBinding"><i class="fa fa-minus-circle"></i> {{Delete}}</a>';
-    	div += '<a class="btn btn-sm btn-success bt_addCondition"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
-    	div += '<a class="btn btn-danger btn-sm bt_addAction"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
-    	div += '<a class="btn btn-sm btn-default bt_duplicateBinding"><i class="fa fa-files-o"></i> {{Duplicate}}</a>';
+    	div += '<a class="btn btn-sm btn-danger bt_removeBinding"><i class="fa fa-minus-circle"></i> {{Delete}}</a>';
+    	div += '<a class="btn btn-sm btn-primary bt_addCondition"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
+    	div += '<a class="btn btn-warning btn-sm bt_addAction"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
+    	div += '<a class="btn btn-sm btn-success bt_duplicateBinding"><i class="fa fa-files-o"></i> {{Duplicate}}</a>';
     	div += '</div>';
     	div += '</div>';
 

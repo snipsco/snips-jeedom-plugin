@@ -239,11 +239,8 @@ class snips extends eqLogic {
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $port = intval(config::byKey('mqttPort', 'snips', 1883));
 
-
         $client = new Mosquitto\Client('JeedomSnipsPub');
-
         $client->connect($addr, $port, 60);
-
         $client->publish($topic, $payload);
         for ($i = 0; $i < 100; $i++) {
       
@@ -392,8 +389,8 @@ class snips extends eqLogic {
 
         }
 
+
         snips::setSlotsCmd($slots_values, $intent_name);
-        //snips::debug('slots and value:'.var_dump($slots_values));
 
         // Get all the binding configuration by [intentName]
         $eqLogic = eqLogic::byLogicalId($intent_name, 'snips');
@@ -412,88 +409,102 @@ class snips extends eqLogic {
         }else{
             // Use snips binding configuration table
 
-            // Find bindings which does not require condition
-            $bindings_without_condition = array();
+            // Find the bindings whose necessary slots match with incoming payload
+            $bindings_match_coming_slots = array();
             foreach ($bindings as $binding) {
-                
-                if (empty($binding['condition'])) {
-                    $bindings_without_condition[] = $binding;
-                    snips::debug('NC binding s name: '.$binding['name']);
+                // If the number of slots match with each other
+                if(count($binding['nsr_slots'] == count($slots_values))){
+
+                    // If the name of slots match with each other
+                    $slot_all_exists_indicator = 1; 
+                    foreach ($binding['nsr_slots'] as $slot) {
+                        if(array_key_exists($slot, $slots_values)){
+                            $slot_all_exists_indicator *= 1;
+                        }else{
+                            $slot_all_exists_indicator *= 0;
+                        }
+                    }
+
+                    if($slot_all_exists_indicator){
+                        $bindings_match_coming_slots[] = $binding;
+                    }
+
                 }
+            }
+
+            // Find bindings which has correct condition or no condition required
+            $bindings_with_correct_condition = array();
+            foreach ($bindings_match_coming_slots as $bindings_match_coming_slot) {
+
+                if(!empty($bindings_match_coming_slot['condition'])){
+                    $condition_all_true_indicator = 1; 
+                    foreach ($bindings_match_coming_slot['condition'] as $condition) {
+
+                        // Condition setup
+                        $cmd = cmd::byId($condition['pre']);
+
+                        snips::debug('[Condition] Condition cmd found is : '.$cmd->getName());
+                        snips::debug('[Condition] Condition cmd found is : '.$cmd->getId());
+                        snips::debug('[Condition] Condition cmd value is : '.$cmd->getCache('value','NULL'));
+
+                        if (is_string($cmd->getCache('value','NULL'))) {
+                            $pre_value = strtolower(str_replace(' ', '', $cmd->getCache('value','NULL')));
+                        }else{
+                            $pre_value = $cmd->getCache('value','NULL');
+                        }
+
+                        snips::debug('[Condition] Condition Pre value is : '.$pre_value);
+
+                        // If the condition is match to a string, desensitive of 'case' and 'speace'
+                        if (is_string($condition['aft'])) {
+                            $aft_value = strtolower(str_replace(' ', '', $condition['aft']));
+                        }else{
+                            $aft_value = $condition['aft'];
+                        }
+                        
+                        snips::debug('[Condition] Condition Aft value is : '.$aft_value);
+
+                        if($pre_value == $aft_value){
+                            $condition_all_true_indicator *= 1;
+                        }else{
+                            $condition_all_true_indicator *= 0;
+                        }
+
+                    }
+                    if($condition_all_true_indicator){
+                        $bindings_with_correct_condition[] = $bindings_match_coming_slot;
+                        snips::debug('[Condition] Find binding has correct condition : '.$bindings_match_coming_slot['name']);
+                    }
+                }else{
+                    $bindings_with_correct_condition[] = $bindings_match_coming_slot;
+                    snips::debug('[Condition] Find binding has no condition : '.$bindings_match_coming_slot['name']);
+                }
+                
             } 
 
-            // Find bindings which has condition and check with the coming data
-            $bindings_with_condition = array();
-            foreach ($bindings as $binding) {
-
-                $all_true_indicator = 1; 
-                foreach ($binding['condition'] as $condition) {
-
-                    // Condition setup
-                    $cmd = cmd::byId($condition['pre']);
-
-                    snips::debug('Condition cmd found is : '.$cmd->getName());
-                    snips::debug('Condition cmd found is : '.$cmd->getId());
-                    snips::debug('Condition cmd value is : '.$cmd->getCache('value','NULL'));
-
-                    if (is_string($cmd->getCache('value','NULL'))) {
-                        $pre_value = strtolower(str_replace(' ', '', $cmd->getCache('value','NULL')));
-                    }else{
-                        $pre_value = $cmd->getCache('value','NULL');
-                    }
-
-                    snips::debug('Condition Pre value is : '.$pre_value);
-
-                    // If the condition is match to a string, desensitive of 'case' and 'speace'
-                    if (is_string($condition['aft'])) {
-                        $aft_value = strtolower(str_replace(' ', '', $condition['aft']));
-                    }else{
-                        $aft_value = $condition['aft'];
-                    }
-                    
-                    snips::debug('Condition Aft value is : '.$aft_value);
-
-                    if($pre_value == $aft_value){
-                        $all_true_indicator *= 1;
-                    }else{
-                        $all_true_indicator *= 0;
-                    }
-
-                }
-                if($all_true_indicator){
-                    $bindings_with_condition[] = $binding;
-                    snips::debug('HC binding s name: '.$binding['name']);
-                }
-            }
-
-            
-            if(empty($bindings_with_condition)){
-                $bindings_to_perform = $bindings_without_condition;
-            }else{
-                $bindings_to_perform = $bindings_with_condition;
-            }
-
             // Execute all the possible bindings
-            foreach ($bindings_to_perform as $binding) {
+            foreach ($bindings_with_correct_condition as $binding) {
                 foreach ($binding['action'] as $action) {
                     $execute = true;
                     $options = array();
+
                     if(isset($action['options'])) {
                         $options = $action['options'];
                         
-                        /////////////////////////////////////////////////From here to check
-                        $slot_cmds = $eqLogic->getCmd();
-                        // check and do not execute if a raquired value is not set
-                        foreach ($slot_cmds as $cmd) {
-                            if (    in_array('#'.$cmd->getId().'#', $options) &&
-                                    $cmd->getCache('value','NULL') == 'NULL' ) 
-                            {
-                                $execute = false;
-                                break; 
-                            }
-                        }
+                        // /////////////////////////////////////////////////From here to check
+                        // $slot_cmds = $eqLogic->getCmd();
+                        // // check and do not execute if a raquired value is not set
+                        // foreach ($slot_cmds as $cmd) {
+                        //     if (    in_array('#'.$cmd->getId().'#', $options) &&
+                        //             $cmd->getCache('value','NULL') == 'NULL' ) 
+                        //     {
+                        //         $execute = false;
+                        //         break; 
+                        //     }
+                        // }
                         
                     }
+                    
                     if($execute){
                         scenarioExpression::createAndExec('action', $action['cmd'], $options);
                         snips::sayFeedback($binding['tts'], $session_id);
