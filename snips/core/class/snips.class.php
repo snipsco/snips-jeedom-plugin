@@ -413,8 +413,13 @@ class snips extends eqLogic {
             $bindings_match_coming_slots = array();
             foreach ($bindings as $binding) {
                 // If the number of slots match with each other
-                if(count($binding['nsr_slots'] == count($slots_values))){
+                snips::debug('[Slots] Cur binding name : '.$binding['name']);
+                snips::debug('[Slots] Binding count is : '.count($binding['nsr_slots']));
+                snips::debug('[Slots] Snips count is : '.count($slots_values));
 
+
+                if(count($binding['nsr_slots']) === count($slots_values)){
+                    snips::debug('[Slots] Binding has corr number of slot: '.$binding['name']);
                     // If the name of slots match with each other
                     $slot_all_exists_indicator = 1; 
                     foreach ($binding['nsr_slots'] as $slot) {
@@ -428,7 +433,6 @@ class snips extends eqLogic {
                     if($slot_all_exists_indicator){
                         $bindings_match_coming_slots[] = $binding;
                     }
-
                 }
             }
 
@@ -504,7 +508,7 @@ class snips extends eqLogic {
                         // }
                         
                     }
-                    
+
                     if($execute){
                         scenarioExpression::createAndExec('action', $action['cmd'], $options);
                         snips::sayFeedback($binding['tts'], $session_id);
@@ -538,7 +542,7 @@ class snips extends eqLogic {
 
     public static function resetSlotsCmd($slots_values = false , $intent = false){
         if ($slots_values == false && $intent == false) {
-            snips::debug('Reset slots cmd values from control pannel');
+            
             $eqs = eqLogic::byType('snips');
 
             foreach ($eqs as $eq) {
@@ -546,13 +550,11 @@ class snips extends eqLogic {
 
                 foreach ($cmds as $cmd) {
                     $cmd->setCache('value', 'NULL');
-                    snips::debug('Reseting: '.$cmd->getName());
                 }
             }
 
             
         }else{
-            snips::debug('Reset slots cmd values');
 
             $eq = eqLogic::byLogicalId($intent, 'snips');
 
@@ -574,47 +576,7 @@ class snips extends eqLogic {
     }
 
     public function postInsert() {
-        // //$logicalId = this->getName();
-
-        // //self::setLogicalId($logicalId);
-        // $intents = json_decode(self::getIntents(), true);
-        // //log::add('snips', 'debug', 'Intents detected.');
-
-        // foreach($intents as $intent => $slots){
-
-        //     self::debug('Creating mapping for '.$intent.'with slots '.$slots);
-
-        //     $rand = rand(1, 999999);
-        //     //$rand = 0;
-
-        //     $snipsObj = $this->getCmd(null, 'Snips_'.$intent.'_'.$rand); //getCmd(  $_type = null,   $_logicalId = null,   $_visible = null,   $_multiple = false)
-
-        //     if (!is_object($snipsObj)) {
-        //         $snipsObj = new snipsCmd();
-        //         $snipsObj->setLogicalId('Snips_'.$intent.'_'.$rand);
-        //         $snipsObj->setName('Snips_'.$intent.'_'.$rand);
-        //     }
-
-        //     $snipsObj->setEqLogic_id($this->getId());
-        //     $snipsObj->setType('snips_intent');//Snips_Intent
-        //     $snipsObj->setSubType($intent);
-        //     $snipsObj->setConfiguration('intent', $intent); // intent name
-        //     $snipsObj->setConfiguration('actionCmd', ''); // target action command
-        //     $sniosObj->setConfiguration('actionVal',''); // target action command value (if slider/ color/ etc..)
-        //     $sniosObj->setConfiguration('actionLocSlot',''); // slot to represent locaton
-        //     $sniosObj->setConfiguration('actionLocVal',''); // pre-defined location value
-        //     $snipsObj->setConfiguration('actionTts', '');  // action feedback sound
-        //     $snipsObj->setConfiguration('actionTtsEnable', '1');  // action feedback sound
-
-        //     /*foreach($slots as $slot){
-        //         $content = array();
-        //         $content['type'] = 'location';
-        //         $content['value'] = '';
-        //         $snipsObj->setConfiguration( $slot, $content);
-        //         unset($content);
-        //     }
-        //     $snipsObj->save();
-        // }    */
+        
     }
 
     public function preSave() {
