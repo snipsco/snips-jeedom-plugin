@@ -447,17 +447,11 @@ class snips extends eqLogic {
                         // Condition setup
                         $cmd = cmd::byId($condition['pre']);
 
-                        snips::debug('[Condition] Condition cmd found is : '.$cmd->getName());
-                        snips::debug('[Condition] Condition cmd found is : '.$cmd->getId());
-                        snips::debug('[Condition] Condition cmd value is : '.$cmd->getCache('value','NULL'));
-
                         if (is_string($cmd->getCache('value','NULL'))) {
                             $pre_value = strtolower(str_replace(' ', '', $cmd->getCache('value','NULL')));
                         }else{
                             $pre_value = $cmd->getCache('value','NULL');
                         }
-
-                        snips::debug('[Condition] Condition Pre value is : '.$pre_value);
 
                         // If the condition is match to a string, desensitive of 'case' and 'speace'
                         if (is_string($condition['aft'])) {
@@ -476,12 +470,14 @@ class snips extends eqLogic {
 
                     }
                     if($condition_all_true_indicator){
-                        $bindings_with_correct_condition[] = $bindings_match_coming_slot;
-                        snips::debug('[Condition] Find binding has correct condition : '.$bindings_match_coming_slot['name']);
+                        if ($bindings_match_coming_slot['enable']) {
+                            $bindings_with_correct_condition[] = $bindings_match_coming_slot;
+                        }
                     }
                 }else{
-                    $bindings_with_correct_condition[] = $bindings_match_coming_slot;
-                    snips::debug('[Condition] Find binding has no condition : '.$bindings_match_coming_slot['name']);
+                    if ($bindings_match_coming_slot['enable']) {
+                        $bindings_with_correct_condition[] = $bindings_match_coming_slot;
+                    }
                 }
                 
             } 
@@ -489,31 +485,14 @@ class snips extends eqLogic {
             // Execute all the possible bindings
             foreach ($bindings_with_correct_condition as $binding) {
                 foreach ($binding['action'] as $action) {
-                    $execute = true;
-                    $options = array();
 
-                    if(isset($action['options'])) {
-                        $options = $action['options'];
-                        
-                        // /////////////////////////////////////////////////From here to check
-                        // $slot_cmds = $eqLogic->getCmd();
-                        // // check and do not execute if a raquired value is not set
-                        // foreach ($slot_cmds as $cmd) {
-                        //     if (    in_array('#'.$cmd->getId().'#', $options) &&
-                        //             $cmd->getCache('value','NULL') == 'NULL' ) 
-                        //     {
-                        //         $execute = false;
-                        //         break; 
-                        //     }
-                        // }
-                        
-                    }
+                    $options = $action['options'];
 
-                    if($execute){
+                    if($action['options']['enable']){
                         scenarioExpression::createAndExec('action', $action['cmd'], $options);
                         snips::sayFeedback($binding['tts'], $session_id);
                     }else{
-                        snips::debug('Found binding action, but require values');
+                        snips::debug('Found binding action, but it is not enabled');
                     }
 
                 }
