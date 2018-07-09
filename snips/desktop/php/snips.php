@@ -140,9 +140,19 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
             
             <div class="form-group">
                 <label class="col-sm-1 control-label">{{Interaction}}</label>
-                <div class="col-sm-2">
-                  <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Not Apply}}</label>
-                  <input type="checkbox" checked data-toggle="toggle">
+                <div class="col-sm-5">
+
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+
+                  <label class="btn btn-primary active">
+                    <input type="radio" class="eqLogicAttr" name="Snips_configuration" data-l1key="isEnable" checked> Snips Binding
+                  </label>
+                  
+                  <label class="btn btn-primary">
+                    <input type="radio" class="eqLogicAttr" name="Interaction" > JeeDom Interaction
+                  </label>
+                </div>
+
                 </div>
             </div>
 
@@ -163,9 +173,6 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 <?php include_file('desktop', 'snips', 'js', 'snips');?>
 <?php include_file('core', 'plugin.template', 'js');?>
 <?php include_file('desktop', 'snips', 'css', 'snips'); ?>
-
-<?php include_file('3rdparty', 'bootstrap2-toggle.min', 'css', 'snips'); ?>
-<?php include_file('3rdparty', 'bootstrap2-toggle.min', 'js', 'snips'); ?>
 <!--Passing necessary data to javascript-->
 <script>
   var _snips_intents = <?php echo snips::getIntents();?>

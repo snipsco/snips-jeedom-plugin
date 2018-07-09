@@ -1,89 +1,54 @@
-.island-intent{
-	margin: 20px auto;
-	width:210px;
+.snips-sw-btn{/*默认背景为灰色*/
+
+    appearance: none;/*去掉复选框的默认样式，将背景显示出来*/
+    -webkit-appearance: none;
+    outline: none;
+    position: relative;
+    width: 48px;/*设置checkbox的宽高*/
+    height: 28px;
+    background: #d9534f;
+    border-radius: 3px;
+    border: 1px solid #d43f3a;
+    outline: 0;
+    box-sizing: border-box;
+    content: "Enabled  Disabled";
+}
+.snips-sw-btn:checked{/*选中时：背景变为绿色*/
+    border-color: #5cb85c;
+    background-color: #4cae4c;
+}
+.snips-sw-btn:before, .snips-sw-btn:after{/*设置0.3秒内，变换完毕*/
+    content: " ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 26px;
+    border-radius: 3px;
+    transition: transform 0.3s;
+    transition: -webkit-transform 0.3s;
+    transition: transform 0.3s, -webkit-transform 0.3s;
+    -webkit-transition: -webkit-transform 0.3s;
+}
+.snips-sw-btn:before{/*小圆点右侧的白色*/
+    width: 0px;
+    background-color: #d9534f;
+}
+.snips-sw-btn:after{/*小圆点*/
+
+    width: 18px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.snips-sw-btn:checked:before{/*选中时：小圆点右侧的白色缩小为0*/
+    transform: scale(0);
+    -webkit-transform: scale(0);
+}
+.snips-sw-btn:checked:after{/*选中时：小圆点右移*/
+    transform: translateX(28px);
+    -webkit-transform: translateX(28px);
 }
 
-.island-slot-configuration{
-	margin: 20px auto;
-	width: 455px;
-}
 
-.island-slot-configuration *{
-	/*margin-left: 5px;*/
-}
-
-.island-slot-configuration .chose-slot-type{
-	position: absolute;
-    left: -9999px;
-}
-
-.island-slot-configuration .infoTab{
-	float: left;
-	width: 60px;
-	height: 30px;
-	display: inline;
-}
-
-.island-slot-configuration .infoBar, .island-intent .intentNameBar{
-	float: left;
-	width: 200px;
-	display: inline;
-}
-
-.island-slot-configuration .infoBarType{
-	float: left;
-	width: 100px;
-	display: inline;
-}
-
-.island-slot-configuration .isValueButton{
-	float: left;
-	display: inline;
-	width: 34px;
-}
-
-.island-slot-configuration .isLocationButton{
-	float: left;
-	display: inline;
-	width: 34px;
-}
-
-.island-slot-configuration label{
-	margin-bottom: 0px;
-}
-
-.island-slot-configuration .slotInput input{
-	width: 420px;
-	display: inline;
-}
-.island-slot-configuration .slotInput a{
-	display: inline;
-}
-
-.island-action{
-	margin: 20px auto;
-	/*width:210px;*/
-}
-
-.island-action input{
-	float: left;
-	display: inline;
-	width:300px;
-}
-
-.island-action a{
-	float: left;
-	display: inline;
-}
-
-.island-feedback{
-	margin: 20px auto;
-	/*width:210px;*/
-}
-
-.island-feedback textarea{
-	resize: none;
-	width:250px;
-	height: 70px;
-	display: inline;
+.section-title{
+	padding-bottom: 20px;
 }

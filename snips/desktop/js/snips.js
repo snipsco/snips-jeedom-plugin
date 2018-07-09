@@ -73,6 +73,7 @@ $("body").off('click','.listCmdAction').on( 'click','.listCmdAction', function (
     var type = $(this).attr('data-type');
     var el = $(this).closest('.' + type).find('.expressionAttr[data-l1key=cmd]');
     jeedom.cmd.getSelectModal({cmd: {type: 'action'}}, function (result) {
+        el.value('');
         el.value(result.human);
         jeedom.cmd.displayActionOption(el.value(), '', function (html) {
             el.closest('.' + type).find('.actionOptions').html(html);
@@ -86,6 +87,7 @@ $("body").off('click','.listAction').on( 'click','.listAction',function () {
 	var type = $(this).attr('data-type');
 	var el = $(this).closest('.' + type).find('.expressionAttr[data-l1key=cmd]');
 	jeedom.getSelectActionModal({}, function (result) {
+        el.value('');
 		el.value(result.human);
 		jeedom.cmd.displayActionOption(el.value(), '', function (html) {
 			el.closest('.' + type).find('.actionOptions').html(html);
@@ -171,11 +173,42 @@ $("#div_bindings").delegate(".isActivated",'change', function(){
     if(el.is(":checked")){
         btn.removeClass('btn-success');
         btn.addClass('btn-danger');
-        btn.text('Disable');
+        btn.text('× Disable');
     }else{
     	btn.removeClass('btn-danger');
         btn.addClass('btn-success');
         btn.text('Enable');
+    }
+});
+
+//-- React when feedback tts has been updated
+$("#div_bindings").delegate(".feedbackSpeech",'keyup', function(){
+    
+    var el = $(this).closest('.binding');
+
+    var listVarCount = el.find('.div_infoCmd').find('.infoCmd').length;
+    var textVarCount = $(this).val().split('{#}').length-1;
+
+    console.log('Count from text:'+textVarCount);
+    console.log('Count from exist:'+listVarCount);
+    var count = 0 ;
+    while(listVarCount != textVarCount){
+        count += 1;
+        if(listVarCount > textVarCount){
+            // InfoCmd is more than needed
+            // Reduct from the last one
+            //debugger;
+            el.find('.div_infoCmd').find('.infoCmd:last').remove();
+            console.log('Removed');
+        }else if(listVarCount < textVarCount){
+            // InfoCmd is less than needed
+            // Append new to the last one
+            addInfoCmd({}, el);
+            console.log('Added');
+        }
+        var listVarCount = el.find('.div_infoCmd').find('.infoCmd').length;
+        var textVarCount = $(this).val().split('{#}').length-1;
+        if (count>10) {break;}
     }
 });
 
@@ -372,6 +405,7 @@ function saveEqLogic(_eqLogic) {
         var binding = $(this).getValues('.bindingAttr')[0];
         binding.condition = $(this).find('.condition').getValues('.conditionAttr');
         binding.action = $(this).find('.action').getValues('.expressionAttr');
+        binding.tts.vars = $(this).find('.infoCmd').getValues('.infoCmdAttr');
         _eqLogic.configuration.bindings.push(binding);
     });
     return _eqLogic;
@@ -417,6 +451,15 @@ function addBinding(_binding) {
 		div += '<span class="bindingAttr btn btn-sm btn-default rename cursor" data-l1key="name" style="font-size : 1em;" ></span>';
 		div += '</div>';
 
+        //** Required slots
+        div += '<label class="col-sm-2 control-label">{{Necessary Slots:}}</label>';
+        div += '<div class="col-sm-3">';
+        for(x in _binding.nsr_slots){
+            div += '<span class="label label-success" style="margin-right: 10px;font-size: 1em;">'+_binding.nsr_slots[x]+'</span>';
+        }
+        div += '</div>';
+
+
     	//** Basic infomation -- Status
     	div += '<label class="col-sm-1 control-label">{{Status:}}</label>';
     	div += '<div class="col-sm-2">';
@@ -431,33 +474,26 @@ function addBinding(_binding) {
     		div += '<span>';
     		div += '<input style="display:none;" class="bindingAttr isActivated" type="checkbox" id="isActivated_'+ random +'" data-l1key="enable" checked>';
             div += '<label for="isActivated_'+ random +'">';
-            div += '<a class="btn btn-danger btn-sm">Disable</a>';
+            div += '<a class="btn btn-danger btn-sm"><i class="fa fa-times"></i> {{Disable}}</a>';
             div += '</span>';
 	    div += '</div>';
     	}
     	
-    	//** Managing operations 
-    	div += '<div class="col-sm-4">';
-    	div += '<label class="col-sm-1 control-label">{{Manage:}}</label>';
-    	div += '<div class="btn-group pull-right" role="group">';
-    	div += '<a class="btn btn-sm btn-danger bt_removeBinding"><i class="fa fa-minus-circle"></i> {{Delete}}</a>';
-    	div += '<a class="btn btn-sm btn-primary bt_addCondition"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
-    	div += '<a class="btn btn-warning btn-sm bt_addAction"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
-    	div += '<a class="btn btn-sm btn-success bt_duplicateBinding"><i class="fa fa-files-o"></i> {{Duplicate}}</a>';
-    	div += '</div>';
+    	
+
     	div += '</div>';
 
-        div += '</div>';
-
-        // Required slots
+        //** Managing operations 
         if (isset(_binding.nsr_slots)) {
             div += '<div class="form-group">';
 
-            div += '<label class="col-sm-1 control-label">{{Necessary Slots:}}</label>';
-            div += '<div class="col-sm-3">';
-            for(x in _binding.nsr_slots){
-                div += '<span class="label label-success" style="margin-right: 10px; font-size: 1em;">'+_binding.nsr_slots[x]+'</span>';
-            }
+            div += '<label class="col-sm-1 control-label">{{Manage:}}</label>';
+
+            div += '<div class="btn-group" role="group" style="padding-left: 15px">';
+            div += '<a class="btn btn-sm btn-danger bt_removeBinding"><i class="fa fa-minus-circle"></i> {{Delete}}</a>';
+            div += '<a class="btn btn-sm btn-primary bt_addCondition"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
+            div += '<a class="btn btn-warning btn-sm bt_addAction"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
+            div += '<a class="btn btn-sm btn-success bt_duplicateBinding"><i class="fa fa-files-o"></i> {{Duplicate}}</a>';
             div += '</div>';
 
             div += '</div>';  
@@ -466,31 +502,36 @@ function addBinding(_binding) {
 	div += '<hr/>';
 
     //** Condition Section
-    div += '<div><strong>{{Condition(s)}}</strong></div>';
+    div += '<div class="section-title"><strong>{{Condition(s)}}</strong></div>';
     div += '<div class="div_condition"></div>';
 
     div += '<hr/>';
 
     //** Action Section
-    div += '<div><strong>{{Action(s) (Multiple actions will be executed in order!)}}</strong></div>';
+    div += '<div class="section-title"><strong>{{Action(s) (Multiple actions will be executed in order!)}}</strong></div>';
     div += '<div class="div_action"></div>';
 
     div += '<hr/>';
 
     //** Feedback Section
-    div += '<div><strong>{{Feedback Tts}}</strong></div>';
-    div += '<div class="div_feedback input-group">';
+    div += '<div class="section-title" ><strong>{{Feedback Tts}}</strong>';
+    div += '<a class="btn btn-default btn-xs playFeedback" style="margin-left: 15px;"><i class="fa fa-play"></i> {{Test Play}}</a>';
+    div += '<a class="btn btn-default btn-xs"><i class="fa fa-times"></i> {{Enable}}</a>';
+    div += '</div>';
 
-    div += '<textarea class="tags bindingAttr form-control ta_autosize"'+
-    		'data-l1key="tts" rows="1"'+
+    div += '<div class="div_feedback form-group">'
+
+    div += '<div class="col-sm-4">';
+    div += '<textarea class="bindingAttr form-control ta_autosize feedbackSpeech"'+
+    		'data-l1key="tts" data-l2key="text" rows="1"'+
     		'style="resize: none; overflow: hidden; word-wrap: break-word; height: 30px;"'+
     		'placeholder="Speech text">';
    	div += '</textarea>';
-
-   	div += '<span class="input-group-btn"><a class="btn btn-default btn-sm playFeedback"><i class="fa fa-play"></i></a></span>';
-
     div += '</div>';
 
+    div += '<div class="col-sm-5 div_infoCmd"></div>';
+
+    div += '</div>';
 
     div += '</form>';
     div += '</div>';
@@ -500,7 +541,7 @@ function addBinding(_binding) {
 
     $('#div_bindings').append(div);
     $('#div_bindings .binding:last').setValues(_binding, '.bindingAttr');
-
+    // Add all the conditions
     if (is_array(_binding.condition)) {
         for (var i in _binding.condition) {
             addCondition(_binding.condition[i], $('#div_bindings .binding:last'));
@@ -510,7 +551,7 @@ function addBinding(_binding) {
             addCondition(_binding.condition[i], $('#div_bindings .binding:last'));
         }
     }
-
+    // Add all the actions
     if (is_array(_binding.action)) {
         for (var i in _binding.action) {
             addAction(_binding.action[i], $('#div_bindings .binding:last'));
@@ -520,10 +561,22 @@ function addBinding(_binding) {
             addAction(_binding.action, $('#div_bindings .binding:last'));
         }
     }
+    // Add all the tts infoCmds
+    if (is_array(_binding.tts.vars)) {
+        for (var i in _binding.tts.vars) {
+            addInfoCmd(_binding.tts.vars[i], $('#div_bindings .binding:last'));
+        }
+    } else {
+        if ($.trim(_binding.tts.vars) != '') {
+            addInfoCmd(_binding.tts.vars, $('#div_bindings .binding:last'));
+        }
+    }
+
+
     $('.collapse').collapse();
     $("#div_bindings .binding:last .div_condition").sortable({axis: "y", cursor: "move", items: ".condition", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
     $("#div_bindings .binding:last .div_action").sortable({axis: "y", cursor: "move", items: ".action", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
-    
+    $("#div_bindings .binding:last .div_infoCmd").sortable({axis: "y", cursor: "move", items: ".infoCmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
 }
 
 //-- This function is used to add action/condition to the binding configuration
@@ -605,11 +658,6 @@ function addCondition(_condition, _el){
     // pre operante
 
     div += '<select class="conditionAttr form-control input-sm" data-l1key="pre" id="'+selectSlotsId+'">';
-
-		// for(x in _snips_intents[INTENT]){
-		// 	div += '<option value="'+_snips_intents[INTENT][x]+'">'+_snips_intents[INTENT][x]+'</option>';
-		// }
-
     div += '</select>';
 
     // EQUAL TO =
@@ -619,7 +667,6 @@ function addCondition(_condition, _el){
     div += '<input class="conditionAttr form-control" data-l1key="aft">';
     div += '</div>';
     div += '</div>';
-
 
     if (isset(_el)) {
         _el.find('.div_condition').append(div);
@@ -632,9 +679,39 @@ function addCondition(_condition, _el){
 
         displaySlots(selectSlotsId);
         $('#div_condition .condition:last').setValues(_condition, '.conditionAttr');
+    } 
+}
+
+//-- This is function used to attach new info command
+function addInfoCmd(_infoCmd, _el){
+    if (!isset(_infoCmd)) {
+        _infoCmd = {};
     }
 
-    
+    var div = '<div class="input-group input-group-sm infoCmd" style="width: 100%">';
+    div += '<span class="input-group-addon" style="width: 100px">Value</span>';
+    div += '<input value="" class="infoCmdAttr form-control input-sm" data-l1key="tts" data-l2key="vars" >';
+    div += '<span class="input-group-btn">';
+    div += '    <button class="btn btn-default listEquipementInfo" type="button" title="{{Select a value}}">';
+    div += '    <i class="fa fa-list-alt"></i>';
+    div += '    </button>';
+    div += '</span>';
+
+    div += '<span class="input-group-addon">';
+    div += '<i class="fa fa-arrows"></i>';
+    div += '</span>';
+    div += '</div>';
+
+
+    if (isset(_el)) {
+        _el.find('.div_infoCmd').append(div);
+        _el.find('.infoCmd:last').setValues(_infoCmd, '.infoCmdAttr');
+
+    } else {
+        $('#div_infoCmd').append(div);
+        $('#div_infoCmd .infoCmd:last').setValues(_infoCmd, '.infoCmdAttr');
+    }
+
 }
 
 function addCmdToTable(_cmd) {
@@ -647,7 +724,7 @@ function addCmdToTable(_cmd) {
 
     var tr = '<div class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="float:left;">';
     tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
-    tr += '<span class="cmdAttr label label-primary" data-l1key="name" style="margin-right: 10px; font-size : 1em;">';
+    tr += '<input class="cmdAttr form-control" data-l1key="name" style="margin-right: 10px; font-size : 1em;" disabled="disabled" >';
     tr += '</div>';
 
     $('#table_cmd').append(tr);
