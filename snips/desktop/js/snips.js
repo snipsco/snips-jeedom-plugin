@@ -73,7 +73,6 @@ $("body").off('click','.listCmdAction').on( 'click','.listCmdAction', function (
     var type = $(this).attr('data-type');
     var el = $(this).closest('.' + type).find('.expressionAttr[data-l1key=cmd]');
     jeedom.cmd.getSelectModal({cmd: {type: 'action'}}, function (result) {
-        el.value('');
         el.value(result.human);
         jeedom.cmd.displayActionOption(el.value(), '', function (html) {
             el.closest('.' + type).find('.actionOptions').html(html);
@@ -87,7 +86,6 @@ $("body").off('click','.listAction').on( 'click','.listAction',function () {
 	var type = $(this).attr('data-type');
 	var el = $(this).closest('.' + type).find('.expressionAttr[data-l1key=cmd]');
 	jeedom.getSelectActionModal({}, function (result) {
-        el.value('');
 		el.value(result.human);
 		jeedom.cmd.displayActionOption(el.value(), '', function (html) {
 			el.closest('.' + type).find('.actionOptions').html(html);
@@ -308,7 +306,7 @@ $("#div_bindings").delegate(".playFeedback",'click', function(){
                 url: "plugins/snips/core/ajax/snips.ajax.php", 
                 data: {
                     action: "playFeedback",
-                    text: $(this).closest('div').find('textarea').val(),
+                    text: $(this).closest('.binding').find('.feedbackSpeech').val(),
                 },
                 dataType: 'json',
                 global: false,
@@ -441,11 +439,20 @@ function addBinding(_binding) {
 
     div += '<h4 class="panel-title">';
     div += '<a data-toggle="collapse" data-parent="#div_bindings" href="#collapse' + random + '">';
-    div += '<div class="name">' + _binding.name + '</div>';
+    div += '<div class="name" style="display:inline-block;">' + _binding.name + '</div>';
     div += '</a>';
-            div += '<span class="btn-group pull-right" role="group">';
-            div += '<a class="btn btn-xs btn-success bt_duplicateBinding"><i class="fa fa-files-o"></i> {{Duplicate}}</a>';
-            div += '<a class="btn btn-xs btn-danger bt_removeBinding"><i class="fa fa-minus-circle"></i> {{Delete}}</a>';
+            div += '<span class="pull-right">';
+
+            if (_binding.enable == 1) {
+                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5cb85c;">Enabled</span>';
+            }else{
+                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5cb85c;">Enabled</span>';
+            }   
+
+            div += '<span class="btn-group" role="group">';
+            div += '<a class="btn btn-xs btn-default bt_duplicateBinding"><i class="fa fa-files-o"></i> {{Duplicate}}</a>';
+            div += '<a class="btn btn-xs btn-danger bt_removeBinding"><i class="fa fa-minus-circle"></i></a>';
+            div += '</span>';
             div += '</span>';
     div += '</h4>';
     div += '</div>';
@@ -684,9 +691,6 @@ function addCondition(_condition, _el){
 
 //-- This is function used to attach new info command
 function addInfoCmd(_infoCmd, _el){
-    if (!isset(_infoCmd)) {
-        _infoCmd = {};
-    }
 
     var div = '<div class="input-group input-group-sm infoCmd" style="width: 100%">';
     div += '<span class="input-group-addon" style="width: 100px">Value</span>';
@@ -702,16 +706,9 @@ function addInfoCmd(_infoCmd, _el){
     div += '</span>';
     div += '</div>';
 
-
-    if (isset(_el)) {
-        _el.find('.div_infoCmd').append(div);
-        //debugger;
-        _el.find('.infoCmd:last').find('.bindingAttr').val(_infoCmd);
-
-    } else {
-        $('#div_infoCmd').append(div);
-        $('#div_infoCmd .infoCmd:last').setValues(_infoCmd, '.bindingAttr');
-    }
+    _el.find('.div_infoCmd').append(div);
+    _el.find('.infoCmd:last').find('.bindingAttr').val(_infoCmd);
+    
 
 }
 

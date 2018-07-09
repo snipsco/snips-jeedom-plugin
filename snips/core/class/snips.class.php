@@ -222,7 +222,7 @@ class snips extends eqLogic {
         if($session_id == null){
             ChromePhp::log('Only say: '.$text);
             $topic = 'hermes/tts/say';
-            $payload = array('text' => $text, "siteId" => "default");
+            $payload = array('text' => str_replace('{#}', 'Value', $text), "siteId" => "default");
 
             self::publish($topic, json_encode($payload));
         }else{
