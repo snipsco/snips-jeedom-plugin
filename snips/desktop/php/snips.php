@@ -145,11 +145,11 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
 
                   <label class="btn btn-primary active">
-                    <input type="radio" class="eqLogicAttr" name="Snips_configuration" data-l1key="isEnable" checked> Snips Binding
+                    <input type="radio" class="eqLogicAttr" name="Snips_configuration" data-l1key="isSnipsConfig" checked> Snips Binding
                   </label>
                   
                   <label class="btn btn-primary">
-                    <input type="radio" class="eqLogicAttr" name="Interaction" > JeeDom Interaction
+                    <input type="radio" class="eqLogicAttr" name="Interaction" data-l1key="isInteraction"> JeeDom Interaction
                   </label>
                 </div>
 
