@@ -16,8 +16,15 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [ ] Make the slots information useful
 - [ ] Working separately with Snips site(Possible, but no test yet)
 - [x] Managing conditions
+- [x] Dynamic TTS
 
 # Develop Diary
+9, Jul, 2018 
+- [x] Troubleshooting with dynamic feature, fixed died loop problem. 
+
+6, Jul, 2018
+- [x] Add feature: dynamic tts message. User can use '{#}' to represent a value from system.
+
 4, Jul, 2018
 - [x] Clearfeid backend binding configuration selecting logic. 
 - [x] Add feature that can tell the user which slots is necessary for a specific binding.
