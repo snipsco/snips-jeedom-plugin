@@ -398,7 +398,7 @@ class snips extends eqLogic {
         $bindings = $eqLogic->getConfiguration('bindings');
 
         // If this equipment is enabled, go with snips configuration, otherwise send input text to interaction
-        if(!$eqLogic->getIsEnable()){
+        if(!$eqLogic->getConfiguration('isSnipsConfig')){
             // Use system interaction querys 
             $param = array();
             // Send to interaction Queryer 
@@ -497,7 +497,7 @@ class snips extends eqLogic {
 
                 }
                 // Feed back when all the action are done
-                snips::sayFeedback($binding['tts'], $session_id);   
+                snips::sayFeedback($binding['tts']['text'], $session_id);   
             }
         }
 

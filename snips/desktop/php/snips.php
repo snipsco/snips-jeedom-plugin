@@ -122,14 +122,14 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
         <fieldset>
           <legend>{{Intent Configuration}}</legend>
             <div class="form-group">
-                <label class="col-sm-1 control-label">{{Intent Name}}</label>
+                <label class="col-sm-1 control-label">{{Name}}</label>
                 <div class="col-sm-2">
                     <input type="text" class="eqLogicAttr form-control" id="intentId" data-l1key="id" style="display : none;" />
                     <input type="text" class="eqLogicAttr form-control" id="intentName" data-l1key="name" disabled="disabled" "/>
                 </div>
 
 
-                <label class="col-sm-1 control-label">{{Available Slots}}</label>
+                <label class="col-sm-1 control-label">{{Slots}}</label>
                 <div class="col-sm-6">
                     <div id="table_cmd"> </div>
                 </div>
@@ -139,18 +139,29 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
             </div>
             
             <div class="form-group">
-                <label class="col-sm-1 control-label">{{Interaction}}</label>
+
+                <label class="col-sm-1 control-label">{{Status}}</label>
+                <div class="col-sm-2">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                      <label class="btn btn-primary">
+                        <input type="checkbox" class="eqLogicAttr" data-l1key="isEnable"> Enable
+                      </label>
+                    </div>
+                </div>
+
+                <label class="col-sm-1 control-label">{{Reaction}}</label>
                 <div class="col-sm-5">
 
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
 
-                  <label class="btn btn-primary active">
-                    <input type="radio" class="eqLogicAttr" name="Snips_configuration" data-l1key="isSnipsConfig" checked> Snips Binding
+                  <label class="btn btn-default active" style="width: 150px;">
+                    <input type="radio" class="eqLogicAttr" data-l1key="configuration" data-l2key="isSnipsConfig"> Snips Binding
                   </label>
                   
-                  <label class="btn btn-primary">
-                    <input type="radio" class="eqLogicAttr" name="Interaction" data-l1key="isInteraction"> JeeDom Interaction
+                  <label class="btn btn-default" style="width: 150px;">
+                    <input type="radio" class="eqLogicAttr" data-l1key="configuration" data-l2key="isInteraction"> JeeDom Interaction
                   </label>
+
                 </div>
 
                 </div>

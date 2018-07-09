@@ -96,6 +96,15 @@ $("body").off('click','.listAction').on( 'click','.listAction',function () {
 	});
 });
 
+//--This is the function used to select system info command
+$("body").delegate(".listInfoCmd",'click', function(){
+    var el = $(this);
+    jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function (result) {
+        var calcul = el.closest('.infoCmd').find('.bindingAttr[data-l1key=tts][data-l2key=vars]');
+        calcul.value(result.human);
+    });
+});
+
 //--This is the function used to remove an action
 $("body").off('click', '.bt_removeAction').on( 'click', '.bt_removeAction',function () {
     var type = $(this).attr('data-type');
@@ -405,7 +414,7 @@ function saveEqLogic(_eqLogic) {
         var binding = $(this).getValues('.bindingAttr')[0];
         binding.condition = $(this).find('.condition').getValues('.conditionAttr');
         binding.action = $(this).find('.action').getValues('.expressionAttr');
-        binding.tts.vars = $(this).find('.infoCmd').getValues('.infoCmdAttr');
+        //binding.tts.vars = $(this).find('.infoCmd').getValues('.infoCmdAttr');
         _eqLogic.configuration.bindings.push(binding);
     });
     return _eqLogic;
@@ -429,10 +438,15 @@ function addBinding(_binding) {
 
     //** Name section
     div += '<div class="panel-heading">';
+
     div += '<h4 class="panel-title">';
     div += '<a data-toggle="collapse" data-parent="#div_bindings" href="#collapse' + random + '">';
-    div += '<span class="name">' + _binding.name + '</span>';
+    div += '<div class="name">' + _binding.name + '</div>';
     div += '</a>';
+            div += '<span class="btn-group pull-right" role="group">';
+            div += '<a class="btn btn-xs btn-success bt_duplicateBinding"><i class="fa fa-files-o"></i> {{Duplicate}}</a>';
+            div += '<a class="btn btn-xs btn-danger bt_removeBinding"><i class="fa fa-minus-circle"></i> {{Delete}}</a>';
+            div += '</span>';
     div += '</h4>';
     div += '</div>';
 
@@ -446,22 +460,23 @@ function addBinding(_binding) {
 
 		//** Basic infomation -- Name
 		div += '<div class="form-group">';
-		div += '<label class="col-sm-1 control-label">{{Name:}}</label>';
+		div += '<label class="col-sm-1 control-label">{{Name}}</label>';
 		div += '<div class="col-sm-2">';
 		div += '<span class="bindingAttr btn btn-sm btn-default rename cursor" data-l1key="name" style="font-size : 1em;" ></span>';
 		div += '</div>';
 
-        //** Required slots
-        div += '<label class="col-sm-2 control-label">{{Necessary Slots:}}</label>';
-        div += '<div class="col-sm-3">';
-        for(x in _binding.nsr_slots){
-            div += '<span class="label label-success" style="margin-right: 10px;font-size: 1em;">'+_binding.nsr_slots[x]+'</span>';
+        if (isset(_binding.nsr_slots)) {
+            //** Required slots
+            div += '<label class="col-sm-2 control-label">{{Required Slots}}</label>';
+            div += '<div class="col-sm-3">';
+            for(x in _binding.nsr_slots){
+                div += '<span class="label label-primary" style="margin-right: 10px;font-size: 1em;">'+_binding.nsr_slots[x]+'</span>';
+            }
+            div += '</div>';
         }
-        div += '</div>';
-
 
     	//** Basic infomation -- Status
-    	div += '<label class="col-sm-1 control-label">{{Status:}}</label>';
+    	div += '<label class="col-sm-1 control-label">{{Status}}</label>';
     	div += '<div class="col-sm-2">';
     	if(!_binding.isActive){
     		div += '<span>';
@@ -478,45 +493,30 @@ function addBinding(_binding) {
             div += '</span>';
 	    div += '</div>';
     	}
-    	
-    	
-
     	div += '</div>';
-
-        //** Managing operations 
-        if (isset(_binding.nsr_slots)) {
-            div += '<div class="form-group">';
-
-            div += '<label class="col-sm-1 control-label">{{Manage:}}</label>';
-
-            div += '<div class="btn-group" role="group" style="padding-left: 15px">';
-            div += '<a class="btn btn-sm btn-danger bt_removeBinding"><i class="fa fa-minus-circle"></i> {{Delete}}</a>';
-            div += '<a class="btn btn-sm btn-primary bt_addCondition"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
-            div += '<a class="btn btn-warning btn-sm bt_addAction"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
-            div += '<a class="btn btn-sm btn-success bt_duplicateBinding"><i class="fa fa-files-o"></i> {{Duplicate}}</a>';
-            div += '</div>';
-
-            div += '</div>';  
-        }
-
-	div += '<hr/>';
+    
+    div += '<hr/>';
 
     //** Condition Section
-    div += '<div class="section-title"><strong>{{Condition(s)}}</strong></div>';
+    div += '<div class="section-title"><strong>{{Condition(s)}}</strong>';
+    div += '<a class="btn btn-xs btn-success bt_addCondition" style="margin-left: 15px;"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
+    div += '</div>';
     div += '<div class="div_condition"></div>';
 
     div += '<hr/>';
 
     //** Action Section
-    div += '<div class="section-title"><strong>{{Action(s) (Multiple actions will be executed in order!)}}</strong></div>';
+    div += '<div class="section-title"><strong>{{Action(s) (Multiple actions will be executed in order!)}}</strong>';
+    div += '<a class="btn btn-success btn-xs bt_addAction" style="margin-left: 15px;"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
+    div += '</div>';
     div += '<div class="div_action"></div>';
 
     div += '<hr/>';
 
     //** Feedback Section
     div += '<div class="section-title" ><strong>{{Feedback Tts}}</strong>';
-    div += '<a class="btn btn-default btn-xs playFeedback" style="margin-left: 15px;"><i class="fa fa-play"></i> {{Test Play}}</a>';
-    div += '<a class="btn btn-default btn-xs"><i class="fa fa-times"></i> {{Enable}}</a>';
+    div += '<a class="btn btn-primary btn-xs playFeedback" style="margin-left: 15px;"><i class="fa fa-play"></i> {{Test Play}}</a>';
+    div += '<a class="btn btn-default btn-xs" style="margin-left: 15px;"><i class="fa fa-times"></i> {{Enable}}</a>';
     div += '</div>';
 
     div += '<div class="div_feedback form-group">'
@@ -690,9 +690,9 @@ function addInfoCmd(_infoCmd, _el){
 
     var div = '<div class="input-group input-group-sm infoCmd" style="width: 100%">';
     div += '<span class="input-group-addon" style="width: 100px">Value</span>';
-    div += '<input value="" class="infoCmdAttr form-control input-sm" data-l1key="tts" data-l2key="vars" >';
+    div += '<input value="" class="bindingAttr form-control input-sm" data-l1key="tts" data-l2key="vars" >';
     div += '<span class="input-group-btn">';
-    div += '    <button class="btn btn-default listEquipementInfo" type="button" title="{{Select a value}}">';
+    div += '    <button class="btn btn-default listInfoCmd" type="button" title="{{Select a value}}">';
     div += '    <i class="fa fa-list-alt"></i>';
     div += '    </button>';
     div += '</span>';
@@ -705,11 +705,12 @@ function addInfoCmd(_infoCmd, _el){
 
     if (isset(_el)) {
         _el.find('.div_infoCmd').append(div);
-        _el.find('.infoCmd:last').setValues(_infoCmd, '.infoCmdAttr');
+        //debugger;
+        _el.find('.infoCmd:last').find('.bindingAttr').val(_infoCmd);
 
     } else {
         $('#div_infoCmd').append(div);
-        $('#div_infoCmd .infoCmd:last').setValues(_infoCmd, '.infoCmdAttr');
+        $('#div_infoCmd .infoCmd:last').setValues(_infoCmd, '.bindingAttr');
     }
 
 }
@@ -722,9 +723,9 @@ function addCmdToTable(_cmd) {
         _cmd.configuration = {};
     }
 
-    var tr = '<div class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="float:left;">';
+    var tr = '<div class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="float:left; margin-right: 10px;">';
     tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
-    tr += '<input class="cmdAttr form-control" data-l1key="name" style="margin-right: 10px; font-size : 1em;" disabled="disabled" >';
+    tr += '<input class="cmdAttr form-control" data-l1key="name" style=" font-size : 1em;" disabled="disabled" >';
     tr += '</div>';
 
     $('#table_cmd').append(tr);
