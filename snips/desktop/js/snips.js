@@ -70,28 +70,30 @@ $('body').off('click','.rename').on('click','.rename',  function () {
 
 //--This is the function used to select system action command
 $("body").off('click','.listCmdAction').on( 'click','.listCmdAction', function () {
-    var type = $(this).attr('data-type');
-    var el = $(this).closest('.' + type).find('.expressionAttr[data-l1key=cmd]');
+    var el = $(this);
     jeedom.cmd.getSelectModal({cmd: {type: 'action'}}, function (result) {
-        el.value(result.human);
-        jeedom.cmd.displayActionOption(el.value(), '', function (html) {
-            el.closest('.' + type).find('.actionOptions').html(html);
-            taAutosize();
-        });
-    });
+        var calcul = el.closest('.action').find('.expressionAttr[data-l1key=cmd]');
+        calcul.value(result.human);
+
+        jeedom.cmd.displayActionOption(calcul.value(), '', function (html) {
+         calcul.closest('.action').find('.actionOptions').html(html);
+         //taAutosize();
+     });
+ });
 });
 
 //--This is the function used to select equipment action command
 $("body").off('click','.listAction').on( 'click','.listAction',function () {
-	var type = $(this).attr('data-type');
-	var el = $(this).closest('.' + type).find('.expressionAttr[data-l1key=cmd]');
-	jeedom.getSelectActionModal({}, function (result) {
-		el.value(result.human);
-		jeedom.cmd.displayActionOption(el.value(), '', function (html) {
-			el.closest('.' + type).find('.actionOptions').html(html);
-			taAutosize();
-		});
-	});
+    var el = $(this);
+    jeedom.getSelectActionModal({}, function (result) {
+        var calcul = el.closest('.action').find('.expressionAttr[data-l1key=cmd]');
+        calcul.value(result.human);
+
+        jeedom.cmd.displayActionOption(calcul.value(), '', function (html) {
+         calcul.closest('.action').find('.actionOptions').html(html);
+         //taAutosize();
+     });
+ });
 });
 
 //--This is the function used to select system info command
@@ -446,13 +448,13 @@ function addBinding(_binding) {
             if (isset(_binding.action)) {
                 div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #337ab7;">'+_binding.action.length+' actions</span>';                
             }else{
-                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5bc0de;">No action</span>';
+                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #f0ad4e;">No action</span>';
             }
 
             if (isset(_binding.nsr_slots)) {
                 div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #337ab7;">'+_binding.nsr_slots.length+' slots</span>';                
             }else{
-                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5bc0de;">No slot</span>';
+                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #f0ad4e;">No slot</span>';
             }
 
             if (_binding.enable == 1) {
@@ -730,10 +732,13 @@ function addInfoCmd(_infoCmd, _el){
     // div += '</span>';
     div += '</div>';
 
-    _el.find('.div_infoCmd').append(div);
-    _el.find('.infoCmd:last').find('.bindingAttr').val(_infoCmd);
-    
-
+    if ($.isEmptyObject(_infoCmd)) {
+        _el.find('.div_infoCmd').append(div);
+        _el.find('.infoCmd:last').find('.bindingAttr').val('');
+    }else{
+        _el.find('.div_infoCmd').append(div);
+        _el.find('.infoCmd:last').find('.bindingAttr').val(_infoCmd);
+    }
 }
 
 function addCmdToTable(_cmd) {
