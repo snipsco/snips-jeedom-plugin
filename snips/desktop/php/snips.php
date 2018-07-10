@@ -105,11 +105,6 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
     <li role="presentation"><a class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
 
-
-
-    <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Settings}}</a></li>
-
-
   </ul>
 
 
@@ -119,13 +114,13 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
 
     <form class="form-horizontal">
-        <fieldset>
+        <fieldset style="width: 1024px; margin:auto;">
           <legend>{{Intent Configuration}}</legend>
             <div class="form-group">
                 <label class="col-sm-1 control-label">{{Name}}</label>
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                     <input type="text" class="eqLogicAttr form-control" id="intentId" data-l1key="id" style="display : none;" />
-                    <input type="text" class="eqLogicAttr form-control" id="intentName" data-l1key="name" disabled="disabled" "/>
+                    <input type="text" class="eqLogicAttr form-control input-sm" id="intentName" data-l1key="name" disabled="disabled" "/>
                 </div>
 
 
@@ -141,24 +136,24 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
             <div class="form-group">
 
                 <label class="col-sm-1 control-label">{{Status}}</label>
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                      <label class="btn btn-primary">
+                      <label class="btn btn-primary btn-sm">
                         <input type="checkbox" class="eqLogicAttr" data-l1key="isEnable"> Enable
                       </label>
                     </div>
                 </div>
 
                 <label class="col-sm-1 control-label">{{Reaction}}</label>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
 
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
 
-                  <label class="btn btn-default active" style="width: 150px;">
+                  <label class="btn btn-default btn-sm active" style="width: 150px;">
                     <input type="radio" class="eqLogicAttr" data-l1key="configuration" data-l2key="isSnipsConfig"> Snips Binding
                   </label>
                   
-                  <label class="btn btn-default" style="width: 150px;">
+                  <label class="btn btn-default btn-sm" style="width: 150px;">
                     <input type="radio" class="eqLogicAttr" data-l1key="configuration" data-l2key="isInteraction"> JeeDom Interaction
                   </label>
 
@@ -168,8 +163,9 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
             </div>
 
         <legend>{{Action Binding}}</legend>
-        <a class="btn btn-success btn-sm cmdAction pull-left" id="bt_addNewBinding" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Attach a new configuration}}</a><br/><br/>
-    
+
+        <div class="panel-heading btn btn-default" id="bt_addNewBinding" style="width: 100%; border: 1.5px dashed #ddd; box-shadow: 0 1px 1px rgba(0,0,0,.05); background-color:#fff;"><i class="fa fa-plus-circle"></i> {{Attach a new binding}}</div>
+        <!-- <a class="btn btn-success btn-sm cmdAction pull-left" id="bt_addNewBinding" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Attach a new binding}}</a><br/><br/> -->
 
         <div id="div_bindings" style="padding-top: 10px;"></div>
 </fieldset>

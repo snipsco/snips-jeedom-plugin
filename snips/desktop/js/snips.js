@@ -432,10 +432,10 @@ function addBinding(_binding) {
 
     var random = Math.floor((Math.random() * 1000000) + 1);
 
-    var div = '<div class="binding panel panel-default">';
+    var div = '<div class="binding panel panel-default" style="margin-bottom:10px;">';
 
     //** Name section
-    div += '<div class="panel-heading">';
+    div += '<div class="panel-heading" style="background-color:#fff;">';
 
     div += '<h4 class="panel-title">';
     div += '<a data-toggle="collapse" data-parent="#div_bindings" href="#collapse' + random + '">';
@@ -443,10 +443,22 @@ function addBinding(_binding) {
     div += '</a>';
             div += '<span class="pull-right">';
 
+            if (isset(_binding.action)) {
+                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #337ab7;">'+_binding.action.length+' actions</span>';                
+            }else{
+                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5bc0de;">No action</span>';
+            }
+
+            if (isset(_binding.nsr_slots)) {
+                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #337ab7;">'+_binding.nsr_slots.length+' slots</span>';                
+            }else{
+                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5bc0de;">No slot</span>';
+            }
+
             if (_binding.enable == 1) {
                 div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5cb85c;">Enabled</span>';
             }else{
-                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5cb85c;">Enabled</span>';
+                div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #d9534f;">Disabled</span>';
             }   
 
             div += '<span class="btn-group" role="group">';
@@ -460,8 +472,8 @@ function addBinding(_binding) {
 
     //** Content section
     div += '<div id="collapse' + random + '" class="panel-collapse collapse in">';
-    div += '<div class="panel-body">';
-    div += '<div class="well">';
+    div += '<div class="panel-body"  style="background-color:#f5f7f9;>';
+    div += '<div>'; // well
 
     div += '<form class="form-horizontal" role="form">';
 
@@ -469,15 +481,15 @@ function addBinding(_binding) {
 		div += '<div class="form-group">';
 		div += '<label class="col-sm-1 control-label">{{Name}}</label>';
 		div += '<div class="col-sm-2">';
-		div += '<span class="bindingAttr btn btn-sm btn-default rename cursor" data-l1key="name" style="font-size : 1em;" ></span>';
+		div += '<span class="bindingAttr btn btn-sm btn-default rename cursor" data-l1key="name"></span>';
 		div += '</div>';
 
         if (isset(_binding.nsr_slots)) {
             //** Required slots
             div += '<label class="col-sm-2 control-label">{{Required Slots}}</label>';
-            div += '<div class="col-sm-3">';
+            div += '<div class="col-sm-4">';
             for(x in _binding.nsr_slots){
-                div += '<span class="label label-primary" style="margin-right: 10px;font-size: 1em;">'+_binding.nsr_slots[x]+'</span>';
+                div += '<span class="label label-primary" style="margin-right: 10px;font-size: 0.9em;">'+_binding.nsr_slots[x]+'</span>';
             }
             div += '</div>';
         }
@@ -507,14 +519,18 @@ function addBinding(_binding) {
     //** Condition Section
     div += '<div class="section-title"><strong>{{Condition(s)}}</strong>';
     div += '<a class="btn btn-xs btn-success bt_addCondition" style="margin-left: 15px;"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
+    div += '<span style="margin-left: 20px;"><code>(Multiple conditions will be in \'AND\' relation)</code></span>';
     div += '</div>';
     div += '<div class="div_condition"></div>';
 
     div += '<hr/>';
 
     //** Action Section
-    div += '<div class="section-title"><strong>{{Action(s) (Multiple actions will be executed in order!)}}</strong>';
+    div += '<div class="section-title"><strong>{{Action(s)}}</strong>';
     div += '<a class="btn btn-success btn-xs bt_addAction" style="margin-left: 15px;"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
+    
+    div += '<span style="margin-left: 20px;"><code>(Multiple actions will be executed in order from top to down)</code></span>';
+    
     div += '</div>';
     div += '<div class="div_action"></div>';
 
@@ -524,19 +540,20 @@ function addBinding(_binding) {
     div += '<div class="section-title" ><strong>{{Feedback Tts}}</strong>';
     div += '<a class="btn btn-primary btn-xs playFeedback" style="margin-left: 15px;"><i class="fa fa-play"></i> {{Test Play}}</a>';
     div += '<a class="btn btn-default btn-xs" style="margin-left: 15px;"><i class="fa fa-times"></i> {{Enable}}</a>';
+    div += '<span style="margin-left: 20px;"><code>(Use \'{#}\' to add any system variable)</code></span>';
     div += '</div>';
 
     div += '<div class="div_feedback form-group">'
 
-    div += '<div class="col-sm-4">';
+    div += '<div class="col-sm-6">';
     div += '<textarea class="bindingAttr form-control ta_autosize feedbackSpeech"'+
-    		'data-l1key="tts" data-l2key="text" rows="1"'+
-    		'style="resize: none; overflow: hidden; word-wrap: break-word; height: 30px;"'+
+    		'data-l1key="tts" data-l2key="text" rows="2"'+
+    		'style="resize: none; overflow: hidden; word-wrap: break-word; height: 30px; font-size:12px;"'+
     		'placeholder="Speech text">';
    	div += '</textarea>';
     div += '</div>';
 
-    div += '<div class="col-sm-5 div_infoCmd"></div>';
+    div += '<div class="col-sm-6 div_infoCmd"></div>';
 
     div += '</div>';
 
@@ -568,6 +585,12 @@ function addBinding(_binding) {
             addAction(_binding.action, $('#div_bindings .binding:last'));
         }
     }
+
+    if(!isset(_binding.tts)){
+
+        _binding.tts= { "vars": {}};
+    }
+
     // Add all the tts infoCmds
     if (is_array(_binding.tts.vars)) {
         for (var i in _binding.tts.vars) {
@@ -598,7 +621,7 @@ function addAction(_action, _el) {
     var div = '<div class="action">';
     div += '<div class="form-group ">';
 
-    div += '<div class="col-sm-4">';
+    div += '<div class="col-sm-6">';
     div += '<div class="input-group">';
     div += '<span class="input-group-btn">';
     div += '<a class="btn btn-default bt_removeAction btn-sm" data-type="action"><i class="fa fa-minus-circle"></i></a>';
@@ -612,13 +635,13 @@ function addAction(_action, _el) {
     div += '</div>';
 
     var actionOption_id = uniqId();
-    div += '<div class="col-sm-5 actionOptions" id="'+actionOption_id+'">';
+    div += '<div class="col-sm-6 actionOptions" id="'+actionOption_id+'">';
     div += '</div>';
 
-    div += '<div class="col-sm-1">';
-    div += '<input type="checkbox" class="expressionAttr" data-l1key="options" data-l2key="enable" checked title="{{Enable this action}}" />';
-    div += '<a>Enable</a>';
-    div += '</div>';
+    // div += '<div class="col-sm-1">';
+    // div += '<input type="checkbox" class="expressionAttr" data-l1key="options" data-l2key="enable" checked title="{{Enable this action}}" />';
+    // div += '<a>Enable</a>';
+    // div += '</div>';
 
     div += '</div>';
 
@@ -650,7 +673,7 @@ function addCondition(_condition, _el){
     var div = '<div class="condition">';
     div += '<div class="form-group ">';
 
-    div += '<div class="col-sm-5">';
+    div += '<div class="col-sm-12">';
     div += '<div class="input-group input-group-sm">';
 
     // remove button 
@@ -659,16 +682,16 @@ function addCondition(_condition, _el){
     div += '</span>';
 
     // IF
-    div += '<span class="input-group-addon">If</span>';
+    div += '<span class="input-group-addon" style="width: 100px" >ONLY IF</span>';
 
 	var selectSlotsId = uniqId();
     // pre operante
 
-    div += '<select class="conditionAttr form-control input-sm" data-l1key="pre" id="'+selectSlotsId+'">';
+    div += '<select class="conditionAttr form-control input-sm" data-l1key="pre" id="'+selectSlotsId+'" style="-webkit-appearance: none; border-radius: 0;">';
     div += '</select>';
 
     // EQUAL TO =
-    div += '<span class="conditionAttr input-group-addon" data-l1key="relation">=</span>';
+    div += '<span class="conditionAttr input-group-addon" data-l1key="relation" style="width: 100px" >=</span>';
 
     // aft operante
     div += '<input class="conditionAttr form-control" data-l1key="aft">';
@@ -693,7 +716,8 @@ function addCondition(_condition, _el){
 function addInfoCmd(_infoCmd, _el){
 
     var div = '<div class="input-group input-group-sm infoCmd" style="width: 100%">';
-    div += '<span class="input-group-addon" style="width: 100px">Value</span>';
+    div += '<span class="input-group-btn ">';
+    div += '<a class="btn btn-default btn-sm" style="width: 100px" ><i class="fa fa-chevron-right"></i>'+"&nbsp;&nbsp;&nbsp;"+'Variable</a></span>'
     div += '<input value="" class="bindingAttr form-control input-sm" data-l1key="tts" data-l2key="vars" >';
     div += '<span class="input-group-btn">';
     div += '    <button class="btn btn-default listInfoCmd" type="button" title="{{Select a value}}">';
@@ -701,9 +725,9 @@ function addInfoCmd(_infoCmd, _el){
     div += '    </button>';
     div += '</span>';
 
-    div += '<span class="input-group-addon">';
-    div += '<i class="fa fa-arrows"></i>';
-    div += '</span>';
+    // div += '<span class="input-group-addon">';
+    // div += '<i class="fa fa-chevron-right"></i>';
+    // div += '</span>';
     div += '</div>';
 
     _el.find('.div_infoCmd').append(div);
@@ -720,9 +744,9 @@ function addCmdToTable(_cmd) {
         _cmd.configuration = {};
     }
 
-    var tr = '<div class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="float:left; margin-right: 10px;">';
+    var tr = '<div class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="float:left; margin-right: 10px;margin-bottom: 10px;">';
     tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
-    tr += '<input class="cmdAttr form-control" data-l1key="name" style=" font-size : 1em;" disabled="disabled" >';
+    tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" disabled="disabled" >';
     tr += '</div>';
 
     $('#table_cmd').append(tr);

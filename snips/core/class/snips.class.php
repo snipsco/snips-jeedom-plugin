@@ -488,7 +488,8 @@ class snips extends eqLogic {
 
                     $options = $action['options'];
 
-                    if($action['options']['enable']){
+                    // Deleted enable function for actions $action['options']['enable']
+                    if(true){
                         scenarioExpression::createAndExec('action', $action['cmd'], $options);
                         
                     }else{
