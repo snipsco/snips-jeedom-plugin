@@ -21,8 +21,8 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 include 'ChromePhp.php';
 
-//ini_set("display_errors","On");
-//error_reporting(E_ALL);
+ini_set("display_errors","On");
+error_reporting(E_ALL);
 
 //ChromePhp::log('Hello console!');
 
@@ -233,6 +233,34 @@ class snips extends eqLogic {
             self::publish($topic, json_encode($payload));
         }
        
+    }
+
+    public static function generateFeedback($org_text, $vars, $test_play = false){
+        $string_subs = explode('{#}',$org_text, -1);
+
+        $speaking_text = '';
+        foreach($string_subs as $key => $sub){
+
+            if ($test_play) {
+                if (isset($var[$key])) {
+                    $sub .= cmd::byString(str_replace('#', '', $var[$key])).getValue();
+                }else{
+                    $sub .= '';
+                }
+            }else{
+                if (isset($var[$key])) {
+                    $sub .= cmd::byId(str_replace('#', '', $var[$key])).getValue();
+                }else{
+                    $sub .= '';
+                }
+            }
+                
+            $speaking_content .= $sub;
+            }
+        }
+
+        return $speaking_text;
+
     }
 
     public static function publish($topic, $payload){
@@ -498,7 +526,8 @@ class snips extends eqLogic {
 
                 }
                 // Feed back when all the action are done
-                snips::sayFeedback($binding['tts']['text'], $session_id);   
+                $text = snips::generateFeedback($binding['tts']['text'],$binding['tts']['vars']);
+                snips::sayFeedback($text, $session_id);   
             }
         }
 

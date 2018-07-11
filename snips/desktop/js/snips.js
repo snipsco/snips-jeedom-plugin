@@ -18,6 +18,10 @@ MODE_LIST = null;
 INTENT = null; 
 
 ////--------------------Events Binding--------------------////
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+})
+
 //--This is used to import all the available slots when the page is ready.
 $(document).on('change', '#intentName', function() {
 	INTENT = $('#intentName').val(); 
@@ -198,8 +202,8 @@ $("#div_bindings").delegate(".feedbackSpeech",'keyup', function(){
     var listVarCount = el.find('.div_infoCmd').find('.infoCmd').length;
     var textVarCount = $(this).val().split('{#}').length-1;
 
-    console.log('Count from text:'+textVarCount);
-    console.log('Count from exist:'+listVarCount);
+    // console.log('Count from text:'+textVarCount);
+    // console.log('Count from exist:'+listVarCount);
     var count = 0 ;
     while(listVarCount != textVarCount){
         count += 1;
@@ -208,12 +212,12 @@ $("#div_bindings").delegate(".feedbackSpeech",'keyup', function(){
             // Reduct from the last one
             //debugger;
             el.find('.div_infoCmd').find('.infoCmd:last').remove();
-            console.log('Removed');
+            
         }else if(listVarCount < textVarCount){
             // InfoCmd is less than needed
             // Append new to the last one
             addInfoCmd({}, el);
-            console.log('Added');
+            
         }
         var listVarCount = el.find('.div_infoCmd').find('.infoCmd').length;
         var textVarCount = $(this).val().split('{#}').length-1;
@@ -302,13 +306,21 @@ $('.removeAll').on('click', function () {
 //--This function is used to preview the feedback speech
 $("#div_bindings").delegate(".playFeedback",'click', function(){
 
+    var org_text = $(this).closest('.binding').find('.feedbackSpeech').val();
+    var vars = {};
+
+    $(this).closest('.binding').find('.infoCmd').find('.bindingAttr').each(function(){
+        vars.push($(this).val());
+    });
+    
 	//console.log('Play feedback');
 	$.ajax({
                 type: "POST", // méthode de transmission des données au fichier php
                 url: "plugins/snips/core/ajax/snips.ajax.php", 
                 data: {
                     action: "playFeedback",
-                    text: $(this).closest('.binding').find('.feedbackSpeech').val(),
+                    text: org_text,
+                    vars: vars,
                 },
                 dataType: 'json',
                 global: false,
@@ -434,7 +446,7 @@ function addBinding(_binding) {
 
     var random = Math.floor((Math.random() * 1000000) + 1);
 
-    var div = '<div class="binding panel panel-default" style="margin-bottom:10px;">';
+    var div = '<div class="binding panel panel-default" style="margin-bottom:10px;border-radius: 0px;">';
 
     //** Name section
     div += '<div class="panel-heading" style="background-color:#fff;">';
@@ -520,8 +532,8 @@ function addBinding(_binding) {
 
     //** Condition Section
     div += '<div class="section-title"><strong>{{Condition(s)}}</strong>';
-    div += '<a class="btn btn-xs btn-success bt_addCondition" style="margin-left: 15px;"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
-    div += '<span style="margin-left: 20px;"><code>(Multiple conditions will be in \'AND\' relation)</code></span>';
+    div += '<a class="btn btn-xs btn-success bt_addCondition" style="margin-left: 15px;" data-toggle="tooltip" data-placement="top" title="Multiple conditions will be in \'AND\' relation"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
+    //div += '<span style="margin-left: 20px;"><code>(Multiple conditions will be in \'AND\' relation)</code></span>';
     div += '</div>';
     div += '<div class="div_condition"></div>';
 
@@ -529,9 +541,10 @@ function addBinding(_binding) {
 
     //** Action Section
     div += '<div class="section-title"><strong>{{Action(s)}}</strong>';
-    div += '<a class="btn btn-success btn-xs bt_addAction" style="margin-left: 15px;"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
+    div += '<a class="btn btn-success btn-xs bt_addAction" style="margin-left: 15px;" '+
+            'data-toggle="tooltip" data-placement="top" title="Multiple actions will be executed in order from top to down"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
     
-    div += '<span style="margin-left: 20px;"><code>(Multiple actions will be executed in order from top to down)</code></span>';
+    //div += '<span style="margin-left: 20px;"><code>(Multiple actions will be executed in order from top to down)</code></span>';
     
     div += '</div>';
     div += '<div class="div_action"></div>';
@@ -542,7 +555,7 @@ function addBinding(_binding) {
     div += '<div class="section-title" ><strong>{{Feedback Tts}}</strong>';
     div += '<a class="btn btn-primary btn-xs playFeedback" style="margin-left: 15px;"><i class="fa fa-play"></i> {{Test Play}}</a>';
     div += '<a class="btn btn-default btn-xs" style="margin-left: 15px;"><i class="fa fa-times"></i> {{Enable}}</a>';
-    div += '<span style="margin-left: 20px;"><code>(Use \'{#}\' to add any system variable)</code></span>';
+    //div += '<span style="margin-left: 20px;"><code>(Use \'{#}\' to add dynamic variable, then setup follwing the same order)</code></span>';
     div += '</div>';
 
     div += '<div class="div_feedback form-group">'
@@ -551,7 +564,8 @@ function addBinding(_binding) {
     div += '<textarea class="bindingAttr form-control ta_autosize feedbackSpeech"'+
     		'data-l1key="tts" data-l2key="text" rows="2"'+
     		'style="resize: none; overflow: hidden; word-wrap: break-word; height: 30px; font-size:12px;"'+
-    		'placeholder="Speech text">';
+    		'placeholder="Speech text" data-toggle="tooltip" '+
+            'data-placement="bottom" title="Use \'{#}\' to add dynamic variable, then setup variables follwing the same order">';
    	div += '</textarea>';
     div += '</div>';
 
@@ -604,6 +618,7 @@ function addBinding(_binding) {
         }
     }
 
+    $('[data-toggle="tooltip"]').tooltip();
 
     $('.collapse').collapse();
     $("#div_bindings .binding:last .div_condition").sortable({axis: "y", cursor: "move", items: ".condition", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
@@ -719,7 +734,7 @@ function addInfoCmd(_infoCmd, _el){
 
     var div = '<div class="input-group input-group-sm infoCmd" style="width: 100%">';
     div += '<span class="input-group-btn ">';
-    div += '<a class="btn btn-default btn-sm" style="width: 100px" ><i class="fa fa-chevron-right"></i>'+"&nbsp;&nbsp;&nbsp;"+'Variable</a></span>'
+    div += '<a class="btn btn-default btn-sm" style="width: 100px" data-toggle="tooltip" data-placement="top" title="Drag to change order"><span class="glyphicon glyphicon-sort" aria-hidden="true"></span>'+"&nbsp;&nbsp;&nbsp;"+'Variable</a></span>'
     div += '<input value="" class="bindingAttr form-control input-sm" data-l1key="tts" data-l2key="vars" >';
     div += '<span class="input-group-btn">';
     div += '    <button class="btn btn-default listInfoCmd" type="button" title="{{Select a value}}">';

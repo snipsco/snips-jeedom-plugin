@@ -35,7 +35,8 @@ try {
     }
 
     if (init('action') == 'playFeedback') {
-        snips::sayFeedback(init('text'));
+        $text = snips::generateFeedback(init('text'),init('vars'), true);
+        snips::sayFeedback($text);
         ajax::success();
     }
 
