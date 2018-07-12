@@ -22,9 +22,21 @@ $(function () {
     $('[data-toggle="tooltip"]').tooltip();
 
     if($('input[name=reaction]').is(":checked")){
-        $('input[name=reaction]').closest('label').addClass('active');
+        $(this).closest('label').addClass('active');
     }else{
-        $('input[name=reaction]').closest('label').removeClass('active');
+        $(this).closest('label').removeClass('active');
+    }
+
+    if($('input[data-l1key=isEnable]').is(":checked")){
+        $(this).closest('label').addClass('active');
+        $(this).closest('label').removeClass('btn-success');
+        $(this).closest('label').addClass('btn-danger');
+        $(this).closest('label').find('span').text('× Disable');
+    }else{
+        $(this).closest('label').removeClass('active');
+        $(this).closest('label').removeClass('btn-danger');
+        $(this).closest('label').addClass('btn-success');
+        $(this).closest('label').find('span').text('Enable');
     }
 })
 
@@ -39,9 +51,24 @@ $(document).on('change', 'input[name=reaction]', function() {
 
     }else{
         $(this).closest('label').removeClass('active');
-        
+
     }
 });
+
+$(document).on('change', 'input[data-l1key=isEnable]', function() {
+    if($(this).is(":checked")){
+        $(this).closest('label').addClass('active');
+        $(this).closest('label').removeClass('btn-success');
+        $(this).closest('label').addClass('btn-danger');
+        $(this).closest('label').find('span').text('× Disable');
+    }else{
+        $(this).closest('label').removeClass('active');
+        $(this).closest('label').removeClass('btn-danger');
+        $(this).closest('label').addClass('btn-success');
+        $(this).closest('label').find('span').text('Enable');
+    }
+});
+
 
 //--This is the function used to hack system command select modal
 $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function() {
@@ -707,7 +734,7 @@ function addCondition(_condition, _el){
     var div = '<div class="condition">';
     div += '<div class="form-group ">';
 
-    div += '<div class="col-sm-12">';
+    div += '<div class="col-sm-6">';
     div += '<div class="input-group input-group-sm">';
 
     // remove button 
@@ -724,11 +751,15 @@ function addCondition(_condition, _el){
     div += '<select class="conditionAttr form-control input-sm" data-l1key="pre" id="'+selectSlotsId+'" style="-webkit-appearance: none; border-radius: 0;">';
     div += '</select>';
 
+    div += '</div></div>'
+
+    div += '<div class="col-sm-6">';
+    div += '<div class="input-group input-group-sm" style="width: 100%;">';
     // EQUAL TO =
     div += '<span class="conditionAttr input-group-addon" data-l1key="relation" style="width: 100px" >=</span>';
 
     // aft operante
-    div += '<input class="conditionAttr form-control" data-l1key="aft">';
+    div += '<input class="conditionAttr form-control input-sm" data-l1key="aft">';
     div += '</div>';
     div += '</div>';
 

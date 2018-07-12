@@ -42,14 +42,14 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
       <div class="cursor eqLogicAction reload" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <i class="fa fa-refresh" style="font-size : 6em;color:#5cb85c;"></i>
         <br>
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#5cb85c">{{Reload}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Reload}}</span>
       </div>
 
       <div class="cursor eqLogicAction removeAll" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <i class="fa divers-slightly" style="font-size : 6em;color:#c9302c;"></i>
         <br>
 
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#c9302c">{{Remove All}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Remove All}}</span>
       </div>
 
       
@@ -167,9 +167,10 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
                 <label class="col-sm-1 control-label">{{Status}}</label>
                 <div class="col-sm-3">
+                  
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                      <label class="btn btn-primary btn-sm">
-                        <input type="checkbox" class="eqLogicAttr" data-l1key="isEnable"> Enable
+                      <label class="btn btn-success btn-sm">
+                        <input type="checkbox" class="eqLogicAttr" id="isEnable" data-l1key="isEnable"><span>Enable</span>
                       </label>
                     </div>
                 </div>
