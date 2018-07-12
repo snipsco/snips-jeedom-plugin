@@ -19,12 +19,26 @@ INTENT = null;
 
 ////--------------------Events Binding--------------------////
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip();
+
+    if($('input[name=reaction]').is(":checked")){
+        $('input[name=reaction]').closest('label').addClass('active');
+    }else{
+        $('input[name=reaction]').closest('label').removeClass('active');
+    }
 })
 
 //--This is used to import all the available slots when the page is ready.
 $(document).on('change', '#intentName', function() {
 	INTENT = $('#intentName').val(); 
+});
+
+$(document).on('change', 'input[name=reaction]', function() {
+    if($(this).is(":checked")){
+        $(this).closest('label').addClass('active');
+    }else{
+        $(this).closest('label').removeClass('active');
+    }
 });
 
 //--This is the function used to hack system command select modal
@@ -307,12 +321,12 @@ $('.removeAll').on('click', function () {
 $("#div_bindings").delegate(".playFeedback",'click', function(){
 
     var org_text = $(this).closest('.binding').find('.feedbackSpeech').val();
-    var vars = {};
+    var vars = [];
 
     $(this).closest('.binding').find('.infoCmd').find('.bindingAttr').each(function(){
         vars.push($(this).val());
     });
-    
+
 	//console.log('Play feedback');
 	$.ajax({
                 type: "POST", // méthode de transmission des données au fichier php
@@ -417,6 +431,7 @@ function printEqLogic(_eqLogic) {
 }
 
 function saveEqLogic(_eqLogic) {
+    //debugger;
     if (!isset(_eqLogic.configuration)) {
     	_eqLogic.configuration = {};
     }

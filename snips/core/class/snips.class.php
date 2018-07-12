@@ -21,8 +21,8 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 include 'ChromePhp.php';
 
-ini_set("display_errors","On");
-error_reporting(E_ALL);
+// ini_set("display_errors","On");
+// error_reporting(E_ALL);
 
 //ChromePhp::log('Hello console!');
 
@@ -236,31 +236,39 @@ class snips extends eqLogic {
     }
 
     public static function generateFeedback($org_text, $vars, $test_play = false){
+        snips::debug('generating feedback test');
+        
         $string_subs = explode('{#}',$org_text, -1);
 
         $speaking_text = '';
-        foreach($string_subs as $key => $sub){
+        if (!empty($string_subs)) {
+            foreach($string_subs as $key => $sub){
+                if($test_play) {
+                    if (isset($vars[$key])){
+                        snips::debug('[string] cmd id is '.cmd::byString($vars[$key])->getId());
+                        $sub .= cmd::byString($vars[$key])->getValue();
 
-            if ($test_play) {
-                if (isset($var[$key])) {
-                    $sub .= cmd::byString(str_replace('#', '', $var[$key])).getValue();
+                    }else{
+                        snips::debug('[string] cmd id is not set');
+                        $sub .= '';
+                    }
                 }else{
-                    $sub .= '';
+                    if (isset($vars[$key])) {
+                        snips::debug('[number] cmd id is '.str_replace('#', '', $vars[$key]));
+                        $sub .= cmd::byId(str_replace('#', '', $vars[$key]))->getValue();
+
+                    }else{
+                        snips::debug('[number] cmd id not set');
+                        $sub .= '';
+                    }
                 }
-            }else{
-                if (isset($var[$key])) {
-                    $sub .= cmd::byId(str_replace('#', '', $var[$key])).getValue();
-                }else{
-                    $sub .= '';
-                }
+                    
+                $speaking_text .= $sub;
             }
-                
-            $speaking_content .= $sub;
-            }
+            return $speaking_text;
+        }else{
+            return $org_text;
         }
-
-        return $speaking_text;
-
     }
 
     public static function publish($topic, $payload){
@@ -526,7 +534,9 @@ class snips extends eqLogic {
 
                 }
                 // Feed back when all the action are done
-                $text = snips::generateFeedback($binding['tts']['text'],$binding['tts']['vars']);
+                $text = snips::generateFeedback($binding['tts']['text'], $binding['tts']['vars'], false);
+
+                snips::debug('Text generated is '.$text.' |||| Orginal text is '.$binding['tts']['text']);
                 snips::sayFeedback($text, $session_id);   
             }
         }
@@ -545,6 +555,9 @@ class snips extends eqLogic {
 
             $eq->checkAndUpdateCmd($slot, $value);
 
+            $cmd = $eq->getCmd(null, $slot);
+            $cmd->setValue($value);
+            $cmd->save();
             //snips::debug('Setting slots: '.$slot.' with value: '.$value);
         }
     }
@@ -559,6 +572,8 @@ class snips extends eqLogic {
 
                 foreach ($cmds as $cmd) {
                     $cmd->setCache('value', 'NULL');
+                    $cmd->setValue('NULL');
+                    $cmd->save();
                 }
             }
 
@@ -571,6 +586,8 @@ class snips extends eqLogic {
 
                 $cmd = $eq->getCmd(null, $slot);
                 $cmd->setCache('value');
+                $cmd->setValue('NULL');
+                $cmd->save();
                 //$eq->checkAndUpdateCmd($slot, 'NULL');
 
             } 
