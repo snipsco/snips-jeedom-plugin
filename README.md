@@ -19,8 +19,19 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] Dynamic TTS
 
 # Develop Diary
+12, Jul, 2018
+- [x] Tested all the functional part, make it ready for demo.
+
+11, Jul, 2018
+- [x] Backend support for dynamic tts, senario etc.. 
+
+10, Jul, 2018
+- [x] Polishing user interface
+- [x] Changed default style, more visible for useful information
+
 9, Jul, 2018 
 - [x] Troubleshooting with dynamic feature, fixed died loop problem. 
+- [x] Transfered repository to 'snipsco'.
 
 6, Jul, 2018
 - [x] Add feature: dynamic tts message. User can use '{#}' to represent a value from system.
