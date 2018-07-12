@@ -13,8 +13,9 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] Load all the intents automaticly
 - [ ] Find out all the available devices automaticly
 - [x] All the intents shell be managed by its objects(Do not have to configure by user)
-- [ ] Make the slots information useful
-- [ ] Working separately with Snips site(Possible, but no test yet)
+- [x] Make the slots information useful
+- [ ] Working separately with Snips site (Possible, but no test yet)
+- [ ] Download 'assistant.json' file remotely from snips site (Via ssh)
 - [x] Managing conditions
 - [x] Dynamic TTS
 
