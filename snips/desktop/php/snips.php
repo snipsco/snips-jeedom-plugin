@@ -54,18 +54,18 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
       
       <div class="cursor eqLogicAction resetMqtt" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="fa fa-keyboard-o" style="font-size : 6em;color:#ec971f;"></i>
+        <i class="fa fa-keyboard-o" style="font-size : 6em;color:#337ab7;"></i>
         <br>
 
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#ec971f">{{Reset MQTT}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Reset MQTT}}</span>
       </div>
 
 
       <div class="cursor eqLogicAction resetSlotsCmd" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="fa techno-charging" style="font-size : 6em;color:#9b59b6;"></i>
+        <i class="fa techno-charging" style="font-size : 6em;color:#337ab7;"></i>
         <br>
 
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#9b59b6">{{Reset SlotCmd}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Reset SlotCmd}}</span>
       </div>
 
 
@@ -73,7 +73,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
         <i class="fa fa-wrench" style="font-size : 6em;color:#337ab7;"></i>
         <br>
 
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#337ab7">{{Configuration}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Configuration}}</span>
       </div>
 
 
@@ -83,14 +83,44 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
   <!--Management of All the Intents (Objects)-->
   <div class="eqLogicThumbnailContainer">
 
+
+    <!-- <div class="panel panel-default" style="width: 194px; height: 120px;">
+      <div class="panel-heading"><span class="label label-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></span><strong>setLights</strong></div>
+        <div class="panel-body">
+        Panel content
+        </div>
+    </div> -->
+
     <?php
-      foreach ($eqLogics as $eqLogic) {
-      	$opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-      	echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
-      	echo '<img src="' . $plugin->getPathImgIcon() . '" height="105" width="95" />';
-      	echo "<br>";
-      	echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">' . $eqLogic->getHumanName(true, true) . '</span>';
-      	echo '</div>';
+      if (!$eqLogics) {
+          echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">Please load assistant</span></center>';
+      }else{
+        foreach ($eqLogics as $eqLogic) {
+          $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
+          echo '<div class="panel panel-success eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 194px; height: 121px; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
+          echo '<div class="panel-heading" style="padding: 5px 15px;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></div>';
+          echo '<div class="panel-body" style="padding: 0px;">';
+
+          echo '<ul class="list-group" style="margin: 0;">';
+          echo '<li class="list-group-item" style="padding: 5px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('slots')).'</span>Slots</li>';
+          echo '<li class="list-group-item" style="padding: 5px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('bindings')).'</span>Bindings</li>';
+
+          if ($eqLogic->getConfiguration('isSnipsConfig')) {
+            echo '<li class="list-group-item" style="padding: 5px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">Snips Binding</span>Reaction</li>';
+          }else if($eqLogic->getConfiguration('isInteraction')){
+            echo '<li class="list-group-item" style="padding: 5px 10px; border: 0px;"><span class="badge" style="background-color: #f0ad4e;">Interaction</span>Reaction</li>';
+          }else{
+            echo '<li class="list-group-item" style="padding: 5px 10px; border: 0px;"><span class="badge" style="background-color: #c9302c;">Not set</span>Reaction</li>';
+          }
+          echo '</ul>';
+          echo '</div></div>';
+        	// $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
+        	// echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
+        	// echo '<img src="' . $plugin->getPathImgIcon() . '" height="105" width="95" />';
+        	// echo "<br>";
+        	// echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">' . $eqLogic->getHumanName(true, true) . '</span>';
+        	// echo '</div>';
+        }
       }
 ?>
 </div>

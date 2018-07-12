@@ -36,8 +36,10 @@ $(document).on('change', '#intentName', function() {
 $(document).on('change', 'input[name=reaction]', function() {
     if($(this).is(":checked")){
         $(this).closest('label').addClass('active');
+
     }else{
         $(this).closest('label').removeClass('active');
+        
     }
 });
 
