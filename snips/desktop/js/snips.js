@@ -27,7 +27,7 @@ $(function () {
         $(this).closest('label').removeClass('active');
     }
 
-    if($('input[data-l1key=isEnable]').is(":checked")){
+    if($('#isEnable').is(":checked")){
         $(this).closest('label').addClass('active');
         $(this).closest('label').removeClass('btn-success');
         $(this).closest('label').addClass('btn-danger');
@@ -55,7 +55,7 @@ $(document).on('change', 'input[name=reaction]', function() {
     }
 });
 
-$(document).on('change', 'input[data-l1key=isEnable]', function() {
+$(document).on('change', '#isEnable', function() {
     if($(this).is(":checked")){
         $(this).closest('label').addClass('active');
         $(this).closest('label').removeClass('btn-success');
@@ -68,7 +68,6 @@ $(document).on('change', 'input[data-l1key=isEnable]', function() {
         $(this).closest('label').find('span').text('Enable');
     }
 });
-
 
 //--This is the function used to hack system command select modal
 $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function() {

@@ -236,17 +236,31 @@ class snips extends eqLogic {
     }
 
     public static function generateFeedback($org_text, $vars, $test_play = false){
-        snips::debug('generating feedback test');
-        
-        $string_subs = explode('{#}',$org_text, -1);
+        snips::debug('generating feedback text');
+        snips::debug('vars is '.var_dump($vars));
+
+        $string_subs = explode('{#}',$org_text);
 
         $speaking_text = '';
         if (!empty($string_subs)) {
             foreach($string_subs as $key => $sub){
                 if($test_play) {
                     if (isset($vars[$key])){
-                        snips::debug('[string] cmd id is '.cmd::byString($vars[$key])->getId());
-                        $sub .= cmd::byString($vars[$key])->getValue();
+
+                        $cmd = cmd::byString($vars[$key]);
+                        snips::debug('[string] cmd id is '.$cmd_id);
+
+                        if(is_object($cmd)){
+                            $sub .= $cmd->getValue();
+                        }
+                        
+                        // if( cmd::byString($vars[$key])->getValue() == nul ){
+                        //     $sub .= cmd::byString($vars[$key])->getValue();
+
+                        // }else{ 
+                        //     $sub .= cmd::byString($vars[$key])->getCache('value','NULL');
+
+                        // }
 
                     }else{
                         snips::debug('[string] cmd id is not set');
@@ -254,8 +268,24 @@ class snips extends eqLogic {
                     }
                 }else{
                     if (isset($vars[$key])) {
-                        snips::debug('[number] cmd id is '.str_replace('#', '', $vars[$key]));
-                        $sub .= cmd::byId(str_replace('#', '', $vars[$key]))->getValue();
+
+                        $cmd_id = str_replace('#', '', $vars[$key]);
+                        $cmd = cmd::byId($cmd_id);
+
+                        snips::debug('[number] cmd id is '.$cmd_id);
+                        
+
+                        if(is_object($cmd)){
+                            $sub .= $cmd->getValue();
+                        }
+
+                        // if( cmd::byId(str_replace('#', '', $vars[$key]))->getValue() == null){
+
+                        //     $sub .= cmd::byId(str_replace('#', '', $vars[$key]))->getValue();
+                        // }else{
+
+                        //     $sub .= cmd::byId(str_replace('#', '', $vars[$key]))->getCache('value','NULL');
+                        // }
 
                     }else{
                         snips::debug('[number] cmd id not set');
@@ -310,7 +340,9 @@ class snips extends eqLogic {
     public static function getIntents(){
 
         $intents_file = "/usr/share/snips/assistant/assistant.json";
+
         $json_string = file_get_contents($intents_file);
+        snips::debug($json_string, true);
         $json_obj = json_decode($json_string,true);
 
         $intents = $json_obj["intents"];
@@ -332,7 +364,7 @@ class snips extends eqLogic {
                 }
                 
             }
-            $intents_slots[$intent["name"]] = $slots;
+            $intents_slots[$intent["id"]] = $slots;
 
             unset($slots);
         }
@@ -376,6 +408,8 @@ class snips extends eqLogic {
                 $elogic->setName($intent);
                 $elogic->setIsEnable(1);
                 $elogic->setConfiguration('slots', $slots);
+                $elogic->setConfiguration('isSnipsConfig', 1);
+                $elogic->setConfiguration('isInteraction', 0);
                 $elogic->setObject_id(object::byName('snips-intents')->getId());
                 $elogic->save();
             }
@@ -534,7 +568,7 @@ class snips extends eqLogic {
 
                 }
                 // Feed back when all the action are done
-                $text = snips::generateFeedback($binding['tts']['text'], $binding['tts']['vars'], false);
+                $text = snips::generateFeedback($binding['tts']['text'], (array)$binding['tts']['vars'], false);
 
                 snips::debug('Text generated is '.$text.' |||| Orginal text is '.$binding['tts']['text']);
                 snips::sayFeedback($text, $session_id);   
@@ -571,8 +605,8 @@ class snips extends eqLogic {
                 $cmds = $eq->getCmd();
 
                 foreach ($cmds as $cmd) {
-                    $cmd->setCache('value', 'NULL');
-                    $cmd->setValue('NULL');
+                    $cmd->setCache('value',null);
+                    $cmd->setValue(null);
                     $cmd->save();
                 }
             }
@@ -586,10 +620,8 @@ class snips extends eqLogic {
 
                 $cmd = $eq->getCmd(null, $slot);
                 $cmd->setCache('value');
-                $cmd->setValue('NULL');
+                $cmd->setValue(null);
                 $cmd->save();
-                //$eq->checkAndUpdateCmd($slot, 'NULL');
-
             } 
         }
         
