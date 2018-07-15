@@ -57,6 +57,10 @@
 	opacity: 0.6;
 }
 
+.eqLogicAction:hover{
+	opacity: 0.6;
+}
+
 #bt_addNewBinding:hover{
 	background-color: #f5f7f9 !important;
 	border: 1.5px solid #5cb85c !important;

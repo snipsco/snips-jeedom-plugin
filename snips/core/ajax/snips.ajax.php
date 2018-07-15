@@ -29,6 +29,16 @@ try {
 		ajax::success();
 	}
 
+    if (init('action') == 'exportConfigration') {
+        snips::exportConfigration(init('name'));
+        ajax::success();
+    }
+
+    if (init('action') == 'importConfigration') {
+        snips::exportConfigration(init('name'));
+        ajax::success();
+    }
+
     if (init('action') == 'removeAll') {
         snips::deleteAssistant();
         ajax::success();
@@ -36,7 +46,8 @@ try {
 
     if (init('action') == 'playFeedback') {
         $text = snips::generateFeedback(init('text'),init('vars'), true);
-        snips::sayFeedback($text);
+
+        snips::sayFeedback($text, null, init('lang'));
         ajax::success();
     }
 
@@ -49,6 +60,8 @@ try {
         snips::resetSlotsCmd();
         ajax::success();
     }
+
+
 
 
     throw new Exception(__('No method corresponding to : ', __FILE__) . init('action'));

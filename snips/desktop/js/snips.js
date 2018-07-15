@@ -299,6 +299,40 @@ $('.reload').on('click', function () {
             });
 });
 
+//--This is the function used to export all the binding information
+$('.exportConfigration').on('click', function () {
+    bootbox.prompt("{{Please give a name to this export file}}", function (result) {
+        if (result !== null && result != '') {
+            $.ajax({
+                        type: "POST", // method to transmit request
+                        url: "plugins/snips/core/ajax/snips.ajax.php", 
+                        data: {
+                            action: "exportConfigration",
+                            name: result,
+                        },
+                        dataType: 'json',
+                        global: false,
+                        error: function (request, status, error) {
+                            handleAjaxError(request, status, error);
+                        },
+                        success: function (data) { 
+                            if (data.state != 'ok') {
+                                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                                return;
+                            }
+                            $('#div_alert').showAlert({message: 'Successfully exported!', level: 'success'});
+                            location.reload();
+                        }
+                    });
+        }else{
+            $('#div_alert').showAlert({message: 'Please specify a name!', level: 'warning'});
+        }
+
+    });
+            
+});
+
+
 //--This function is used to remove all the loaded skills
 $('.removeAll').on('click', function () {
 	
@@ -355,6 +389,8 @@ $("#div_bindings").delegate(".playFeedback",'click', function(){
         vars.push($(this).val());
     });
 
+    var language = $('span[data-l1key=configuration][data-l2key=language]').text();
+
 	//console.log('Play feedback');
 	$.ajax({
                 type: "POST", // méthode de transmission des données au fichier php
@@ -363,6 +399,7 @@ $("#div_bindings").delegate(".playFeedback",'click', function(){
                     action: "playFeedback",
                     text: org_text,
                     vars: vars,
+                    lang: language,
                 },
                 dataType: 'json',
                 global: false,

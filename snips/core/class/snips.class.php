@@ -21,8 +21,8 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 include 'ChromePhp.php';
 
-// ini_set("display_errors","On");
-// error_reporting(E_ALL);
+ini_set("display_errors","On");
+error_reporting(E_ALL);
 
 //ChromePhp::log('Hello console!');
 
@@ -218,11 +218,11 @@ class snips extends eqLogic {
         }
     }
 
-    public static function sayFeedback($text, $session_id = null){
+    public static function sayFeedback($text, $session_id = null, $lang = 'en_GB'){
         if($session_id == null){
             ChromePhp::log('Only say: '.$text);
             $topic = 'hermes/tts/say';
-            $payload = array('text' => str_replace('{#}', 'Value', $text), "siteId" => "default");
+            $payload = array('text' => str_replace('{#}', 'Value', $text), "siteId" => "default", "lang" => $lang);
 
             self::publish($topic, json_encode($payload));
         }else{
@@ -237,7 +237,7 @@ class snips extends eqLogic {
 
     public static function generateFeedback($org_text, $vars, $test_play = false){
         snips::debug('generating feedback text');
-        snips::debug('vars is '.var_dump($vars));
+        //snips::debug('vars is '.var_dump($vars));
 
         $string_subs = explode('{#}',$org_text);
 
@@ -251,16 +251,20 @@ class snips extends eqLogic {
                         snips::debug('[string] cmd id is '.$cmd_id);
 
                         if(is_object($cmd)){
-                            $sub .= $cmd->getValue();
+                            if ($cmd->getName() == 'intensity_percent' || $cmd->getName() == 'intensity_percentage'){
+                                $sub .= $cmd->getConfiguration('orgVal');
+                            }else{
+                                if($cmd->getValue()){
+                                    $sub .= $cmd->getValue();
+                                }else{ 
+                                    $sub .= $cmd->getCache('value','NULL');
+                                }
+
+                                $sub .= $cmd->getValue();
+                            }
                         }
                         
-                        // if( cmd::byString($vars[$key])->getValue() == nul ){
-                        //     $sub .= cmd::byString($vars[$key])->getValue();
-
-                        // }else{ 
-                        //     $sub .= cmd::byString($vars[$key])->getCache('value','NULL');
-
-                        // }
+                            
 
                     }else{
                         snips::debug('[string] cmd id is not set');
@@ -276,16 +280,20 @@ class snips extends eqLogic {
                         
 
                         if(is_object($cmd)){
-                            $sub .= $cmd->getValue();
+                            if ($cmd->getName() == 'intensity_percent' || $cmd->getName() == 'intensity_percentage'){
+                                $sub .= $cmd->getConfiguration('orgVal');
+                            }else{
+
+                                if($cmd->getValue()){
+                                    $sub .= $cmd->getValue();
+                                    
+                                }else{ 
+                                    $sub .= $cmd->getCache('value','NULL');
+                                }
+
+                                $sub .= $cmd->getValue();
+                            }
                         }
-
-                        // if( cmd::byId(str_replace('#', '', $vars[$key]))->getValue() == null){
-
-                        //     $sub .= cmd::byId(str_replace('#', '', $vars[$key]))->getValue();
-                        // }else{
-
-                        //     $sub .= cmd::byId(str_replace('#', '', $vars[$key]))->getCache('value','NULL');
-                        // }
 
                     }else{
                         snips::debug('[number] cmd id not set');
@@ -388,6 +396,16 @@ class snips extends eqLogic {
     }
 
     public static function reloadAssistant(){
+
+        $assistant_file = "/usr/share/snips/assistant/assistant.json";
+
+        $json_string = file_get_contents($assistant_file);
+        snips::debug($json_string, true);
+        $json_obj = json_decode($json_string,true);
+
+        $language = $json_obj["language"];
+
+
         //self::debug("reload assistant");
         // Add all the intents to configuration
         $intents = json_decode(self::getIntents(), true);
@@ -410,6 +428,7 @@ class snips extends eqLogic {
                 $elogic->setConfiguration('slots', $slots);
                 $elogic->setConfiguration('isSnipsConfig', 1);
                 $elogic->setConfiguration('isInteraction', 0);
+                $elogic->setConfiguration('language', $language);
                 $elogic->setObject_id(object::byName('snips-intents')->getId());
                 $elogic->save();
             }
@@ -576,7 +595,7 @@ class snips extends eqLogic {
         }
 
         //snips::resetSlotsCmd($slots_values, $intent_name);
-        snips::resetSlotsCmd();
+        //snips::resetSlotsCmd();
         /// ----- works
     }
 
@@ -587,10 +606,20 @@ class snips extends eqLogic {
 
         foreach ($slots_values as $slot => $value) {
 
-            $eq->checkAndUpdateCmd($slot, $value);
+            snips::debug('[setSlotsCmd] Slots name is :'.$slot);
+            // adaption for percentage
+            if ($slot == 'intensity_percent' || $slot == 'intensity_percentage') {
+                $org = $value; 
+                $value = $value/100;
+                $value = $value*255;
+                snips::debug('[setSlotsCmd] Slots is percentage, value after convert:'.$value);
+            }
 
+            
             $cmd = $eq->getCmd(null, $slot);
+            $eq->checkAndUpdateCmd($cmd, $value);
             $cmd->setValue($value);
+            $cmd->setConfiguration('orgVal', $org);
             $cmd->save();
             //snips::debug('Setting slots: '.$slot.' with value: '.$value);
         }
@@ -607,6 +636,7 @@ class snips extends eqLogic {
                 foreach ($cmds as $cmd) {
                     $cmd->setCache('value',null);
                     $cmd->setValue(null);
+                    $cmd->setConfiguration('orgVal', null);
                     $cmd->save();
                 }
             }
@@ -621,12 +651,41 @@ class snips extends eqLogic {
                 $cmd = $eq->getCmd(null, $slot);
                 $cmd->setCache('value');
                 $cmd->setValue(null);
+                $cmd->setConfiguration('orgVal', null);
                 $cmd->save();
             } 
         }
         
     }
 
+    static function exportConfigration($name){
+
+        $binding_conf = array();
+
+        $eqs = eqLogic::byType('snips');
+        foreach ($eqs as $eq) {
+            $binding_conf[$eq->getLogicalId()] = $eq->getConfiguration('bindings');
+        }
+
+
+        $file = fopen(dirname(__FILE__).'/../../config_backup/'.$name.'.json', 'w');
+        $res = fwrite($file, json_encode($binding_conf));
+
+        //$json_string = json_encode($binding_conf);
+        //$res = file_put_contents('/../../config_backup/'.$name.'.json', $json_string);
+        if ($res) {
+            snips::debug('success output', true);
+            # code...
+        }else{
+            snips::debug('faild output', true);
+        }
+
+        //'/../../config_backup/'.
+    }
+
+    static function importConfigration($name){
+
+    }
     /*     * *********************Méthodes d'instance************************* */
 
     public function preInsert() {
@@ -723,26 +782,7 @@ class snips extends eqLogic {
 
 class snipsCmd extends cmd {
     
-    // Rewrite
-    public function execute($_options = null) {
-
-        $received_intent = $this->getLogicalId();
-        $target_command = $this->getConfiguration('action');
-        $sessionId = $this->getValue();
-
-        self::debug('Command Handler has been entered with intent: ['.$received_intent.'] and its related command id: ['.$target_command.'] will be execute!');
-
-        $cmd = cmd::byId(str_replace('#','',$target_command));
-
-        $cmd->execute();
-
-        //$say = 'Your command '. $cmd->getId() .' has been executed successfully.';
-        $say = $this->getConfiguration('feeback');
-
-        self::debug('will publish, raw message: '. $message .' and text: '.$say);
-
-        snips::sayFeedback($say, $sessionId);
-    }
+    
 }
 
 

@@ -42,14 +42,29 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
       <div class="cursor eqLogicAction reload" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <i class="fa fa-refresh" style="font-size : 6em;color:#5cb85c;"></i>
         <br>
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Reload}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Load Assistant}}</span>
       </div>
+
+
+      <div class="cursor eqLogicAction exportConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+        <i class="fa fa-floppy-o" style="font-size : 6em;color:#5cb85c;"></i>
+        <br>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Export Configration}}</span>
+      </div>
+
+      <div class="cursor eqLogicAction importConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+        <i class="fa fa-download" style="font-size : 6em;color:#5cb85c;"></i>
+        <br>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Import Configration}}</span>
+      </div>
+
+
 
       <div class="cursor eqLogicAction removeAll" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <i class="fa divers-slightly" style="font-size : 6em;color:#c9302c;"></i>
         <br>
 
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Remove All}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Remove Assistant}}</span>
       </div>
 
       
@@ -97,20 +112,28 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
       }else{
         foreach ($eqLogics as $eqLogic) {
           $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-          echo '<div class="panel panel-success eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 194px; height: 121px; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
+          echo '<div class="panel panel-success eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
           echo '<div class="panel-heading" style="padding: 5px 15px;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></div>';
           echo '<div class="panel-body" style="padding: 0px;">';
 
           echo '<ul class="list-group" style="margin: 0;">';
-          echo '<li class="list-group-item" style="padding: 5px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('slots')).'</span>Slots</li>';
-          echo '<li class="list-group-item" style="padding: 5px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('bindings')).'</span>Bindings</li>';
+
+          echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.$eqLogic->getConfiguration('language').'</span>Language</li>';
+
+          echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('slots')).'</span>Slots</li>';
+
+          if ($eqLogic->getConfiguration('bindings')) {
+            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('bindings')).'</span>Bindings</li>';
+          }else{
+            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #c9302c;">0</span>Bindings</li>';
+          }
 
           if ($eqLogic->getConfiguration('isSnipsConfig')) {
-            echo '<li class="list-group-item" style="padding: 5px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">Snips Binding</span>Reaction</li>';
+            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">Snips Binding</span>Reaction</li>';
           }else if($eqLogic->getConfiguration('isInteraction')){
-            echo '<li class="list-group-item" style="padding: 5px 10px; border: 0px;"><span class="badge" style="background-color: #f0ad4e;">Interaction</span>Reaction</li>';
+            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #f0ad4e;">Interaction</span>Reaction</li>';
           }else{
-            echo '<li class="list-group-item" style="padding: 5px 10px; border: 0px;"><span class="badge" style="background-color: #c9302c;">Not set</span>Reaction</li>';
+            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #c9302c;">Not set</span>Reaction</li>';
           }
           echo '</ul>';
           echo '</div></div>';
@@ -145,7 +168,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
     <form class="form-horizontal">
         <fieldset style="width: 1024px; margin:auto;">
-          <legend>{{Intent Configuration}}</legend>
+          <legend>{{Intent}}</legend>
             <div class="form-group">
                 <label class="col-sm-1 control-label">{{Name}}</label>
                 <div class="col-sm-3">
@@ -159,15 +182,13 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
                     <div id="table_cmd"> </div>
                 </div>
 
-                
-
             </div>
             
             <div class="form-group">
 
                 <label class="col-sm-1 control-label">{{Status}}</label>
                 <div class="col-sm-3">
-                  
+
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn btn-success btn-sm">
                         <input type="checkbox" class="eqLogicAttr" id="isEnable" data-l1key="isEnable"><span>Enable</span>
@@ -176,24 +197,30 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
                 </div>
 
                 <label class="col-sm-1 control-label">{{Reaction}}</label>
-                <div class="col-sm-6">
-                
+                <div class="col-sm-4">
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
 
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-
-                  <label class="btn btn-default btn-sm" style="width: 150px;">
-                    <input name="reaction" type="radio" class="eqLogicAttr" data-l1key="configuration" data-l2key="isSnipsConfig"> Snips Binding
-                  </label>
-                  <label class="btn btn-default btn-sm" style="width: 150px;">
-                    <input name="reaction" type="radio" class="eqLogicAttr" data-l1key="configuration" data-l2key="isInteraction"> JeeDom Interaction
-                  </label>
-
-
-
-
+                    <label class="btn btn-default btn-sm" style="width: 150px;">
+                      <input name="reaction" type="radio" class="eqLogicAttr" data-l1key="configuration" data-l2key="isSnipsConfig"> Snips Binding
+                    </label>
+                    <label class="btn btn-default btn-sm" style="width: 150px;">
+                      <input name="reaction" type="radio" class="eqLogicAttr" data-l1key="configuration" data-l2key="isInteraction"> JeeDom Interaction
+                    </label>
+                  </div>
                 </div>
 
+
+
+                <label class="col-sm-1 control-label">{{Language}}</label>
+                <div class="col-sm-1">
+                  <span class="label label-primary eqLogicAttr" data-l1key="configuration" data-l2key="language"style="margin-left: 10px;font-size: 0.9em;"></span>
                 </div>
+
+
+
+
+
+
             </div>
 
         <legend>{{Action Binding}}</legend>
