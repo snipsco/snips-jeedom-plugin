@@ -19,6 +19,17 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] Managing conditions
 - [x] Dynamic TTS
 
+# Todo list for the beta release
+- [ ] 0 to 100 value max 99 (for all lights and so on) // mandatory
+- [ ] find a way to reset slot value for scenario uses // mandatory
+- [ ] find a way to map binary to text // improvement
+- [ ] adapt to dark theme // improvement
+- [ ] double check to load assistant // mandatory
+- [ ] dynamic TTS selection // mandatory
+- [ ] multi-intent, 1 slot multiple value // improvement
+- [ ] export // mandatory
+- [ ] load assistant remotely // mandatory
+
 # Develop Diary
 12, Jul, 2018
 - [x] Tested all the functional part, make it ready for demo.
