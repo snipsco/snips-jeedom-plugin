@@ -14,7 +14,7 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [ ] Find out all the available devices automaticly
 - [x] All the intents shell be managed by its objects(Do not have to configure by user)
 - [x] Make the slots information useful
-- [ ] Working separately with Snips site (Possible, but no test yet)
+- [x] Working separately with Snips site
 - [ ] Download 'assistant.json' file remotely from snips site (Via ssh)
 - [x] Managing conditions
 - [x] Dynamic TTS
@@ -24,7 +24,7 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [ ] find a way to reset slot value for scenario uses // mandatory
 - [ ] find a way to map binary to text // improvement
 - [ ] adapt to dark theme // improvement
-- [ ] double check to load assistant // mandatory
+- [x] double check to load assistant // mandatory
 - [ ] dynamic TTS selection // mandatory
 - [ ] multi-intent, 1 slot multiple value // improvement
 - [ ] export // mandatory
