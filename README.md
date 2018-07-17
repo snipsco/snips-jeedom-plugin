@@ -20,6 +20,7 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] Dynamic TTS
 
 # Todo list for the beta release
+- [x] Create the snips-intent object automaticly when load assistant // mandatory
 - [ ] 0 to 100 value max 99 (for all lights and so on) // mandatory
 - [ ] find a way to reset slot value for scenario uses // mandatory
 - [ ] find a way to map binary to text // improvement
