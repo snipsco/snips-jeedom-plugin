@@ -260,7 +260,7 @@ class snips extends eqLogic {
                                     $sub .= $cmd->getCache('value','NULL');
                                 }
 
-                                $sub .= $cmd->getValue();
+                                //$sub .= $cmd->getValue();
                             }
                         }
                         

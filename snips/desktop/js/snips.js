@@ -276,27 +276,46 @@ $("#div_bindings").sortable({axis: "y", cursor: "move", items: ".binding", place
 
 //--This is the function used to reload all the skills from installed assistant
 $('.reload').on('click', function () {
-	$('#div_alert').showAlert({message: 'Reloading all the skills', level: 'warning'});
-	$.ajax({
-                type: "POST", // method to transmit request
-                url: "plugins/snips/core/ajax/snips.ajax.php", 
-                data: {
-                    action: "reload",
-                },
-                dataType: 'json',
-                global: false,
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) { 
-                    if (data.state != 'ok') {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                        return;
-                    }
-                    $('#div_alert').showAlert({message: 'Successfully reloaded!', level: 'success'});
-                    location.reload();
+    bootbox.confirm({
+        message: "This operation will reload all the intent config, would you continue?",
+        buttons: {
+            confirm: {
+                label: '<i class="fa fa-check"></i> Yes',
+                className: 'btn-success'
+            },
+            cancel: {
+                label: '<i class="fa fa-times"></i> No',
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {
+        if(result){
+                $('#div_alert').showAlert({message: 'Reloading all the skills', level: 'warning'});
+                $.ajax({
+                            type: "POST", // method to transmit request
+                            url: "plugins/snips/core/ajax/snips.ajax.php", 
+                            data: {
+                                action: "reload",
+                            },
+                            dataType: 'json',
+                            global: false,
+                            error: function (request, status, error) {
+                                handleAjaxError(request, status, error);
+                            },
+                            success: function (data) { 
+                                if (data.state != 'ok') {
+                                    $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                                    return;
+                                }
+                                $('#div_alert').showAlert({message: 'Successfully reloaded!', level: 'success'});
+                                location.reload();
+                            }
+                        });
                 }
-            });
+            }
+    });
+
+            	
 });
 
 //--This is the function used to export all the binding information
@@ -324,7 +343,7 @@ $('.exportConfigration').on('click', function () {
                             location.reload();
                         }
                     });
-        }else{
+        }else if(result = ''){
             $('#div_alert').showAlert({message: 'Please specify a name!', level: 'warning'});
         }
 
@@ -335,16 +354,15 @@ $('.exportConfigration').on('click', function () {
 
 //--This function is used to remove all the loaded skills
 $('.removeAll').on('click', function () {
-	
 	bootbox.confirm({
 		message: "ATTENTION: This operation will delete all the intents and its binding records! Would you continue?",
 		buttons: {
 			confirm: {
-				label: 'Yes',
+				label: '<i class="fa fa-check"></i> Yes',
 				className: 'btn-success'
 			},
 			cancel: {
-				label: 'No',
+				label: '<i class="fa fa-times"></i> No',
 				className: 'btn-danger'
 			}
 		},
@@ -375,8 +393,6 @@ $('.removeAll').on('click', function () {
 				}
 			}
 	});
-
-
 });
 
 //--This function is used to preview the feedback speech
