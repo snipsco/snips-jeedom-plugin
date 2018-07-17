@@ -1,0 +1,239 @@
+{
+  "id" : "proj_GqNgW6ayQKo7",
+  "name" : "JeedomVal",
+  "intents" : [ {
+    "id" : "valf:TurnOnJeedom",
+    "type" : "registry",
+    "version" : "0.0.2",
+    "language" : "fr",
+    "slots" : [ {
+      "name" : "device_name",
+      "id" : "Sk4IJySm7",
+      "entityId" : "entity_e5144bNGP8MD",
+      "missingQuestion" : "",
+      "required" : false
+    } ],
+    "name" : "TurnOnJeedom"
+  }, {
+    "id" : "valf:EntityStateValueJeedom",
+    "type" : "registry",
+    "version" : "0.0.11",
+    "language" : "fr",
+    "slots" : [ {
+      "name" : "object_name",
+      "id" : "r1eY204XQ",
+      "entityId" : "entity_P08MbQQvNX5",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "house_room",
+      "id" : "SypMpAEm7",
+      "entityId" : "entity_x7b84q72wYMP",
+      "missingQuestion" : "",
+      "required" : false
+    } ],
+    "name" : "EntityStateValueJeedom"
+  }, {
+    "id" : "valf:OpenCoverJeedom",
+    "type" : "registry",
+    "version" : "0.0.3",
+    "language" : "fr",
+    "slots" : [ {
+      "name" : "house_room",
+      "id" : "HyggW04mQ",
+      "entityId" : "entity_x7b84q72wYMP",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "open_cover",
+      "id" : "Sy0xWR4m7",
+      "entityId" : "entity_oa21z7weWmB",
+      "missingQuestion" : "",
+      "required" : false
+    } ],
+    "name" : "OpenCoverJeedom"
+  }, {
+    "id" : "valf:lightShiftJeedom",
+    "type" : "registry",
+    "version" : "0.0.2",
+    "language" : "fr",
+    "slots" : [ {
+      "name" : "up_down",
+      "id" : "slot_imported_H1Nowp47X",
+      "entityId" : "entity_P43yePkme6D",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "intensity_percent",
+      "id" : "slot_imported_rkg4ovpNQ7",
+      "entityId" : "entity_E6pQgWOZ0772",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "house_room",
+      "id" : "slot_imported_HyZNsD6E7X",
+      "entityId" : "entity_x7b84q72wYMP",
+      "missingQuestion" : "",
+      "required" : false
+    } ],
+    "name" : "lightShiftJeedom"
+  }, {
+    "id" : "valf:thermostatShiftJeedom",
+    "type" : "registry",
+    "version" : "0.0.1",
+    "language" : "fr",
+    "slots" : [ {
+      "name" : "up_down",
+      "id" : "slot_imported_HkvqdXI7Q",
+      "entityId" : "entity_XrxDlz5Z99W8",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "temperature_device",
+      "id" : "slot_imported_r1lPcdXLmm",
+      "entityId" : "entity_EbQW2z2z9Qa",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "house_room",
+      "id" : "slot_imported_B1Wv5_XImm",
+      "entityId" : "entity_x7b84q72wYMP",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "temperature",
+      "id" : "slot_imported_ryMvcdQ8mQ",
+      "entityId" : "entity_E6pQgWOZ0772",
+      "missingQuestion" : "",
+      "required" : false
+    } ],
+    "name" : "thermostatShiftJeedom"
+  }, {
+    "id" : "valf:lightsTurnOffJeedom",
+    "type" : "registry",
+    "version" : "0.0.1",
+    "language" : "fr",
+    "slots" : [ {
+      "name" : "house_room",
+      "id" : "slot_imported_rJaRHaVXX",
+      "entityId" : "entity_x7b84q72wYMP",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "lights_type",
+      "id" : "slot_imported_rJx6RrTVmm",
+      "entityId" : "entity_b3YWEy3mrkxn",
+      "missingQuestion" : "",
+      "required" : false
+    } ],
+    "name" : "lightsTurnOffJeedom"
+  }, {
+    "id" : "valf:ThermostatSet",
+    "type" : "registry",
+    "version" : "0.0.2",
+    "language" : "fr",
+    "slots" : [ {
+      "name" : "temperature_device",
+      "id" : "slot_imported_BJ6D0ANmm",
+      "entityId" : "entity_32a06goQ9MeZ",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "house_room",
+      "id" : "slot_imported_HkxaPRA477",
+      "entityId" : "entity_x7b84q72wYMP",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "temperature",
+      "id" : "slot_imported_Hy-pvRA4QX",
+      "entityId" : "entity_E6pQgWOZ0772",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "temperature_device_type",
+      "id" : "slot_imported_SJfpP00NQ7",
+      "entityId" : "entity_8q61YDO8yad",
+      "missingQuestion" : "",
+      "required" : false
+    } ],
+    "name" : "ThermostatSet"
+  }, {
+    "id" : "valf:TurnOffJeedom",
+    "type" : "registry",
+    "version" : "0.0.11",
+    "language" : "fr",
+    "slots" : [ {
+      "name" : "object_name",
+      "id" : "SJIu-kSQ7",
+      "entityId" : "entity_P08MbQQvNX5",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "house_room",
+      "id" : "B1zauQUm7",
+      "entityId" : "entity_x7b84q72wYMP",
+      "missingQuestion" : "",
+      "required" : false
+    } ],
+    "name" : "TurnOffJeedom"
+  }, {
+    "id" : "valf:lightsSetJeedom",
+    "type" : "registry",
+    "version" : "0.0.18",
+    "language" : "fr",
+    "slots" : [ {
+      "name" : "intensity_percent",
+      "id" : "slot_imported_HyCxbWJOgDdf",
+      "entityId" : "snips/percentage",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "house_room",
+      "id" : "slot_imported_ryhebZkulD_M",
+      "entityId" : "entity_x7b84q72wYMP",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "lights_type",
+      "id" : "slot_imported_HyNbHOpdM",
+      "entityId" : "entity_b3YWEy3mrkxn",
+      "missingQuestion" : "",
+      "required" : false
+    } ],
+    "name" : "lightsSetJeedom"
+  }, {
+    "id" : "valf:CloseCoverJeedom",
+    "type" : "registry",
+    "version" : "0.0.4",
+    "language" : "fr",
+    "slots" : [ {
+      "name" : "house_room",
+      "id" : "HyGIYpVQX",
+      "entityId" : "entity_x7b84q72wYMP",
+      "missingQuestion" : "",
+      "required" : false
+    }, {
+      "name" : "cover_device",
+      "id" : "rkwAjpN7X",
+      "entityId" : "entity_8V76mo5gPEqw",
+      "missingQuestion" : "",
+      "required" : false
+    } ],
+    "name" : "CloseCoverJeedom"
+  } ],
+  "createdAt" : "2018-07-16T12:28:36.158Z",
+  "language" : "fr",
+  "version" : {
+    "nluModel" : "0.15.0"
+  },
+  "platform" : {
+    "type" : "raspberrypi"
+  },
+  "asr" : {
+    "type" : "snips"
+  },
+  "analyticsEnabled" : true,
+  "heartbeatEnabled" : true,
+  "hotword" : "hey_snips"
+}

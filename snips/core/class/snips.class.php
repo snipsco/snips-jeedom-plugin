@@ -21,8 +21,8 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 include 'ChromePhp.php';
 
-ini_set("display_errors","On");
-error_reporting(E_ALL);
+//ini_set("display_errors","On");
+//error_reporting(E_ALL);
 
 //ChromePhp::log('Hello console!');
 
@@ -397,7 +397,7 @@ class snips extends eqLogic {
 
     public static function reloadAssistant(){
 
-        $assistant_file = "/usr/share/snips/assistant/assistant.json";
+        $assistant_file = "/var/www/html/plugins/assistant.json";
 
         $json_string = file_get_contents($assistant_file);
         snips::debug($json_string, true);
@@ -423,7 +423,7 @@ class snips extends eqLogic {
                 $elogic = new snips();
                 $elogic->setEqType_name('snips');
                 $elogic->setLogicalId($intent);
-                $elogic->setName($intent);
+                $elogic->setName(preg_replace('/^[^\:]*\:/is', '', $intent));
                 $elogic->setIsEnable(1);
                 $elogic->setConfiguration('slots', $slots);
                 $elogic->setConfiguration('isSnipsConfig', 1);
