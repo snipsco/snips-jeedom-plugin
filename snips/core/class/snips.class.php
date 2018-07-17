@@ -347,7 +347,7 @@ class snips extends eqLogic {
 
     public static function getIntents(){
 
-        $intents_file = "/usr/share/snips/assistant/assistant.json";
+        $intents_file = "/var/www/html/plugins/snips/assistant.json";
 
         $json_string = file_get_contents($intents_file);
         snips::debug($json_string, true);
@@ -397,7 +397,7 @@ class snips extends eqLogic {
 
     public static function reloadAssistant(){
 
-        $assistant_file = "/var/www/html/plugins/assistant.json";
+        $assistant_file = "/var/www/html/plugins/snips/assistant.json";
 
         $json_string = file_get_contents($assistant_file);
         snips::debug($json_string, true);
