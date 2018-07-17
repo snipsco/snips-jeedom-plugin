@@ -405,38 +405,33 @@ class snips extends eqLogic {
         $obj->setIsVisible(1);
         $obj->save();
 
+        // Get assistant.json file, build assistant following the contains of this file
         $assistant_file = "/var/www/html/plugins/snips/assistant.json";
 
         $json_string = file_get_contents($assistant_file);
         snips::debug($json_string, true);
-        $json_obj = json_decode($json_string,true);
+        $assistant = json_decode($json_string,true);
 
-        $language = $json_obj["language"];
+        $language = $assistant["language"];
 
-
-        //self::debug("reload assistant");
         // Add all the intents to configuration
-        $intents = json_decode(self::getIntents(), true);
+        //$intents = json_decode(self::getIntents(), true);
 
-        //self::debug('Current intents is :'.gettype($intents));
+        foreach($assistant['intents'] as $intent){
 
-        foreach($intents as $intent => $slots){
-
-            //self::debug('Creating intent equipment: '.$intent);
-
-            if(is_object(snips::byLogicalId($intent, 'snips'))){
+            if(is_object(snips::byLogicalId($intent['id'], 'snips'))){
                 return;
             }else{
                 // Create intent as devices 
                 $elogic = new snips();
                 $elogic->setEqType_name('snips');
-                $elogic->setLogicalId($intent);
-                $elogic->setName(preg_replace('/^[^\:]*\:/is', '', $intent));
+                $elogic->setLogicalId($intent['id']);
+                $elogic->setName($intent['name']);
                 $elogic->setIsEnable(1);
-                $elogic->setConfiguration('slots', $slots);
+                $elogic->setConfiguration('slots', $intent['slots']);
                 $elogic->setConfiguration('isSnipsConfig', 1);
                 $elogic->setConfiguration('isInteraction', 0);
-                $elogic->setConfiguration('language', $language);
+                $elogic->setConfiguration('language', $intent['language']);
                 $elogic->setObject_id(object::byName('Snips-Intents')->getId());
                 $elogic->save();
             }
@@ -710,7 +705,11 @@ class snips extends eqLogic {
     }
 
     public function preSave() {
-        $slotSet = $this->getConfiguration('slots');
+        $slots = $this->getConfiguration('slots');
+        $slotSet = array();
+        foreach ($slots as $slot) {
+            $slotSet[] = $slot['name'];
+        }
 
         $bindings = $this->getConfiguration('bindings');
         
@@ -755,19 +754,21 @@ class snips extends eqLogic {
 
         $intent = $this->getLogicalId();
 
-        $slotSet = $this->getConfiguration('slots');
+        $slots = $this->getConfiguration('slots');
         // Generate related slots(Info command)
-        foreach ($slotSet as $slot) {
-            $slotCmd = $this->getCmd(null, $slot);
+        foreach ($slots as $slot) {
+            $slotCmd = $this->getCmd(null, $slot['name']);
             if(!is_object($slotCmd)){
                 $slotCmd = new snipsCmd();
             }
-            $slotCmd->setName($slot);
+            $slotCmd->setName($slot['name']);
             $slotCmd->setEqLogic_id($this->getId());
-            $slotCmd->setLogicalId($slot);
+            $slotCmd->setLogicalId($slot['id']);
             $slotCmd->setType('info');
-            $slotCmd->setSubType('string');
-            $slotCmd->setValue('NULL');
+            $slotCmd->setSubType($slot['entityId']);
+            //$slotCmd->setValue();
+            $slotCmd->setConfiguration('missingQuestion', $slot['missingQuestion']);
+            $slotCmd->setConfiguration('required', $slot['required']);
             $slotCmd->save();
         }
 
