@@ -396,6 +396,14 @@ class snips extends eqLogic {
     }
 
     public static function reloadAssistant(){
+        // Create an object to contant all the intent
+        $obj = object::byName('Snips-Intents');
+        if (!isset($obj) || !is_object($obj)) {
+            $obj = new object();
+        }
+        $obj->setName('Snips-Intents');
+        $obj->setIsVisible(1);
+        $obj->save();
 
         $assistant_file = "/var/www/html/plugins/snips/assistant.json";
 
@@ -429,7 +437,7 @@ class snips extends eqLogic {
                 $elogic->setConfiguration('isSnipsConfig', 1);
                 $elogic->setConfiguration('isInteraction', 0);
                 $elogic->setConfiguration('language', $language);
-                $elogic->setObject_id(object::byName('snips-intents')->getId());
+                $elogic->setObject_id(object::byName('Snips-Intents')->getId());
                 $elogic->save();
             }
         }
@@ -438,6 +446,11 @@ class snips extends eqLogic {
 
     public static function deleteAssistant(){
         //self::debug("remove assistant");
+        $obj = object::byName('Snips-Intents');
+        if (is_object($obj)) {
+            $obj->remove();
+        }
+
 
         $eqLogics = eqLogic::byType('snips');
 
