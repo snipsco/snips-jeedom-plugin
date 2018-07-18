@@ -14,7 +14,6 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-MODE_LIST = null;
 INTENT = null; 
 INTENT_ID = null;
 
@@ -128,11 +127,11 @@ $('body').off('click','.rename').on('click','.rename',  function () {
 $("body").off('click','.listCmdAction').on( 'click','.listCmdAction', function () {
     var el = $(this);
     jeedom.cmd.getSelectModal({cmd: {type: 'action'}}, function (result) {
-        var calcul = el.closest('.action').find('.expressionAttr[data-l1key=cmd]');
-        calcul.value(result.human);
+        var input = el.closest('.action').find('.expressionAttr[data-l1key=cmd]');
+        input.value(result.human);
 
-        jeedom.cmd.displayActionOption(calcul.value(), '', function (html) {
-         calcul.closest('.action').find('.actionOptions').html(html);
+        jeedom.cmd.displayActionOption(input.value(), '', function (html) {
+         input.closest('.action').find('.actionOptions').html(html);
          //taAutosize();
      });
  });
@@ -142,11 +141,11 @@ $("body").off('click','.listCmdAction').on( 'click','.listCmdAction', function (
 $("body").off('click','.listAction').on( 'click','.listAction',function () {
     var el = $(this);
     jeedom.getSelectActionModal({}, function (result) {
-        var calcul = el.closest('.action').find('.expressionAttr[data-l1key=cmd]');
-        calcul.value(result.human);
+        var input = el.closest('.action').find('.expressionAttr[data-l1key=cmd]');
+        input.value(result.human);
 
-        jeedom.cmd.displayActionOption(calcul.value(), '', function (html) {
-         calcul.closest('.action').find('.actionOptions').html(html);
+        jeedom.cmd.displayActionOption(input.value(), '', function (html) {
+         input.closest('.action').find('.actionOptions').html(html);
          //taAutosize();
      });
  });
@@ -156,10 +155,35 @@ $("body").off('click','.listAction').on( 'click','.listAction',function () {
 $("body").delegate(".listInfoCmd",'click', function(){
     var el = $(this);
     jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function (result) {
-        var calcul = el.closest('.infoCmd').find('.bindingAttr[data-l1key=tts][data-l2key=vars]');
-        calcul.value(result.human);
+        var input = el.closest('.infoCmd').find('.bindingAttr[data-l1key=tts][data-l2key=vars]');
+        input.value(result.human);
     });
 });
+
+
+//--This is the function used to reacte with action option selection 
+$("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipementInfo', function(){
+    var el = $(this);
+    console.log('[select info cmd] id:' + $(this).data("cmd_id"));
+    console.log('[select info cmd] uid:' + $(this).data("uid"));
+    
+    jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function (result) {
+        console.log('[select info cmd] element :' + el.outerHTML);
+        var input = el.closest('.actionOptions').find('input[data-cmd_id='+el.data("cmd_id")+'][data-uid='+el.data("uid")+']');
+        
+        console.log('[select info cmd] input found :'+ input.outerHTML);
+        input.value(result.human);
+
+        console.log('[select info cmd] cmd type :' + result.cmd.subType);
+        console.log('[select info cmd] append element :' + el.closest('.actionOptions').outerHTML);
+        if (result.cmd.subType == 'snips/percentage') {
+            displayValueMap(el.closest('.action').find('.slotsOptions'));
+        }else{
+            el.closest('.action').find('.slotsOptions').empty();
+        }
+    });
+});
+
 
 //--This is the function used to remove an action
 $("body").off('click', '.bt_removeAction').on( 'click', '.bt_removeAction',function () {
@@ -495,16 +519,13 @@ $('.resetSlotsCmd').on('click', function(){
 ////--------------------Syetem function rewrite--------------------////
 function printEqLogic(_eqLogic) {
     $('#div_bindings').empty();
-    MODE_LIST = [];
     if (isset(_eqLogic.configuration) && isset(_eqLogic.configuration.bindings)) {
     	actionOptions = []
-	    for (var i in _eqLogic.configuration.bindings) {
-	        MODE_LIST.push(_eqLogic.configuration.bindings[i].name)
-	    }
+
 	    for (var i in _eqLogic.configuration.bindings) {
 	        addBinding(_eqLogic.configuration.bindings[i],false);
 	    }
-	    MODE_LIST = null
+
 	    jeedom.cmd.displayActionsOption({
 	        params : actionOptions,
 	        async : false,
@@ -514,10 +535,13 @@ function printEqLogic(_eqLogic) {
 	      	success : function(data){
 	        	for(var i in data){
 	            	$('#'+data[i].id).append(data[i].html.html);
+
 	        	}
+
 	        	taAutosize();
 	    	}
 		});
+
 	}
 }
 
@@ -758,7 +782,25 @@ function addAction(_action, _el) {
     div += '</div>';
 
     var actionOption_id = uniqId();
-    div += '<div class="col-sm-6 actionOptions" id="'+actionOption_id+'">';
+    div += '<div class="col-sm-6">';
+    div += '<span class="actionOptions" id="'+actionOption_id+'"></span>';
+
+    div += '<span class="slotsOptions">';
+
+    if (isset(_action.options.HT) && isset(_action.options.LT)) {
+
+        div += '<span class="input-group input-group-sm">';
+        div += '<span class="input-group-addon" style="width: 100px">0% => </span>';
+        div += '<input class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="LT">';
+
+        div += '<span class="input-group-addon" style="width: 100px">100% => </span>';
+        div += '<input class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="HT">';
+        div += '<span>'
+
+    }
+
+    div += '</span>';
+
     div += '</div>';
 
     // div += '<div class="col-sm-1">';
@@ -904,12 +946,15 @@ function displaySlots(_selectSlotsId){
     });
 }
 
-function displayValueMap(_el, cmd_id, uid){
-    var div = '<div class="input-group input-group-sm">';
-    div += '<span class="input-group-addon" style="width: 100px">0 => </span>';
-    div += '<input value="0" class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="LT" data-cmd_id="'+cmd_id+'" data-uid="'+uid+'">';
+function displayValueMap(_el){
 
-    div += '<span class="input-group-addon" style="width: 100px">0 => </span>';
-    div += '<input value="100" class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="HT" data-cmd_id="'+cmd_id+'" data-uid="'+uid+'">';
-    div += '<div>'
+    var span = '<span class="input-group input-group-sm">';
+    span += '<span class="input-group-addon" style="width: 100px">0% => </span>';
+    span += '<input value="0" class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="LT">';
+
+    span += '<span class="input-group-addon" style="width: 100px">100% => </span>';
+    span += '<input value="100" class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="HT">';
+    span += '<span>'
+
+    _el.append(span);
 }
