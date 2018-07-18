@@ -32,10 +32,8 @@ class snips extends eqLogic {
 
     public static function resetMqtt(){
 
-        $cron = cron::byClassAndFunction('snips', 'deamon');
+        $cron = cron::byClassAndFunction('snips', 'mqttClient');
         if (is_object($cron)) {
-
-            snips::debug('Removed snips cron: deamon');
 
             $cron->stop();
             $cron->remove();
@@ -350,7 +348,7 @@ class snips extends eqLogic {
         $intents_file = "/var/www/html/plugins/snips/assistant.json";
 
         $json_string = file_get_contents($intents_file);
-        snips::debug($json_string, true);
+        //snips::debug($json_string, true);
         $json_obj = json_decode($json_string,true);
 
         $intents = $json_obj["intents"];
@@ -752,12 +750,14 @@ class snips extends eqLogic {
     public function postSave() {
         // Do after saving configurations
 
-        $intent = $this->getLogicalId();
-
         $slots = $this->getConfiguration('slots');
+
         // Generate related slots(Info command)
         foreach ($slots as $slot) {
-            $slotCmd = $this->getCmd(null, $slot['name']);
+            $slotCmd = $this->getCmd(null, $slot['id']);
+
+            snips::debug('Type is '.gettype($slotCmd), true );
+
             if(!is_object($slotCmd)){
                 $slotCmd = new snipsCmd();
             }
@@ -771,10 +771,6 @@ class snips extends eqLogic {
             $slotCmd->setConfiguration('required', $slot['required']);
             $slotCmd->save();
         }
-
-        // Check the necessary slot for each binding
-        
-        //$this->save();
     }
 
     public function preUpdate() {

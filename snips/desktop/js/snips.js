@@ -16,6 +16,7 @@
 
 MODE_LIST = null;
 INTENT = null; 
+INTENT_ID = null;
 
 ////--------------------Events Binding--------------------////
 $(function () {
@@ -43,6 +44,7 @@ $(function () {
 //--This is used to import all the available slots when the page is ready.
 $(document).on('change', '#intentName', function() {
 	INTENT = $('#intentName').val(); 
+    INTENT_ID = $('#intentId').val();
 });
 
 $(document).on('change', 'input[name=reaction]', function() {
@@ -55,6 +57,8 @@ $(document).on('change', 'input[name=reaction]', function() {
     }
 });
 
+//<input value="" class="  "   data-cmd_id="105" data-uid="cmd105__937051297__">
+//--This is used to toggle emable button when click
 $(document).on('change', '#isEnable', function() {
     if($(this).is(":checked")){
         $(this).closest('label').addClass('active');
@@ -73,14 +77,20 @@ $(document).on('change', '#isEnable', function() {
 $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function() {
 	console.log('input object changed captured, value is:'+$(this).find("option:selected").text());
 
-	if($(this).find("option:selected").text() == 'snips-intents'){
+	if($(this).find("option:selected").text() == 'Snips-Intents'){
 		$('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
-		'<tr>'+
-            '<th style="width: 150px;">Object</th>'+
-            '<th style="width: 150px;">Intents</th>'+
-            '<th style="width: 150px;">Slots</th>'+
-        '</tr>'
+    		'<tr>'+
+                '<th style="width: 150px;">Object</th>'+
+                '<th style="width: 150px;">Intents</th>'+
+                '<th style="width: 150px;">Slots</th>'+
+            '</tr>'
 			);
+
+        // $('#table_mod_insertCmdValue_valueEqLogicToMessage').find('.mod_insertCmdValue_eqLogic').html(
+        //     '<select class="form-control" disabled>'+
+        //         '<option value="' + INTENT_ID + '">' + INTENT + '</option>'+
+        //     '</select>'
+        //     );
 
 	}else{
 		$('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
@@ -857,25 +867,22 @@ function addInfoCmd(_infoCmd, _el){
 }
 
 function addCmdToTable(_cmd) {
-    if (!isset(_cmd)) {
-        var _cmd = {configuration: {}};
-    }
-    if (!isset(_cmd.configuration)) {
-        _cmd.configuration = {};
-    }
 
     var tr = '<div class="cmd" data-cmd_id="' + init(_cmd.id) + '" style="float:left; margin-right: 10px;margin-bottom: 10px;">';
     tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
+    tr += '<span class="cmdAttr" data-l1key="logicalId" style="display:none;"></span>';
     tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" disabled="disabled" >';
     tr += '</div>';
 
     $('#table_cmd').append(tr);
     $('#table_cmd div:last').setValues(_cmd, '.cmdAttr');
+
     if (isset(_cmd.type)) {
-        $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init('info'));
+        $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init(_cmd.type));
     }
-    jeedom.cmd.changeType($('#table_cmd div:last'), init('string'));
+    jeedom.cmd.changeType($('#table_cmd div:last'), init(_cmd.subType));
 }
+
 
 function displaySlots(_selectSlotsId){
     jeedom.eqLogic.getCmd({
@@ -895,4 +902,14 @@ function displaySlots(_selectSlotsId){
             select.append(selectCmd);
         }
     });
+}
+
+function displayValueMap(_el, cmd_id, uid){
+    var div = '<div class="input-group input-group-sm">';
+    div += '<span class="input-group-addon" style="width: 100px">0 => </span>';
+    div += '<input value="0" class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="LT" data-cmd_id="'+cmd_id+'" data-uid="'+uid+'">';
+
+    div += '<span class="input-group-addon" style="width: 100px">0 => </span>';
+    div += '<input value="100" class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="HT" data-cmd_id="'+cmd_id+'" data-uid="'+uid+'">';
+    div += '<div>'
 }

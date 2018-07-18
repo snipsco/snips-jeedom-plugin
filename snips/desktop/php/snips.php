@@ -215,12 +215,6 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
                 <div class="col-sm-1">
                   <span class="label label-primary eqLogicAttr" data-l1key="configuration" data-l2key="language"style="margin-left: 10px;font-size: 0.9em;"></span>
                 </div>
-
-
-
-
-
-
             </div>
 
         <legend>{{Action Binding}}</legend>
