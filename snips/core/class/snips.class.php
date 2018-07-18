@@ -257,8 +257,6 @@ class snips extends eqLogic {
                                 }else{ 
                                     $sub .= $cmd->getCache('value','NULL');
                                 }
-
-                                //$sub .= $cmd->getValue();
                             }
                         }
                         
@@ -288,8 +286,6 @@ class snips extends eqLogic {
                                 }else{ 
                                     $sub .= $cmd->getCache('value','NULL');
                                 }
-
-                                $sub .= $cmd->getValue();
                             }
                         }
 
@@ -484,7 +480,6 @@ class snips extends eqLogic {
 
         }
 
-
         snips::setSlotsCmd($slots_values, $intent_name);
 
         // Get all the binding configuration by [intentName]
@@ -585,6 +580,8 @@ class snips extends eqLogic {
 
                     // Deleted enable function for actions $action['options']['enable']
                     if(true){
+                        snips::setSlotsCmd($slots_values, $intent_name, $options);
+
                         scenarioExpression::createAndExec('action', $action['cmd'], $options);
                         
                     }else{
@@ -605,7 +602,7 @@ class snips extends eqLogic {
         /// ----- works
     }
 
-    public static function setSlotsCmd($slots_values, $intent){
+    public static function setSlotsCmd($slots_values, $intent, $_options = null){
         snips::debug('Set slots cmd values');
 
         $eq = eqLogic::byLogicalId($intent, 'snips');
@@ -613,22 +610,42 @@ class snips extends eqLogic {
         foreach ($slots_values as $slot => $value) {
 
             snips::debug('[setSlotsCmd] Slots name is :'.$slot);
-            // adaption for percentage
-            if ($slot == 'intensity_percent' || $slot == 'intensity_percentage') {
-                $org = $value; 
-                $value = $value/100;
-                $value = $value*255;
-                snips::debug('[setSlotsCmd] Slots is percentage, value after convert:'.$value);
-            }
-
             
             $cmd = $eq->getCmd(null, $slot);
+
+            // adaption for percentage
+            if ($_options) {
+                if ($cmd->getSubType() == 'snips/percentage') {
+
+                    $org = $value; 
+                    $value = snips::percentageRemap($_options['LT'], $_options['HT'], $value);
+                    $cmd->setConfiguration('orgVal', $org);
+
+                    snips::debug('[setSlotsCmd] Slots is percentage, value after convert:'.$value);
+                }
+            }
+            
+
+
             $eq->checkAndUpdateCmd($cmd, $value);
             $cmd->setValue($value);
-            $cmd->setConfiguration('orgVal', $org);
             $cmd->save();
             //snips::debug('Setting slots: '.$slot.' with value: '.$value);
         }
+    }
+
+    public static function percentageRemap($_LT, $_HT, $_percentage ){
+
+        $real_value = ($_HT - $_LT) * ($_percentage/100);
+
+        // Prevent from overflow
+        if ($real_value > $_HT) {
+            $real_value = $_HT;
+        }else if ($real_value < $_LT) {
+            $real_value = $_LT;
+        }
+
+        return $real_value;
     }
 
     public static function resetSlotsCmd($slots_values = false , $intent = false){
@@ -754,7 +771,8 @@ class snips extends eqLogic {
 
         // Generate related slots(Info command)
         foreach ($slots as $slot) {
-            $slotCmd = $this->getCmd(null, $slot['id']);
+
+            $slotCmd = $this->getCmd(null, $slot['name']);
 
             snips::debug('Type is '.gettype($slotCmd), true );
 
@@ -763,7 +781,8 @@ class snips extends eqLogic {
             }
             $slotCmd->setName($slot['name']);
             $slotCmd->setEqLogic_id($this->getId());
-            $slotCmd->setLogicalId($slot['id']);
+            // ID does not work
+            $slotCmd->setLogicalId($slot['name']);
             $slotCmd->setType('info');
             $slotCmd->setSubType($slot['entityId']);
             //$slotCmd->setValue();

@@ -21,7 +21,7 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 
 # Todo list for the beta release
 - [x] Create the snips-intent object automaticly when load assistant // mandatory
-- [ ] 0 to 100 value max 99 (for all lights and so on) // mandatory
+- [x] 0 to 100 value max 99 (for all lights and so on) // mandatory
 - [ ] Find a way to reset slot value for scenario uses // mandatory
 - [ ] Find a way to map binary to text // improvement
 - [ ] Adapt to dark theme // improvement
