@@ -29,10 +29,19 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [ ] Dynamic TTS selection // mandatory
 - [ ] Optimise the intent select modal // improvement
 - [ ] Multi-intent, 1 slot multiple value // improvement
-- [ ] Export // mandatory
+- [ ] Import & export // mandatory
 - [ ] Load assistant remotely // mandatory
 
 # Develop Diary
+17, Jul, 2018
+- [x] Add feature: remap percentage value to real range
+
+16, Jul, 2018
+- [x] Improved functional code(Create object when reload assistant)
+
+15, Jul, 2018
+- [x] Field text at home implmentation
+
 12, Jul, 2018
 - [x] Tested all the functional part, make it ready for demo.
 
