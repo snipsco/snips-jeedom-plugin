@@ -176,11 +176,31 @@ $("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipem
 
         console.log('[select info cmd] cmd type :' + result.cmd.subType);
         console.log('[select info cmd] append element :' + el.closest('.actionOptions').outerHTML);
-        if (result.cmd.subType == 'snips/percentage') {
-            displayValueMap(el.closest('.action').find('.slotsOptions'));
-        }else{
-            el.closest('.action').find('.slotsOptions').empty();
-        }
+
+        $.ajax({
+                    type: "POST", // method to transmit request
+                    url: "plugins/snips/core/ajax/snips.ajax.php", 
+                    data: {
+                        action: "getSnipsType",
+                        cmd:result.cmd.id,
+                    },
+                    dataType: 'json',
+                    global: false,
+                    error: function (request, status, error) {
+                        handleAjaxError(request, status, error);
+                    },
+                    success: function (data) { 
+
+                        console.log('data value:' + data.result);
+
+                        if (data.result == 'snips/percentage') {
+                            displayValueMap(el.closest('.action').find('.slotsOptions'));
+                        }else{
+                            el.closest('.action').find('.slotsOptions').empty();
+                        }
+
+                    }
+        });   
     });
 });
 

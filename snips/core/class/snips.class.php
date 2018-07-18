@@ -21,8 +21,8 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 include 'ChromePhp.php';
 
-//ini_set("display_errors","On");
-//error_reporting(E_ALL);
+ini_set("display_errors","On");
+error_reporting(E_ALL);
 
 //ChromePhp::log('Hello console!');
 
@@ -615,7 +615,7 @@ class snips extends eqLogic {
 
             // adaption for percentage
             if ($_options) {
-                if ($cmd->getSubType() == 'snips/percentage') {
+                if ($cmd->getConfiguration('entityId') == 'snips/percentage') {
 
                     $org = $value; 
                     $value = snips::percentageRemap($_options['LT'], $_options['HT'], $value);
@@ -784,8 +784,13 @@ class snips extends eqLogic {
             // ID does not work
             $slotCmd->setLogicalId($slot['name']);
             $slotCmd->setType('info');
-            $slotCmd->setSubType($slot['entityId']);
+
+
+            $slotCmd->setSubType('string');
             //$slotCmd->setValue();
+            $slotCmd->setConfiguration('id', $slot['id']);
+            // type
+            $slotCmd->setConfiguration('entityId', $slot['entityId']);
             $slotCmd->setConfiguration('missingQuestion', $slot['missingQuestion']);
             $slotCmd->setConfiguration('required', $slot['required']);
             $slotCmd->save();

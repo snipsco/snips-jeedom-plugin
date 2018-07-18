@@ -61,6 +61,15 @@ try {
         ajax::success();
     }
 
+    if (init('action') == 'getSnipsType') {
+        $cmd = cmd::byId(init('cmd'));
+
+        $snips_type = $cmd->getConfiguration('entityId');
+
+        ajax::success($snips_type);
+
+    }
+
 
 
 
