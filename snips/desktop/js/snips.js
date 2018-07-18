@@ -164,18 +164,10 @@ $("body").delegate(".listInfoCmd",'click', function(){
 //--This is the function used to reacte with action option selection 
 $("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipementInfo', function(){
     var el = $(this);
-    console.log('[select info cmd] id:' + $(this).data("cmd_id"));
-    console.log('[select info cmd] uid:' + $(this).data("uid"));
     
     jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function (result) {
-        console.log('[select info cmd] element :' + el.outerHTML);
         var input = el.closest('.actionOptions').find('input[data-cmd_id='+el.data("cmd_id")+'][data-uid='+el.data("uid")+']');
-        
-        console.log('[select info cmd] input found :'+ input.outerHTML);
         input.value(result.human);
-
-        console.log('[select info cmd] cmd type :' + result.cmd.subType);
-        console.log('[select info cmd] append element :' + el.closest('.actionOptions').outerHTML);
 
         $.ajax({
                     type: "POST", // method to transmit request
@@ -189,9 +181,7 @@ $("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipem
                     error: function (request, status, error) {
                         handleAjaxError(request, status, error);
                     },
-                    success: function (data) { 
-
-                        console.log('data value:' + data.result);
+                    success: function (data) {
 
                         if (data.result == 'snips/percentage') {
                             displayValueMap(el.closest('.action').find('.slotsOptions'));

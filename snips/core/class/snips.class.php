@@ -21,8 +21,8 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 include 'ChromePhp.php';
 
-ini_set("display_errors","On");
-error_reporting(E_ALL);
+//ini_set("display_errors","On");
+//error_reporting(E_ALL);
 
 //ChromePhp::log('Hello console!');
 
@@ -615,6 +615,7 @@ class snips extends eqLogic {
 
             // adaption for percentage
             if ($_options) {
+                snips::debug('[setSlotsCmd] Slots option entered, entityId is:'.$cmd->getConfiguration('entityId'));
                 if ($cmd->getConfiguration('entityId') == 'snips/percentage') {
 
                     $org = $value; 
