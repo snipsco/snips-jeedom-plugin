@@ -22,14 +22,15 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 # Todo list for the beta release
 - [x] Create the snips-intent object automaticly when load assistant // mandatory
 - [ ] 0 to 100 value max 99 (for all lights and so on) // mandatory
-- [ ] find a way to reset slot value for scenario uses // mandatory
-- [ ] find a way to map binary to text // improvement
-- [ ] adapt to dark theme // improvement
-- [x] double check to load assistant // mandatory
-- [ ] dynamic TTS selection // mandatory
-- [ ] multi-intent, 1 slot multiple value // improvement
-- [ ] export // mandatory
-- [ ] load assistant remotely // mandatory
+- [ ] Find a way to reset slot value for scenario uses // mandatory
+- [ ] Find a way to map binary to text // improvement
+- [ ] Adapt to dark theme // improvement
+- [x] Double check to load assistant // mandatory
+- [ ] Dynamic TTS selection // mandatory
+- [ ] Optimise the intent select modal // improvement
+- [ ] Multi-intent, 1 slot multiple value // improvement
+- [ ] Export // mandatory
+- [ ] Load assistant remotely // mandatory
 
 # Develop Diary
 12, Jul, 2018
