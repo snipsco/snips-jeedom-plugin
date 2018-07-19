@@ -24,8 +24,6 @@ include 'ChromePhp.php';
 //ini_set("display_errors","On");
 //error_reporting(E_ALL);
 
-//ChromePhp::log('Hello console!');
-
 class snips extends eqLogic {
 
     /*     * ***********************Methode static*************************** */
@@ -335,10 +333,10 @@ class snips extends eqLogic {
     //add log
     public static function debug($info, $in_console = false){
         
-
-        // if($in_console){ChromePhp::log($info);}
-        log::add('snips', 'debug', $info);
-        // else{fwrite(STDOUT, $info.'\n');}
+        //ChromePhp::log($info);
+        if($in_console){ChromePhp::log($info);}
+        //log::add('snips', 'debug', $info);
+        else{fwrite(STDOUT, $info.'\n');}
     }
 
     public static function getIntents(){
@@ -405,7 +403,7 @@ class snips extends eqLogic {
         $assistant_file = "/tmp/jeedom/snips/assistant.json";
 
         $json_string = file_get_contents($assistant_file);
-        snips::debug($json_string, true);
+        //snips::debug($json_string, true);
         $assistant = json_decode($json_string,true);
 
         $language = $assistant["language"];

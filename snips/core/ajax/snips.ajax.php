@@ -27,10 +27,10 @@ try {
     if (init('action') == 'reload') {
         $res = snips::fetchAssistantJson(init('username'),init('password'));
 
-		if($res = 1){
+		if($res == 1){
             snips::reloadAssistant();
         }
-        
+
         ajax::success($res);
 	}
 

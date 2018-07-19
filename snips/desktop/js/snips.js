@@ -326,6 +326,7 @@ $('.reload').on('click', function () {
     var psssword = '';
 
     bootbox.confirm({
+        title: "Attention",
         message: "This operation will reload all the intent config, would you continue?",
         buttons: {
             confirm: {
@@ -340,21 +341,24 @@ $('.reload').on('click', function () {
         callback: function (result) {
             if(result){
                 bootbox.prompt({
-                    title: "Please give the [username] to your snips site:",
+                    title: "Username: (pi)",
                     inputType: 'text',
                     callback: function (result) {
                         if (result) {
                             username = result;
                             bootbox.prompt({
-                                title: "Please give the [password] to your snips site:",
+                                title: "Password: (raspberry)",
                                 inputType: 'password',
                                 callback: function (result) {
                                     if (result) {
                                         password = result;
                                         var loading = bootbox.dialog({
-                                            message: '<p class="text-center">Loading assistant from remote site...</p>',
+                                            message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading assistant from remote site...</div>',
                                             closeButton: false
                                          });
+
+                                        console.log('username: '+ username);
+                                        console.log('password: '+ password);
                                         $.ajax({
                                                 type: "POST", // method to transmit request
                                                 url: "plugins/snips/core/ajax/snips.ajax.php", 
@@ -369,19 +373,30 @@ $('.reload').on('click', function () {
                                                     handleAjaxError(request, status, error);
                                                 },
                                                 success: function (data) {
-
+                                                    var msg = '';
+                                                    var title = '';
                                                     loading.modal('hide');
                                                     if (data.result == 1) {
-                                                        $('#div_alert').showAlert({message: 'Assistant loaded successfully!', level: 'success'});
+                                                        title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> Successed</a>';
+                                                        msg = 'Assistant loaded!';
                                                     }
                                                     if (data.result == 0) {
-                                                        $('#div_alert').showAlert({message: 'Can not fetch assistant!', level: 'danger'});
+                                                        title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                        msg = 'Can not fetch assistant!';
                                                     }
                                                     if (data.result == -1) {
-                                                        $('#div_alert').showAlert({message: 'Wrong username/ password!', level: 'danger'});
+                                                        title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                        msg = 'Wrong username/ password!';
                                                     }
-                                                    
-                                                    //location.reload();
+
+                                                    bootbox.alert({
+                                                        title: title,
+                                                        message: msg,
+                                                        callback: function (result) {
+                                                            location.reload();
+                                                        },
+                                                        closeButton: false
+                                                    });
                                                 }
                                             });
                                     }
