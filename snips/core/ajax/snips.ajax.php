@@ -25,8 +25,13 @@ try {
     }
     
     if (init('action') == 'reload') {
-		snips::reloadAssistant();
-		ajax::success();
+        $res = snips::fetchAssistantJson(init('username'),init('password'));
+
+		if($res = 1){
+            snips::reloadAssistant();
+        }
+        
+        ajax::success($res);
 	}
 
     if (init('action') == 'exportConfigration') {
@@ -67,6 +72,11 @@ try {
         $snips_type = $cmd->getConfiguration('entityId');
 
         ajax::success($snips_type);
+    }
+
+    if (init('action') == 'fetchAssistant') {
+        snips::fetchAssistantJson();
+        ajax::success();
     }
 
 

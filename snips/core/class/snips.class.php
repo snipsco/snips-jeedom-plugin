@@ -334,14 +334,16 @@ class snips extends eqLogic {
 
     //add log
     public static function debug($info, $in_console = false){
-        if($in_console){ChromePhp::log($info);}
-        //log::add('snips', 'debug', $info);
-        else{fwrite(STDOUT, $info.'\n');}
+        
+
+        // if($in_console){ChromePhp::log($info);}
+        log::add('snips', 'debug', $info);
+        // else{fwrite(STDOUT, $info.'\n');}
     }
 
     public static function getIntents(){
 
-        $intents_file = "/var/www/html/plugins/snips/assistant.json";
+        $intents_file = "/tmp/jeedom/snips/assistant.json";
 
         $json_string = file_get_contents($intents_file);
         //snips::debug($json_string, true);
@@ -400,7 +402,7 @@ class snips extends eqLogic {
         $obj->save();
 
         // Get assistant.json file, build assistant following the contains of this file
-        $assistant_file = "/var/www/html/plugins/snips/assistant.json";
+        $assistant_file = "/tmp/jeedom/snips/assistant.json";
 
         $json_string = file_get_contents($assistant_file);
         snips::debug($json_string, true);
@@ -718,6 +720,33 @@ class snips extends eqLogic {
 
     static function importConfigration($name){
 
+    }
+
+    static function fetchAssistantJson($usrename, $password){
+        $connection = ssh2_connect('rpival.local', 22);
+
+        if (!$connection) die('Connection failed');
+
+        $resp = ssh2_auth_password($connection, $usrename, $password);
+        if ($resp) {
+            snips::debug('[fetchAssistantJson]Password resutlt : Success', true);
+
+        }else{
+            snips::debug('[fetchAssistantJson]Password resutlt : Faild', true);
+            return -1; 
+        }
+
+        $res = ssh2_scp_recv($connection, '/usr/share/snips/assistant/assistant.json', '/tmp/jeedom/snips/assistant.json');
+
+        if ($res) {
+            ssh2_disconnect($connection);
+            snips::debug('[fetchAssistantJson]Fecth resutlt : Success', true);
+            return 1;
+        }else{
+            ssh2_disconnect($connection);
+            snips::debug('[fetchAssistantJson]Fecth resutlt : Faild', true);
+            return 0;
+        }
     }
     /*     * *********************Méthodes d'instance************************* */
 

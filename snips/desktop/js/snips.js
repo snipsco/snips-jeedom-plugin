@@ -320,6 +320,11 @@ $("#div_bindings").sortable({axis: "y", cursor: "move", items: ".binding", place
 
 //--This is the function used to reload all the skills from installed assistant
 $('.reload').on('click', function () {
+    
+    var reloadConfirm = 0;
+    var username = '';
+    var psssword = '';
+
     bootbox.confirm({
         message: "This operation will reload all the intent config, would you continue?",
         buttons: {
@@ -333,33 +338,63 @@ $('.reload').on('click', function () {
             }
         },
         callback: function (result) {
-        if(result){
-                $('#div_alert').showAlert({message: 'Reloading all the skills', level: 'warning'});
-                $.ajax({
-                            type: "POST", // method to transmit request
-                            url: "plugins/snips/core/ajax/snips.ajax.php", 
-                            data: {
-                                action: "reload",
-                            },
-                            dataType: 'json',
-                            global: false,
-                            error: function (request, status, error) {
-                                handleAjaxError(request, status, error);
-                            },
-                            success: function (data) { 
-                                if (data.state != 'ok') {
-                                    $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                                    return;
-                                }
-                                $('#div_alert').showAlert({message: 'Successfully reloaded!', level: 'success'});
-                                location.reload();
-                            }
-                        });
-                }
-            }
-    });
+            if(result){
+                bootbox.prompt({
+                    title: "Please give the [username] to your snips site:",
+                    inputType: 'text',
+                    callback: function (result) {
+                        if (result) {
+                            username = result;
+                            bootbox.prompt({
+                                title: "Please give the [password] to your snips site:",
+                                inputType: 'password',
+                                callback: function (result) {
+                                    if (result) {
+                                        password = result;
+                                        var loading = bootbox.dialog({
+                                            message: '<p class="text-center">Loading assistant from remote site...</p>',
+                                            closeButton: false
+                                         });
+                                        $.ajax({
+                                                type: "POST", // method to transmit request
+                                                url: "plugins/snips/core/ajax/snips.ajax.php", 
+                                                data: {
+                                                    action: "reload",
+                                                    username: username,
+                                                    password: password,
+                                                },
+                                                dataType: 'json',
+                                                global: false,
+                                                error: function (request, status, error) {
+                                                    handleAjaxError(request, status, error);
+                                                },
+                                                success: function (data) {
 
-            	
+                                                    loading.modal('hide');
+                                                    if (data.result == 1) {
+                                                        $('#div_alert').showAlert({message: 'Assistant loaded successfully!', level: 'success'});
+                                                    }
+                                                    if (data.result == 0) {
+                                                        $('#div_alert').showAlert({message: 'Can not fetch assistant!', level: 'danger'});
+                                                    }
+                                                    if (data.result == -1) {
+                                                        $('#div_alert').showAlert({message: 'Wrong username/ password!', level: 'danger'});
+                                                    }
+                                                    
+                                                    //location.reload();
+                                                }
+                                            });
+                                    }
+                                }
+                            });
+                        }
+                            
+                    }
+                });
+
+            }
+        }
+    });                 	
 });
 
 //--This is the function used to export all the binding information
@@ -523,7 +558,29 @@ $('.resetSlotsCmd').on('click', function(){
             });
 });
 
+//--This function is used to reset slot cmd value
+$('.fetchAssistant').on('click', function(){
 
+    $.ajax({
+                type: "POST", // méthode de transmission des données au fichier php
+                url: "plugins/snips/core/ajax/snips.ajax.php", 
+                data: {
+                    action: "fetchAssistant",
+                },
+                dataType: 'json',
+                global: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { 
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        return;
+                    }
+                    $('#div_alert').showAlert({message: 'File has been fetched', level: 'success'});
+                }
+            });
+});
 
 
 ////--------------------Syetem function rewrite--------------------////

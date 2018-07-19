@@ -1,9 +1,9 @@
 #! /bin/bash
 
-echo "Début d'installation des dépendances"
+echo "Start to install dependances"
 
-touch /tmp/mqtt_dep
-echo 0 > /tmp/mqtt_dep
+touch /tmp/SNIPS_dep
+echo 0 > /tmp/SNIPS_dep
 apt-get -y install lsb-release php-pear
 archi=`lscpu | grep Architecture | awk '{ print $2 }'`
 
@@ -24,18 +24,20 @@ if [ `lsb_release -i -s` == "Debian" ]; then
   fi
 fi
 fi
-echo 10 > /tmp/mqtt_dep
+echo 10 > /tmp/SNIPS_dep
 
 apt-get update
-echo 30 > /tmp/mqtt_dep
+echo 30 > /tmp/SNIPS_dep
+echo "Installing mqtt dependances"
 apt-get -y install mosquitto mosquitto-clients libmosquitto-dev
-echo 60 > /tmp/mqtt_dep
+
+echo 80 > /tmp/SNIPS_dep
 
 if [[ -d "/etc/php5/" ]]; then
   apt-get -y install php5-dev
   if [[ -d "/etc/php5/cli/" && ! `cat /etc/php5/cli/php.ini | grep "mosquitto"` ]]; then
   	echo "" | pecl install Mosquitto-alpha
-    echo 80 > /tmp/mqtt_dep
+    echo 80 > /tmp/SNIPS_dep
   	echo "extension=mosquitto.so" | tee -a /etc/php5/cli/php.ini
   fi
   if [[ -d "/etc/php5/fpm/" && ! `cat /etc/php5/fpm/php.ini | grep "mosquitto"` ]]; then
@@ -44,15 +46,15 @@ if [[ -d "/etc/php5/" ]]; then
   fi
   if [[ -d "/etc/php5/apache2/" && ! `cat /etc/php5/apache2/php.ini | grep "mosquitto"` ]]; then
   	echo "extension=mosquitto.so" | tee -a /etc/php5/apache2/php.ini
-    rm /tmp/mqtt_dep
-    echo "Fin installation des dépendances"
+    rm /tmp/SNIPS_dep
+    echo "Dependances installation is done"
     service apache2 restart
   fi
 else
   apt-get -y install php7.0-dev
   if [[ -d "/etc/php/7.0/cli/" && ! `cat /etc/php/7.0/cli/php.ini | grep "mosquitto"` ]]; then
     echo "" | pecl install Mosquitto-alpha
-    echo 80 > /tmp/mqtt_dep
+    echo 80 > /tmp/SNIPS_dep
     echo "extension=mosquitto.so" | tee -a /etc/php/7.0/cli/php.ini
   fi
   if [[ -d "/etc/php/7.0/fpm/" && ! `cat /etc/php/7.0/fpm/php.ini | grep "mosquitto"` ]]; then
@@ -61,12 +63,15 @@ else
   fi
   if [[ -d "/etc/php/7.0/apache2/" && ! `cat /etc/php/7.0/apache2/php.ini | grep "mosquitto"` ]]; then
     echo "extension=mosquitto.so" | tee -a /etc/php/7.0/apache2/php.ini
-    rm /tmp/mqtt_dep
-    echo "Fin installation des dépendances"
+    rm /tmp/SNIPS_dep
+    echo "Dependances installation is done"
     service apache2 restart
   fi
 fi
 
-rm /tmp/mqtt_dep
 
-echo "Fin installation des dépendances"
+rm /tmp/SNIPS_dep
+mkdir /tmp/jeedom/snips
+chmod 777 /tmp/jeedom/snips
+
+echo "Dependances installation is done"

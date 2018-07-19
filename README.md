@@ -30,7 +30,7 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [ ] Optimise the intent select modal // improvement
 - [ ] Multi-intent, 1 slot multiple value // improvement
 - [ ] Import & export // mandatory
-- [ ] Load assistant remotely // mandatory
+- [x] Load assistant remotely // mandatory
 
 # Develop Diary
 17, Jul, 2018
