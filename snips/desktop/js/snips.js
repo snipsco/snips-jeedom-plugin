@@ -694,7 +694,7 @@ function addBinding(_binding) {
     //** Feedback Section
     div += '<div class="section-title" ><strong>{{Feedback Tts}}</strong>';
     div += '<a class="btn btn-primary btn-xs playFeedback" style="margin-left: 15px;"><i class="fa fa-play"></i> {{Test Play}}</a>';
-    div += '<a class="btn btn-default btn-xs" style="margin-left: 15px;"><i class="fa fa-times"></i> {{Enable}}</a>';
+    //div += '<a class="btn btn-default btn-xs" style="margin-left: 15px;"><i class="fa fa-times"></i> {{Enable}}</a>';
     //div += '<span style="margin-left: 20px;"><code>(Use \'{#}\' to add dynamic variable, then setup follwing the same order)</code></span>';
     div += '</div>';
 

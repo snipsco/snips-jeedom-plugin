@@ -67,10 +67,7 @@ try {
         $snips_type = $cmd->getConfiguration('entityId');
 
         ajax::success($snips_type);
-
     }
-
-
 
 
     throw new Exception(__('No method corresponding to : ', __FILE__) . init('action'));

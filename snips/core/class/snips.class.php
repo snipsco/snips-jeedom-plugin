@@ -132,7 +132,7 @@ class snips extends eqLogic {
         self::debug('Installation of dependences');
         
         $resource_path = realpath(dirname(__FILE__) . '/../../resources');
-        passthru('sudo /bin/bash ' . $resource_path . '/install.sh ' . $resource_path . ' > ' . log::getPathToLog('MQTT_dep') . ' 2>&1 &');
+        passthru('sudo /bin/bash ' . $resource_path . '/install.sh ' . $resource_path . ' > ' . log::getPathToLog('SNIPS_dep') . ' 2>&1 &');
         return true;
     }
     
@@ -487,8 +487,10 @@ class snips extends eqLogic {
 
         $bindings = $eqLogic->getConfiguration('bindings');
 
+        //$wait_scenario = array('is_scenario' => 0, 'scenario_id' => '', 'execution_time' => '');
+
         // If this equipment is enabled, go with snips configuration, otherwise send input text to interaction
-        if(!$eqLogic->getConfiguration('isSnipsConfig')){
+        if(!$eqLogic->getConfiguration('isSnipsConfig') && $eqLogic->getConfiguration('isInteraction')){
             // Use system interaction querys 
             $param = array();
             // Send to interaction Queryer 
@@ -581,9 +583,16 @@ class snips extends eqLogic {
                     // Deleted enable function for actions $action['options']['enable']
                     if(true){
                         snips::setSlotsCmd($slots_values, $intent_name, $options);
-
-                        scenarioExpression::createAndExec('action', $action['cmd'], $options);
                         
+                        
+                        scenarioExpression::createAndExec('action', $action['cmd'], $options);
+
+                        // if ($action['cmd'] == 'scenario') { 
+                        //     $wait_scenario['is_scenario'] = 1;
+                        //     $wait_scenario['scenario_id'] = $options['scenario_id'];
+                        //     $wait_scenario['execution_time'] = date('Y-m-d H:i:s');
+                        // }
+
                     }else{
                         snips::debug('Found binding action, but it is not enabled');
                     }
@@ -597,8 +606,8 @@ class snips extends eqLogic {
             }
         }
 
-        //snips::resetSlotsCmd($slots_values, $intent_name);
-        //snips::resetSlotsCmd();
+        sleep(1);
+        snips::resetSlotsCmd();
         /// ----- works
     }
 
@@ -650,8 +659,9 @@ class snips extends eqLogic {
     }
 
     public static function resetSlotsCmd($slots_values = false , $intent = false){
+        snips::debug('[' . date('Y-m-d H:i:s') . '][snips::resetSlotsCmd] Reset all the slots');
+
         if ($slots_values == false && $intent == false) {
-            
             $eqs = eqLogic::byType('snips');
 
             foreach ($eqs as $eq) {
@@ -667,7 +677,6 @@ class snips extends eqLogic {
 
             
         }else{
-
             $eq = eqLogic::byLogicalId($intent, 'snips');
 
             foreach ($slots_values as $slot => $value) {
