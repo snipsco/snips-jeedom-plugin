@@ -15,22 +15,24 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] All the intents shell be managed by its objects(Do not have to configure by user)
 - [x] Make the slots information useful
 - [x] Working separately with Snips site
-- [ ] Download 'assistant.json' file remotely from snips site (Via ssh)
+- [x] Download 'assistant.json' file remotely from snips site (Via ssh)
 - [x] Managing conditions
-- [x] Dynamic TTS
+- [x] Dynamic TTS contents
 
 # Todo list for the beta release
 - [x] Create the snips-intent object automaticly when load assistant // mandatory
 - [x] 0 to 100 value max 99 (for all lights and so on) // mandatory
 - [x] Find a way to reset slot value for scenario uses // mandatory
+- [x] Double check to load assistant // mandatory
+- [x] Load assistant remotely // mandatory
+- [ ] Import & export // mandatory
+- [ ] Dynamic TTS player selection // mandatory
 - [ ] Find a way to map binary to text // improvement
 - [ ] Adapt to dark theme // improvement
-- [x] Double check to load assistant // mandatory
-- [ ] Dynamic TTS selection // mandatory
 - [ ] Optimise the intent select modal // improvement
 - [ ] Multi-intent, 1 slot multiple value // improvement
-- [ ] Import & export // mandatory
-- [x] Load assistant remotely // mandatory
+
+
 
 # Develop Diary
 
