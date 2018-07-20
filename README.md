@@ -33,6 +33,16 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] Load assistant remotely // mandatory
 
 # Develop Diary
+
+20, Jul, 2018
+- [ ] Add feature: support import user binding configuration
+
+19, Jul, 2018
+- [x] Add feature: support fetch assistant remotely from snips
+
+18, Jul, 2018
+- [x] Add feature: support reset value after execute a scenario
+
 17, Jul, 2018
 - [x] Add feature: remap percentage value to real range
 
