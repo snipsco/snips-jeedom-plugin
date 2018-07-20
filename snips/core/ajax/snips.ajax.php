@@ -39,8 +39,16 @@ try {
         ajax::success();
     }
 
+    if (init('action') == 'getConfigurationList') {
+
+        $res = snips::displayAvailableConfigurations();
+
+        ajax::success($res);
+
+    }
+
     if (init('action') == 'importConfigration') {
-        snips::exportConfigration(init('name'));
+        snips::importConfigration(init('configFileName'));
         ajax::success();
     }
 

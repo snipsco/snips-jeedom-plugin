@@ -184,6 +184,7 @@ $("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipem
                     success: function (data) {
 
                         if (data.result == 'snips/percentage') {
+                            el.closest('.action').find('.slotsOptions').empty();
                             displayValueMap(el.closest('.action').find('.slotsOptions'));
                         }else{
                             el.closest('.action').find('.slotsOptions').empty();
@@ -341,13 +342,13 @@ $('.reload').on('click', function () {
         callback: function (result) {
             if(result){
                 bootbox.prompt({
-                    title: "Username: (pi)",
+                    title: "Username (default: pi)",
                     inputType: 'text',
                     callback: function (result) {
                         if (result) {
                             username = result;
                             bootbox.prompt({
-                                title: "Password: (raspberry)",
+                                title: "Password (default: raspberry)",
                                 inputType: 'password',
                                 callback: function (result) {
                                     if (result) {
@@ -402,11 +403,9 @@ $('.reload').on('click', function () {
                                     }
                                 }
                             });
-                        }
-                            
+                        }      
                     }
                 });
-
             }
         }
     });                 	
@@ -443,6 +442,72 @@ $('.exportConfigration').on('click', function () {
 
     });
             
+});
+
+//--This is the function used to import binding config
+$('.importConfigration').on('click', function () {
+    $.ajax({
+        type: "POST", 
+        url: "plugins/snips/core/ajax/snips.ajax.php", 
+        data: {
+            action: "getConfigurationList",
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) { 
+            if (isset(data.result) && data.result!= null && data.result != '') {
+
+                var options = [{text: 'Choose a configuration file...',value: '',}];
+
+                for(var n in data.result){
+                    options.push({text: data.result[n] ,value: data.result[n]});
+                }
+
+                bootbox.prompt({
+                    title: '<a><i class="fa fa-download"></i> Import configuration</a>',
+                    inputType: 'select',
+                    inputOptions: options,
+                    callback: function (result) {
+                        if (result != null && result != '') {
+                            console.log('going to import file :'+result);
+                            $.ajax({
+                                type: "POST", 
+                                url: "plugins/snips/core/ajax/snips.ajax.php", 
+                                data: {
+                                    action: "importConfigration",
+                                    configFileName: result,
+                                },
+                                dataType: 'json',
+                                global: false,
+                                error: function (request, status, error) {
+                                    handleAjaxError(request, status, error);
+                                },
+                                success: function (data) { 
+                                    bootbox.alert({
+                                        title: '<a style="color:#5cb85c;"><i class="fa fa-check"></i> Successed</a>',
+                                        message: 'Configuration file ['+result+'] has been imported!',
+                                        callback: function (result) {
+                                            location.reload();
+                                        },
+                                        closeButton: false
+                                    });
+                                }
+                            });
+                        }
+                    },
+                });
+            }else{
+                bootbox.alert({
+                    title: '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>',
+                    message: 'Can not find any configuration file !',
+                    closeButton: false
+                });
+            }
+        }
+    }); 
 });
 
 

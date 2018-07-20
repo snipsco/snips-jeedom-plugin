@@ -21,8 +21,8 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 include 'ChromePhp.php';
 
-//ini_set("display_errors","On");
-//error_reporting(E_ALL);
+// ini_set("display_errors","On");
+// error_reporting(E_ALL);
 
 class snips extends eqLogic {
 
@@ -341,7 +341,7 @@ class snips extends eqLogic {
 
     public static function getIntents(){
 
-        $intents_file = "/tmp/jeedom/snips/assistant.json";
+        $intents_file = dirname(__FILE__).'/../../assistant.json';
 
         $json_string = file_get_contents($intents_file);
         //snips::debug($json_string, true);
@@ -400,7 +400,7 @@ class snips extends eqLogic {
         $obj->save();
 
         // Get assistant.json file, build assistant following the contains of this file
-        $assistant_file = "/tmp/jeedom/snips/assistant.json";
+        $assistant_file = dirname(__FILE__).'/../../assistant.json';
 
         $json_string = file_get_contents($assistant_file);
         //snips::debug($json_string, true);
@@ -696,8 +696,52 @@ class snips extends eqLogic {
         $binding_conf = array();
 
         $eqs = eqLogic::byType('snips');
+
         foreach ($eqs as $eq) {
-            $binding_conf[$eq->getLogicalId()] = $eq->getConfiguration('bindings');
+            $org_bindings = $eq->getConfiguration('bindings');
+
+            $json_string = json_encode($org_bindings);
+            snips::debug('[exportConfigration] json_string type is: '.gettype($json_string), true);
+
+            // for actions 
+            preg_match_all('/#[^#]*[0-9]+#/', $json_string, $matches);
+
+            $human_cmd = cmd::cmdToHumanReadable($matches[0]);
+
+            foreach ($human_cmd as $key => $cmd_text) {
+
+                $json_string = str_replace($matches[0][$key], $cmd_text, $json_string);
+
+            }
+
+            // for pre conditions//////////////////////
+            preg_match_all('/("pre":")[^("pre":")]*[0-9]+"/', $json_string, $matches_c);
+
+            $matches_c1 = $matches_c;
+
+            foreach ($matches_c[0] as $key => $value) {
+                $matches_c[0][$key] = str_replace('"pre":"', '#', $value);
+                snips::debug('[exportConfigration] 1st : '.$matches_c[0][$key], true);
+
+                $matches_c[0][$key] = str_replace('"', '#', $matches_c[0][$key]);
+                snips::debug('[exportConfigration] 2nd : '.$matches_c[0][$key], true);
+            }
+
+            $humand_cond = cmd::cmdToHumanReadable($matches_c[0]);
+
+            foreach ($humand_cond as $key => $cmd_text) {
+
+                snips::debug('[exportConfigration] key word : '.$matches_c1[0][$key].' replace '.'"pre":"'.$cmd_text.'"', true);
+
+                $json_string = str_replace($matches_c1[0][$key], '"pre":"'.$cmd_text.'"', $json_string);
+
+            }
+
+            /////////////////////
+
+            $aft_bindings = json_decode($json_string);
+            snips::debug('[exportConfigration] vars: '.$aft_bindings, true);
+            $binding_conf[$eq->getLogicalId()] = $aft_bindings;
         }
 
 
@@ -712,12 +756,44 @@ class snips extends eqLogic {
         }else{
             snips::debug('faild output', true);
         }
-
-        //'/../../config_backup/'.
     }
 
-    static function importConfigration($name){
+    static function importConfigration($configFileName){
+        snips::debug('[importConfigration] asked to import file: '.$configFileName, true);
+        $json_string = file_get_contents(dirname(__FILE__).'/../../config_backup/'.$configFileName);
 
+        
+        preg_match_all('/("pre":")(#.*?#)(")/', $json_string, $matches);
+
+        $cmd_ids = cmd::humanReadableToCmd($matches[2]);
+
+        foreach ($cmd_ids as $key => $cmd_id) {
+            $cmd_id = str_replace('#', '', $cmd_id);
+
+            snips::debug('[importConfigration] key word : '.$matches[2][$key].' replace '.$cmd_id, true);
+            $json_string = str_replace($matches[2][$key], $cmd_id, $json_string);
+        }
+
+        $data = json_decode($json_string, true);
+
+        $eqs = eqLogic::byType('snips');
+        foreach ($eqs as $eq) {
+            //snips::debug('[importConfigration] eq name: '.$eq->getLogicalId(), true);
+            //snips::debug('[importConfigration] eqs config: '.json_encode($data[$eq->getLogicalId()]), true);
+            if ($data[$eq->getLogicalId()] != '' && isset($data[$eq->getLogicalId()])) {
+                $eq->setConfiguration('bindings', $data[$eq->getLogicalId()]);
+                $eq->save(true);
+            }
+                
+        }
+    }
+
+    static function displayAvailableConfigurations(){
+        $command = 'ls '. dirname(__FILE__) .'/../../config_backup/';
+
+        $res = exec($command, $output, $return_var);
+
+        return $output;
     }
 
     static function fetchAssistantJson($usrename, $password){
@@ -734,7 +810,7 @@ class snips extends eqLogic {
             return -1; 
         }
 
-        $res = ssh2_scp_recv($connection, '/usr/share/snips/assistant/assistant.json', '/tmp/jeedom/snips/assistant.json');
+        $res = ssh2_scp_recv($connection, '/usr/share/snips/assistant/assistant.json', dirname(__FILE__).'/../../assistant.json');
 
         if ($res) {
             ssh2_disconnect($connection);
@@ -765,6 +841,7 @@ class snips extends eqLogic {
 
         $bindings = $this->getConfiguration('bindings');
         
+
         foreach ($bindings as $key => $binding) {
             $necessary_slots = array();
 
