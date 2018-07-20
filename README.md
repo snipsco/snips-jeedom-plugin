@@ -7,6 +7,52 @@ The Snips Voice Platform allows anyone to integrate AI powered voice interaction
 # Objectives
 To be able to use all your JeeDom devices by using voice! And, we should let you done this in a simple way!
 
+# Installation (beta user)
+> Since this plugin is not published on JeeDom market yet, installation has to be done manually. 
+
+## Step 1. Download plugin
+For this step, I would recommand you use `ssh` login your Jeedom site through console:
+```
+ssh <username>@<hostnme>
+```
+For example, if your Jeedom is running on a Raspberry, you can then use: 
+```
+ssh pi@raspberry.local
+```
+As long as you have successfully loged in, you can simply use `git clone` command to download this repository:
+```
+git clone https://github.com/snipsco/Snips-JeeDom-Plugin.git
+```
+Now you can do `ls` to check if `Snips-JeeDom-Plugin` is under your current directory:
+```
+ls Snips-JeeDom-Plugin
+```
+You should see the result:
+```
+README.md	    snips
+```
+## Step 2. Copy plugin to JeeDom folder
+Now you have the plugin file on your Jeedom site, but JeeDom an not detect this yet.
+
+Run the following command to copy snips plugin to JeeDom directory:
+```
+sudo cp -r Snips-JeeDom-Plugin/snips/ /var/www/html/plugins/
+```
+
+## Step 3. Change permission
+Run following to add correct permission to all the file:
+```
+chmod -R 775 /var/www/html/plugins/snips/
+```
+Run following to change correct user group to all the file:
+```
+chgrp -R www-data /var/www/html/plugins/snips/
+```
+Run following to change correct ownership to all the file:
+```
+chown -R www-data /var/www/html/plugins/snips/
+```
+
 # Features
 - [x] Configurable MQTT client
 - [x] Receive all the intents and its slots from the bus
@@ -25,7 +71,7 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] Find a way to reset slot value for scenario uses // mandatory
 - [x] Double check to load assistant // mandatory
 - [x] Load assistant remotely // mandatory
-- [ ] Import & export // mandatory
+- [x] Import & export // mandatory
 - [ ] Dynamic TTS player selection // mandatory
 - [ ] Find a way to map binary to text // improvement
 - [ ] Adapt to dark theme // improvement
