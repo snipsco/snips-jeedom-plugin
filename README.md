@@ -42,16 +42,23 @@ sudo cp -r Snips-JeeDom-Plugin/snips/ /var/www/html/plugins/
 ## Step 3. Change permission
 Run following to add correct permission to all the file:
 ```
-chmod -R 775 /var/www/html/plugins/snips/
+sudo chmod -R 775 /var/www/html/plugins/snips/
 ```
 Run following to change correct user group to all the file:
 ```
-chgrp -R www-data /var/www/html/plugins/snips/
+sudo chgrp -R www-data /var/www/html/plugins/snips/
 ```
 Run following to change correct ownership to all the file:
 ```
-chown -R www-data /var/www/html/plugins/snips/
+sudo chown -R www-data /var/www/html/plugins/snips/
 ```
+
+## Step 4. Activate Snips plugin
+Now you can direct to your Jeedom platform, go to <Plugin Management>, find <Snips>, and then activate it. 
+
+Then you need to set the correct IP address on the plugin configuration page. 
+
+(Use `sam devices` command to see the IP address of snips site)
 
 # Features
 - [x] Configurable MQTT client
