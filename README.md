@@ -97,12 +97,10 @@ Then you need to set the correct IP address on the plugin configuration page.
 // CONFIGUTARION
 $LIGHT_BRIGHTNESS_VALUE = '#[Apartment][Mirror Strip Right][Etat Luminosité]#';
 $LIGHT_BRIGHTNESS_ACTION = '#[Apartment][Mirror Strip Right][Luminosité]#';
-$OPERATION = 'UP'; // or 'DOWN', case sensitive
+$OPERATION = 'DOWN'; // or 'DOWN', case sensitive
 $MIN_VALUE = 0;
 $MAX_VALUE = 255; 
-
-//turn up 10% of MAX_VALUE each time
-$STEP_VALUE = round(($MAX_VALUE - $MIN_VALUE) * 0.1);
+$STEP_VALUE = 0.2; //Change 20% of MAX_VALUE each time
 
 $cmd = cmd::byString($LIGHT_BRIGHTNESS_VALUE);
 if(is_object($cmd)){
@@ -114,17 +112,11 @@ if(is_object($cmd)){
 }
 
 $options = array();
-if($OPERATION === 'UP'){
-	$options['slider'] = $current_val + $STEP_VALUE;
-}else if($OPERATION === 'DOWN'){
-	$options['slider'] = $current_val - $STEP_VALUE;
-}
-if($options['slider'] < $MIN_VALUE){
-	$options['slider'] = $MIN_VALUE;
-}
-if($options['slider'] > $MAX_VALUE){
-	$options['slider'] = $MAX_VALUE;
-}
+if($OPERATION === 'UP') $options['slider'] = $current_val + round(($MAX_VALUE - $MIN_VALUE) * $STEP_VALUE); 
+  else if($OPERATION === 'DOWN') $options['slider'] = $current_val - round(($MAX_VALUE - $MIN_VALUE) * $STEP_VALUE);
+
+if($options['slider'] < $MIN_VALUE) $options['slider'] = $MIN_VALUE;
+if($options['slider'] > $MAX_VALUE) $options['slider'] = $MAX_VALUE;
 fwrite(STDOUT, '[Scenario] Light shift for ['.$LIGHT_BRIGHTNESS_ACTION.'], from -> '.$options['slider'].' to ->'.$current_val.'\n');
 $cmdSet = cmd::byString($LIGHT_BRIGHTNESS_ACTION);
 if(is_object($cmdSet)){
