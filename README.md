@@ -98,7 +98,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 
 $LIGHT_BRIGHTNESS_VALUE = '#[Apartment][Mirror Strip Right][Etat Luminosité]#';
 $LIGHT_BRIGHTNESS_ACTION = '#[Apartment][Mirror Strip Right][Luminosité]#';
-$OPERATION = 'DOWN'; // or 'DOWN', case sensitive
+$OPERATION = 'DOWN'; // 'ON' or 'DOWN', case sensitive
 $MIN_VALUE = 0;
 $MAX_VALUE = 255;
 $STEP_VALUE = 0.2; //Change 20% of MAX_VALUE each time
