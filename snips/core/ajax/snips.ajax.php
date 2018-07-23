@@ -34,6 +34,11 @@ try {
         ajax::success($res);
 	}
 
+    if (init('action') == 'isSnipsRunLocal') {
+        $res = snips::isSnipsRunLocal();
+        ajax::success($res);
+    }
+
     if (init('action') == 'exportConfigration') {
         snips::exportConfigration(init('name'));
         ajax::success();

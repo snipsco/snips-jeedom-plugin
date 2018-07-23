@@ -40,20 +40,20 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
   <div class="eqLogicThumbnailContainer">
 
       <div class="cursor eqLogicAction reload" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="fa fa-refresh" style="font-size : 6em;color:#5cb85c;"></i>
+        <i class="glyphicon glyphicon-import" style="font-size : 6em;color:#5cb85c;"></i>
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Load Assistant}}</span>
       </div>
 
 
       <div class="cursor eqLogicAction exportConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="fa fa-floppy-o" style="font-size : 6em;color:#5cb85c;"></i>
+        <i class="glyphicon glyphicon-floppy-save" style="font-size : 6em;color:#5cb85c;"></i>
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Export Configration}}</span>
       </div>
 
       <div class="cursor eqLogicAction importConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="fa fa-download" style="font-size : 6em;color:#5cb85c;"></i>
+        <i class="glyphicon glyphicon-floppy-open" style="font-size : 6em;color:#5cb85c;"></i>
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Import Configration}}</span>
       </div>
@@ -61,7 +61,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
 
       <div class="cursor eqLogicAction removeAll" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="fa divers-slightly" style="font-size : 6em;color:#c9302c;"></i>
+        <i class="glyphicon glyphicon-trash" style="font-size : 6em;color:#c9302c;"></i>
         <br>
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Remove Assistant}}</span>
@@ -69,14 +69,14 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
       
       <div class="cursor eqLogicAction resetMqtt" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="fa fa-keyboard-o" style="font-size : 6em;color:#337ab7;"></i>
+        <i class="glyphicon glyphicon-link" style="font-size : 6em;color:#337ab7;"></i>
         <br>
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Reset MQTT}}</span>
       </div>
 
 
-      <div class="cursor eqLogicAction resetSlotsCmd" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+      <!-- <div class="cursor eqLogicAction resetSlotsCmd" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <i class="fa techno-charging" style="font-size : 6em;color:#337ab7;"></i>
         <br>
 
@@ -90,7 +90,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
         <br>
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Fetch Assistant Json}}</span>
-      </div>
+      </div> -->
 
 
 

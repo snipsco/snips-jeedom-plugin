@@ -170,27 +170,26 @@ $("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipem
         input.value(result.human);
 
         $.ajax({
-                    type: "POST", // method to transmit request
-                    url: "plugins/snips/core/ajax/snips.ajax.php", 
-                    data: {
-                        action: "getSnipsType",
-                        cmd:result.cmd.id,
-                    },
-                    dataType: 'json',
-                    global: false,
-                    error: function (request, status, error) {
-                        handleAjaxError(request, status, error);
-                    },
-                    success: function (data) {
+                type: "POST", // method to transmit request
+                url: "plugins/snips/core/ajax/snips.ajax.php", 
+                data: {
+                    action: "getSnipsType",
+                    cmd:result.cmd.id,
+                },
+                dataType: 'json',
+                global: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) {
 
-                        if (data.result == 'snips/percentage') {
-                            el.closest('.action').find('.slotsOptions').empty();
-                            displayValueMap(el.closest('.action').find('.slotsOptions'));
-                        }else{
-                            el.closest('.action').find('.slotsOptions').empty();
-                        }
-
+                    if (data.result == 'snips/percentage') {
+                        el.closest('.action').find('.slotsOptions').empty();
+                        displayValueMap(el.closest('.action').find('.slotsOptions'));
+                    }else{
+                        el.closest('.action').find('.slotsOptions').empty();
                     }
+                }
         });   
     });
 });
@@ -328,7 +327,7 @@ $('.reload').on('click', function () {
 
     bootbox.confirm({
         title: "Attention",
-        message: "This operation will reload all the intent config, would you continue?",
+        message: "Only do this operation when you do not updated snips assistant! Before reload, please export all yoru binding config file!",
         buttons: {
             confirm: {
                 label: '<i class="fa fa-check"></i> Yes',
@@ -388,6 +387,10 @@ $('.reload').on('click', function () {
                                                     if (data.result == -1) {
                                                         title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
                                                         msg = 'Wrong username/ password!';
+                                                    }
+                                                    if (data.result == -2) {
+                                                        title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                        msg = 'Connection error. Please go -> [plugin] -> [snips] -> [configuration]. Check if you set a correct [Snips site IP address]!';
                                                     }
 
                                                     bootbox.alert({

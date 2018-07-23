@@ -26,6 +26,8 @@ include 'ChromePhp.php';
 
 class snips extends eqLogic {
 
+    protected $snips_type;
+
     /*     * ***********************Methode static*************************** */
 
     public static function resetMqtt(){
@@ -390,15 +392,6 @@ class snips extends eqLogic {
     }
 
     public static function reloadAssistant(){
-        // Create an object to contant all the intent
-        $obj = object::byName('Snips-Intents');
-        if (!isset($obj) || !is_object($obj)) {
-            $obj = new object();
-        }
-        $obj->setName('Snips-Intents');
-        $obj->setIsVisible(1);
-        $obj->save();
-
         // Get assistant.json file, build assistant following the contains of this file
         $assistant_file = dirname(__FILE__).'/../../assistant.json';
 
@@ -406,7 +399,24 @@ class snips extends eqLogic {
         //snips::debug($json_string, true);
         $assistant = json_decode($json_string,true);
 
-        $language = $assistant["language"];
+        $language = $assistant['language'];
+        $assistant_name = $assistant["name"];
+        $assistant_id = 
+        $assistant_hotword = 
+        // Create an object to contant all the intent
+        $obj = object::byName($assistant_name);
+        if (!isset($obj) || !is_object($obj)) {
+            $obj = new object();
+        }
+        $obj->setName('Snips-Intents');
+        $obj->setIsVisible(1);
+        $obj->setConfiguration('id',$assistant["id"]);
+        $obj->setConfiguration('hotword', $assistant['hotword']);
+        $obj->setConfiguration('language', $assistant['language']);
+        $obj->setConfiguration('createdAt', $assistant['createdAt']);
+        $obj->save();
+
+
 
         // Add all the intents to configuration
         //$intents = json_decode(self::getIntents(), true);
@@ -422,11 +432,12 @@ class snips extends eqLogic {
                 $elogic->setLogicalId($intent['id']);
                 $elogic->setName($intent['name']);
                 $elogic->setIsEnable(1);
+                $elogic->setConfiguration('snipsType', 'Intent');
                 $elogic->setConfiguration('slots', $intent['slots']);
                 $elogic->setConfiguration('isSnipsConfig', 1);
                 $elogic->setConfiguration('isInteraction', 0);
                 $elogic->setConfiguration('language', $intent['language']);
-                $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+                $elogic->setObject_id(object::byName($assistant_name)->getId());
                 $elogic->save();
             }
         }
@@ -584,14 +595,7 @@ class snips extends eqLogic {
                     if(true){
                         snips::setSlotsCmd($slots_values, $intent_name, $options);
                         
-                        
                         scenarioExpression::createAndExec('action', $action['cmd'], $options);
-
-                        // if ($action['cmd'] == 'scenario') { 
-                        //     $wait_scenario['is_scenario'] = 1;
-                        //     $wait_scenario['scenario_id'] = $options['scenario_id'];
-                        //     $wait_scenario['execution_time'] = date('Y-m-d H:i:s');
-                        // }
 
                     }else{
                         snips::debug('Found binding action, but it is not enabled');
@@ -635,8 +639,6 @@ class snips extends eqLogic {
                 }
             }
             
-
-
             $eq->checkAndUpdateCmd($cmd, $value);
             $cmd->setValue($value);
             $cmd->save();
@@ -675,7 +677,6 @@ class snips extends eqLogic {
                 }
             }
 
-            
         }else{
             $eq = eqLogic::byLogicalId($intent, 'snips');
 
@@ -796,10 +797,19 @@ class snips extends eqLogic {
         return $output;
     }
 
+    static function isSnipsRunLocal(){
+        $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
+
+        if ($addr == '127.0.0.1' || $addr == 'localhost');
+    }
+
     static function fetchAssistantJson($usrename, $password){
         $connection = ssh2_connect('rpival.local', 22);
 
-        if (!$connection) die('Connection failed');
+        if (!$connection) {
+            snips::debug('[fetchAssistantJson]Password resutlt : Faild', true);
+            return -2; 
+        }
 
         $resp = ssh2_auth_password($connection, $usrename, $password);
         if ($resp) {
@@ -822,8 +832,8 @@ class snips extends eqLogic {
             return 0;
         }
     }
-    /*     * *********************Méthodes d'instance************************* */
 
+    /*     * *********************Méthodes d'instance************************* */
     public function preInsert() {
 
     }
