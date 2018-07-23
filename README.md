@@ -91,7 +91,35 @@ Then you need to set the correct IP address on the plugin configuration page.
 
 # Develop Diary
 23, Jul, 2018
-- [ ] Add feature: support lightShift intent
+- [x] Add feature: support lightShift intent
+
+```php
+// CONFIGUTARION
+LIGHT_BRIGHTNESS_VALUE = '#[Apartment][Mirror Strip Right][Etat Luminosité]#';
+LIGHT_BRIGHTNESS_VALUE = '#[Apartment][Mirror Strip Right][Luminosité]#';
+MIN_VALUE = 0;
+MAX_VALUE = 255; 
+
+//turn up 10% of MAX_VALUE each time
+STEP_VALUE = round((MAX_VALUE - MIN_VALUE) * 0.1);
+
+$cmd = cmd::byString(LIGHT_BRIGHTNESS_VALUE);
+if(is_object($cmd)){
+	if($cmd->getValue()){
+        $current_val = $cmd->getValue();
+    }else{ 
+        $current_val = $cmd->getCache('value','NULL');
+    }
+}
+fwrite(STDOUT, '[Scenario] Light shift for ['.LIGHT_BRIGHTNESS_VALUE.'], current brightness -> '.$current_val.'\n');
+$options = array();
+$options['slider'] = $current_val + STEP_VALUE;
+fwrite(STDOUT, '[Scenario] Light shift for ['.LIGHT_BRIGHTNESS_VALUE.'], after shift brightness -> '.$options['slider'].'\n');
+$cmdSet = cmd::byString(LIGHT_BRIGHTNESS_ACTION);
+if(is_object($cmdSet)){
+  $cmdSet->execCmd($options);
+}
+```
 
 20, Jul, 2018
 - [x] Add feature: support import user binding configuration
