@@ -94,7 +94,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Add feature: support lightShift intent
 
 ```php
-// CONFIGUTARION
+// User configuration
 
 $LIGHT_BRIGHTNESS_VALUE = '#[Apartment][Mirror Strip Right][Etat Luminosité]#';
 $LIGHT_BRIGHTNESS_ACTION = '#[Apartment][Mirror Strip Right][Luminosité]#';
@@ -102,17 +102,14 @@ $OPERATION = 'DOWN'; // or 'DOWN', case sensitive
 $MIN_VALUE = 0;
 $MAX_VALUE = 255;
 $STEP_VALUE = 0.2; //Change 20% of MAX_VALUE each time
+
+// Execution
+
 $cmd = cmd::byString($LIGHT_BRIGHTNESS_VALUE);
 
-if (is_object($cmd)) {
-	if ($cmd->getValue()) {
-		$current_val = $cmd->getValue();
-	}
-	else {
-		$current_val = $cmd->getCache('value', 'NULL');
-	}
-}
-
+if (is_object($cmd))
+if ($cmd->getValue()) $current_val = $cmd->getValue();
+else $current_val = $cmd->getCache('value', 'NULL');
 $options = array();
 
 if ($OPERATION === 'UP') $options['slider'] = $current_val + round(($MAX_VALUE - $MIN_VALUE) * $STEP_VALUE);
@@ -125,9 +122,7 @@ if ($options['slider'] > $MAX_VALUE) $options['slider'] = $MAX_VALUE;
 fwrite(STDOUT, '[Scenario] Light shift for [' . $LIGHT_BRIGHTNESS_ACTION . '], from -> ' . $options['slider'] . ' to ->' . $current_val . '\n');
 $cmdSet = cmd::byString($LIGHT_BRIGHTNESS_ACTION);
 
-if (is_object($cmdSet)) {
-	$cmdSet->execCmd($options);
-}
+if (is_object($cmdSet)) $cmdSet->execCmd($options);
 ```
 
 20, Jul, 2018
