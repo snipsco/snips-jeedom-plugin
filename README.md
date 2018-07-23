@@ -79,18 +79,22 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Double check to load assistant // mandatory
 - [x] Load assistant remotely // mandatory
 - [x] Import & export // mandatory
+- [ ] Light shift function // mandatory
 - [ ] Dynamic TTS player selection // mandatory
+- [ ] Multi-intent, 1 slot multiple value // improvement
 - [ ] Find a way to map binary to text // improvement
 - [ ] Adapt to dark theme // improvement
 - [ ] Optimise the intent select modal // improvement
-- [ ] Multi-intent, 1 slot multiple value // improvement
+
 
 
 
 # Develop Diary
+23, Jul, 2018
+- [ ] Add feature: support lightShift intent
 
 20, Jul, 2018
-- [ ] Add feature: support import user binding configuration
+- [x] Add feature: support import user binding configuration
 
 19, Jul, 2018
 - [x] Add feature: support fetch assistant remotely from snips
