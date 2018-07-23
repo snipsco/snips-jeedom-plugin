@@ -7,6 +7,59 @@ The Snips Voice Platform allows anyone to integrate AI powered voice interaction
 # Objectives
 To be able to use all your JeeDom devices by using voice! And, we should let you done this in a simple way!
 
+# Installation (beta user)
+> Since this plugin is not published on JeeDom market yet, installation has to be done manually. 
+
+## Step 1. Download plugin
+For this step, I would recommand you use `ssh` login your Jeedom site through console:
+```
+ssh <username>@<hostnme>
+```
+For example, if your Jeedom is running on a Raspberry, you can then use: 
+```
+ssh pi@raspberry.local
+```
+As long as you have successfully loged in, you can simply use `git clone` command to download this repository:
+```
+git clone https://github.com/snipsco/Snips-JeeDom-Plugin.git
+```
+Now you can do `ls` to check if `Snips-JeeDom-Plugin` is under your current directory:
+```
+ls Snips-JeeDom-Plugin
+```
+You should see the result:
+```
+README.md	    snips
+```
+## Step 2. Copy plugin to JeeDom folder
+Now you have the plugin file on your Jeedom site, but JeeDom an not detect this yet.
+
+Run the following command to copy snips plugin to JeeDom directory:
+```
+sudo cp -r Snips-JeeDom-Plugin/snips/ /var/www/html/plugins/
+```
+
+## Step 3. Change permission
+Run following to add correct permission to all the file:
+```
+sudo chmod -R 775 /var/www/html/plugins/snips/
+```
+Run following to change correct user group to all the file:
+```
+sudo chgrp -R www-data /var/www/html/plugins/snips/
+```
+Run following to change correct ownership to all the file:
+```
+sudo chown -R www-data /var/www/html/plugins/snips/
+```
+
+## Step 4. Activate Snips plugin
+Now you can direct to your Jeedom platform, go to <Plugin Management>, find <Snips>, and then activate it. 
+
+Then you need to set the correct IP address on the plugin configuration page. 
+
+(Use `sam devices` command to see the IP address of snips site)
+
 # Features
 - [x] Configurable MQTT client
 - [x] Receive all the intents and its slots from the bus
@@ -25,19 +78,55 @@ To be able to use all your JeeDom devices by using voice! And, we should let you
 - [x] Find a way to reset slot value for scenario uses // mandatory
 - [x] Double check to load assistant // mandatory
 - [x] Load assistant remotely // mandatory
-- [ ] Import & export // mandatory
+- [x] Import & export // mandatory
+- [x] Light shift function // mandatory
 - [ ] Dynamic TTS player selection // mandatory
+- [ ] Multi-intent, 1 slot multiple value // improvement
 - [ ] Find a way to map binary to text // improvement
 - [ ] Adapt to dark theme // improvement
 - [ ] Optimise the intent select modal // improvement
-- [ ] Multi-intent, 1 slot multiple value // improvement
+
 
 
 
 # Develop Diary
+23, Jul, 2018
+- [x] Add feature: support lightShift intent
+
+```php
+// User configuration
+
+$LIGHT_BRIGHTNESS_VALUE = '#[Apartment][Mirror Strip Right][Etat Luminosité]#';
+$LIGHT_BRIGHTNESS_ACTION = '#[Apartment][Mirror Strip Right][Luminosité]#';
+$OPERATION = 'DOWN'; // 'ON' or 'DOWN', case sensitive
+$MIN_VALUE = 0;
+$MAX_VALUE = 255;
+$STEP_VALUE = 0.2; //Change 20% of MAX_VALUE each time
+
+// Execution
+
+$cmd = cmd::byString($LIGHT_BRIGHTNESS_VALUE);
+
+if (is_object($cmd))
+if ($cmd->getValue()) $current_val = $cmd->getValue();
+else $current_val = $cmd->getCache('value', 'NULL');
+$options = array();
+
+if ($OPERATION === 'UP') $options['slider'] = $current_val + round(($MAX_VALUE - $MIN_VALUE) * $STEP_VALUE);
+else
+if ($OPERATION === 'DOWN') $options['slider'] = $current_val - round(($MAX_VALUE - $MIN_VALUE) * $STEP_VALUE);
+
+if ($options['slider'] < $MIN_VALUE) $options['slider'] = $MIN_VALUE;
+
+if ($options['slider'] > $MAX_VALUE) $options['slider'] = $MAX_VALUE;
+fwrite(STDOUT, '[Scenario] Light shift for [' . $LIGHT_BRIGHTNESS_ACTION . '], from -> ' . $options['slider'] . ' to ->' . $current_val . '\n');
+$cmdSet = cmd::byString($LIGHT_BRIGHTNESS_ACTION);
+
+if (is_object($cmdSet)) $cmdSet->execCmd($options);
+```
 
 20, Jul, 2018
-- [ ] Add feature: support import user binding configuration
+- [x] Add feature: support import user binding configuration
 
 19, Jul, 2018
 - [x] Add feature: support fetch assistant remotely from snips
