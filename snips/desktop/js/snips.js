@@ -379,18 +379,21 @@ $('.reload').on('click', function () {
                                                     if (data.result == 1) {
                                                         title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> Successed</a>';
                                                         msg = 'Assistant loaded!';
-                                                    }
+                                                    } else
                                                     if (data.result == 0) {
                                                         title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
                                                         msg = 'Can not fetch assistant!';
-                                                    }
+                                                    } else
                                                     if (data.result == -1) {
                                                         title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
                                                         msg = 'Wrong username/ password!';
-                                                    }
+                                                    } else
                                                     if (data.result == -2) {
                                                         title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
                                                         msg = 'Connection error. Please go -> [plugin] -> [snips] -> [configuration]. Check if you set a correct [Snips site IP address]!';
+                                                    } else{
+                                                        title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                        msg = data.result;
                                                     }
 
                                                     bootbox.alert({

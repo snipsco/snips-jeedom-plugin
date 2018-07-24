@@ -25,9 +25,6 @@ include 'ChromePhp.php';
 // error_reporting(E_ALL);
 
 class snips extends eqLogic {
-
-    protected $snips_type;
-
     /*     * ***********************Methode static*************************** */
 
     public static function resetMqtt(){
@@ -437,7 +434,7 @@ class snips extends eqLogic {
                 $elogic->setConfiguration('isSnipsConfig', 1);
                 $elogic->setConfiguration('isInteraction', 0);
                 $elogic->setConfiguration('language', $intent['language']);
-                $elogic->setObject_id(object::byName($assistant_name)->getId());
+                $elogic->setObject_id(object::byName('Snips-Intents')->getId());
                 $elogic->save();
             }
         }
