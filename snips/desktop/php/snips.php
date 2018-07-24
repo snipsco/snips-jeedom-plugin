@@ -110,14 +110,6 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
   <!--Management of All the Intents (Objects)-->
   <div class="eqLogicThumbnailContainer">
 
-
-    <!-- <div class="panel panel-default" style="width: 194px; height: 120px;">
-      <div class="panel-heading"><span class="label label-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></span><strong>setLights</strong></div>
-        <div class="panel-body">
-        Panel content
-        </div>
-    </div> -->
-
     <?php
       if (!$eqLogics) {
           echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">Please load assistant</span></center>';
@@ -149,12 +141,6 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
           }
           echo '</ul>';
           echo '</div></div>';
-        	// $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-        	// echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
-        	// echo '<img src="' . $plugin->getPathImgIcon() . '" height="105" width="95" />';
-        	// echo "<br>";
-        	// echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">' . $eqLogic->getHumanName(true, true) . '</span>';
-        	// echo '</div>';
         }
       }
 ?>
@@ -232,7 +218,6 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
         <legend>{{Action Binding}}</legend>
 
         <div class="panel-heading btn btn-default" id="bt_addNewBinding" style="width: 100%; border: 1.5px dashed #ddd; box-shadow: 0 1px 1px rgba(0,0,0,.05); background-color:#fff;"><i class="fa fa-plus-circle"></i> {{Attach a new binding}}</div>
-        <!-- <a class="btn btn-success btn-sm cmdAction pull-left" id="bt_addNewBinding" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Attach a new binding}}</a><br/><br/> -->
 
         <div id="div_bindings" style="padding-top: 10px;"></div>
 </fieldset>
@@ -247,9 +232,5 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 <?php include_file('desktop', 'snips', 'js', 'snips');?>
 <?php include_file('core', 'plugin.template', 'js');?>
 <?php include_file('desktop', 'snips', 'css', 'snips'); ?>
-<!--Passing necessary data to javascript-->
-<script>
-  var _snips_intents = <?php echo snips::getIntents();?>
-</script>
 
 

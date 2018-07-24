@@ -53,7 +53,6 @@ $(document).on('change', '#isEnable', function () {
 });
 
 $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function () {
-    console.log('input object changed captured, value is:' + $(this).find("option:selected").text());
 
     if ($(this).find("option:selected").text() == 'Snips-Intents') {
         $('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
@@ -322,9 +321,6 @@ $('.reload').on('click', function () {
                                             message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading assistant from remote site...</div>',
                                             closeButton: false
                                         });
-
-                                        console.log('username: ' + username);
-                                        console.log('password: ' + password);
                                         $.ajax({
                                             type: "POST",
                                             url: "plugins/snips/core/ajax/snips.ajax.php",
@@ -457,7 +453,6 @@ $('.importConfigration').on('click', function () {
                     inputOptions: options,
                     callback: function (result) {
                         if (result != null && result != '') {
-                            console.log('going to import file :' + result);
                             $.ajax({
                                 type: "POST",
                                 url: "plugins/snips/core/ajax/snips.ajax.php",
