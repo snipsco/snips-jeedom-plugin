@@ -19,11 +19,6 @@
 /* * ***************************Includes********************************* */
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
-include 'ChromePhp.php';
-
-// ini_set("display_errors","On");
-// error_reporting(E_ALL);
-
 class snips extends eqLogic {
 
     protected $snips_type;
@@ -416,8 +411,6 @@ class snips extends eqLogic {
         $obj->setConfiguration('createdAt', $assistant['createdAt']);
         $obj->save();
 
-
-
         // Add all the intents to configuration
         //$intents = json_decode(self::getIntents(), true);
 
@@ -441,7 +434,6 @@ class snips extends eqLogic {
                 $elogic->save();
             }
         }
-
     }
 
     public static function deleteAssistant(){

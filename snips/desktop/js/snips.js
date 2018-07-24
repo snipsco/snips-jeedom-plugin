@@ -327,7 +327,7 @@ $('.reload').on('click', function () {
 
     bootbox.confirm({
         title: "Attention",
-        message: "Only do this operation when you do not updated snips assistant! Before reload, please export all yoru binding config file!",
+        message: "This operation will delete current assistant and fetch the latest assistant from your local snips host! Before reload, please export your binding config file!",
         buttons: {
             confirm: {
                 label: '<i class="fa fa-check"></i> Yes',
