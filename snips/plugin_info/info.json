@@ -2,14 +2,14 @@
 	"id" : "snips",
 	"name" : "Snips Voice Assistant",
 	"description" : "Snips voice control plugin, which allows you execute command by using your voice",
-	"author" : "Ke Fang",
+	"author" : "Coor Fang",
 	"require" : "2.4",
 	"version" : "0.1",
 	"category" : "automation",
 	"hasDependency" : 1,
 	"hasOwnDeamon" : 1,
-	"changelog" : "https://github.com/snipsco/Snips-Jeedom-Plugin-Issues/",
-	"documentation" : "https://snips.gitbook.io/documentation/home-automation-platforms/jeedom",
-	"language" : "En",
+	"changelog" : "",
+	"documentation" : "",
+	"language" : "",
 	"compatibility" : ""
 }
