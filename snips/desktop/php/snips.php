@@ -22,8 +22,10 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
                 <li class="filter" style="margin-bottom: 5px;"><input class="filter form-control input-sm" placeholder="{{Rechercher}}" style="width: 100%"/></li>
                   <?php
                   foreach ($eqLogics as $eqLogic) {
-                      $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-                      echo '<li class="cursor li_eqLogic" data-eqLogic_id="' . $eqLogic->getId() . '" style="' . $opacity .'"><a>' . $eqLogic->getHumanName(true) . '</a></li>';
+                      if ($eqLogic->getConfiguration('snipsType') == 'Intent') {
+                        $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
+                        echo '<li class="cursor li_eqLogic" data-eqLogic_id="' . $eqLogic->getId() . '" style="' . $opacity .'"><a>' . $eqLogic->getHumanName(true) . '</a></li>';
+                      }
                   }
                   ?>
            </ul>
@@ -95,7 +97,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
 
       <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
-        <i class="fa fa-wrench" style="font-size : 6em;color:#337ab7;"></i>
+        <i class="glyphicon glyphicon-cog" style="font-size : 6em;color:#337ab7;"></i>
         <br>
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Configuration}}</span>
