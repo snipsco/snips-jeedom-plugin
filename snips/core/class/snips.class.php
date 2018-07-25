@@ -3,6 +3,9 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 include 'ChromePhp.php';
 
+// ini_set("display_errors","On");
+// error_reporting(E_ALL);
+
 class snips extends eqLogic
 
 {
@@ -145,7 +148,6 @@ class snips extends eqLogic
             $topics = snips::getTopics();
             foreach($topics as $topic) {
                 $client->subscribe($topic, 0);
-                snips::debug('Subscribe to topic :' . $topic);
             }
 
             $client->loopForever();
@@ -337,7 +339,9 @@ class snips extends eqLogic
             ChromePhp::log($info);
         }
         else {
+            //log::add(snips, 'debug', $info);
             fwrite(STDOUT, $info . '\n');
+            //fwrite(STDOUT, $res . '\n');
         }
     }
 
@@ -376,7 +380,6 @@ class snips extends eqLogic
         $topics = array();
         foreach($intents as $intent => $slot) {
             array_push($topics, 'hermes/intent/' . $intent);
-            self::debug('hermes/intent/' . $intent);
         }
 
         return $topics;
@@ -719,8 +722,9 @@ class snips extends eqLogic
     public static
 
     function fetchAssistantJson($usrename, $password)
-    {
-        $connection = ssh2_connect('rpival.local', 22);
+    {   
+        $ip_addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
+        $connection = ssh2_connect($ip_addr, 22);
         if (!$connection) {
             snips::debug('[fetchAssistantJson]Password resutlt : Faild', true);
             return -2;
