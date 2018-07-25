@@ -132,7 +132,7 @@ class snips extends eqLogic
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $port = intval(config::byKey('mqttPort', 'snips', '1883'));
         snips::debug('Connection Parameters, Host : ' . $addr . ', Port : ' . $port);
-        $client = new Mosquitto\Client("JeedomSnips");
+        $client = new Mosquitto\Client(); 
         $client->onConnect('snips::connect');
         $client->onDisconnect('snips::disconnect');
         $client->onSubscribe('snips::subscribe');
@@ -148,9 +148,10 @@ class snips extends eqLogic
                 snips::debug('Subscribe to topic :' . $topic);
             }
 
-            while (true) {
-                $client->loop();
-            }
+            $client->loopForever();
+            // while (true) {
+            //     $client->loop();
+            // }
         }
 
         catch(Exception $e) {
@@ -178,7 +179,7 @@ class snips extends eqLogic
 
     function subscribe()
     {
-        snips::debug('Subscribe to topics');
+        //snips::debug('Subscribe to topics');
     }
 
     public static
@@ -301,7 +302,7 @@ class snips extends eqLogic
     {
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $port = intval(config::byKey('mqttPort', 'snips', 1883));
-        $client = new MosquittoClient('JeedomSnipsPub');
+        $client = new Mosquitto\Client('JeedomSnipsPub');
         $client->connect($addr, $port, 60);
         $client->publish($topic, $payload);
         for ($i = 0; $i < 100; $i++) {
