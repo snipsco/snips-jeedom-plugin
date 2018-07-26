@@ -724,6 +724,10 @@ class snips extends eqLogic
         }
     }
 
+    public static
+
+    function tryToReload
+
     public
 
     function preInsert()
@@ -787,9 +791,9 @@ class snips extends eqLogic
         $slots = $this->getConfiguration('slots');
         foreach($slots as $slot) {
             $slotCmd = $this->getCmd(null, $slot['name']);
-            snips::debug('[postSave] Type is ' . gettype($slotCmd));
+            
             if (!is_object($slotCmd)) {
-                snips::debug('[Post Save] Create ' . gettype($slotCmd));
+                snips::debug('[PostSave] Created: ' . $slot['name']);
                 $slotCmd = new snipsCmd();
             }
 

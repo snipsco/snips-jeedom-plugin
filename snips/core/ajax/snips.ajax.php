@@ -44,6 +44,7 @@ try {
     }
 
     if (init('action') == 'playFeedback') {
+        snips::debug('[TTs] Testing Play...');
         $text = snips::generateFeedback(init('text') , init('vars') , true);
         snips::sayFeedback($text, null, init('lang'));
         ajax::success();
