@@ -1,8 +1,6 @@
 <?php
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
-include 'ChromePhp.php';
-
 // ini_set("display_errors","On");
 // error_reporting(E_ALL);
 
@@ -29,7 +27,7 @@ class snips extends eqLogic
             $cron->setSchedule('* * * * *');
             $cron->setTimeout('1440');
             $cron->save();
-            snips::debug('Created snips cron: mqttClient');
+            snips::debug('[Reset MQTT] Created snips cron: mqttClient');
         }
     }
 
@@ -134,7 +132,7 @@ class snips extends eqLogic
     {
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $port = intval(config::byKey('mqttPort', 'snips', '1883'));
-        snips::debug('Connection Parameters, Host : ' . $addr . ', Port : ' . $port);
+        snips::debug('[MQTT] Connection, Host: ' . $addr . ', Port: ' . $port);
         $client = new Mosquitto\Client(); 
         $client->onConnect('snips::connect');
         $client->onDisconnect('snips::disconnect');
@@ -157,7 +155,7 @@ class snips extends eqLogic
         }
 
         catch(Exception $e) {
-            snips::debug($e->getMessage());
+            snips::debug('[MQTT] Exception: '.$e->getMessage());
         }
     }
 
@@ -165,7 +163,7 @@ class snips extends eqLogic
 
     function connect($r, $message)
     {
-        snips::debug('Connected to mosquitto with code ' . $r . ' ' . $message);
+        snips::debug('[MQTT] Connected, code: ' . $r . ' message: ' . $message);
         config::save('status', '1', 'snips');
     }
 
@@ -173,7 +171,7 @@ class snips extends eqLogic
 
     function disconnect($r)
     {
-        snips::debug('Disconnected to mosquitto with code ' . $r);
+        snips::debug('[MQTT] Disconnected, code: ' . $r);
         config::save('status', '0', 'snips');
     }
 
@@ -181,7 +179,7 @@ class snips extends eqLogic
 
     function subscribe()
     {
-        //snips::debug('Subscribe to topics');
+        log::add('snips', 'inof', '[MQTT] Subscribeed to .'.$topic);
     }
 
     public static
@@ -189,7 +187,7 @@ class snips extends eqLogic
     function logmq($code, $str)
     {
         if (strpos($str, 'PINGREQ') === false && strpos($str, 'PINGRESP') === false) {
-            snips::debug($code . ' : ' . $str);
+            snips::debug('[MQTT] code: '.$code . ' : ' . $str);
         }
     }
 
@@ -199,7 +197,7 @@ class snips extends eqLogic
     {
         $topics = snips::getTopics();
         $intents_slots = snips::getIntents();
-        snips::debug('received something');
+        snips::debug('[MQTT] Received message.');
         if (in_array($message->topic, $topics) == false) {
             return;
         }
@@ -235,59 +233,32 @@ class snips extends eqLogic
 
     function generateFeedback($org_text, $vars, $test_play = false)
     {
-        snips::debug('generating feedback text');
+        snips::debug('[TTs] Generating feedback text');
         $string_subs = explode('{#}', $org_text);
         $speaking_text = '';
         if (!empty($string_subs)) {
             foreach($string_subs as $key => $sub) {
-                if ($test_play) {
-                    if (isset($vars[$key])) {
-                        $cmd = cmd::byString($vars[$key]);
-                        snips::debug('[string] cmd id is ' . $cmd_id);
-                        if (is_object($cmd)) {
-                            if ($cmd->getName() == 'intensity_percent' || $cmd->getName() == 'intensity_percentage') {
-                                $sub.= $cmd->getConfiguration('orgVal');
+                if (isset($vars[$key])) {
+                    $cmd = cmd::byString($vars[$key]);
+                    snips::debug('[TTs] The '.$key.' variable cmd id: ' . $cmd->getId());
+                    if (is_object($cmd)) {
+                        if ($cmd->getName() == 'intensity_percent' || $cmd->getName() == 'intensity_percentage') {
+                            $sub.= $cmd->getConfiguration('orgVal');
+                        }
+                        else {
+                            if ($cmd->getValue()) {
+                                $sub.= $cmd->getValue();
                             }
                             else {
-                                if ($cmd->getValue()) {
-                                    $sub.= $cmd->getValue();
-                                }
-                                else {
-                                    $sub.= $cmd->getCache('value', 'NULL');
-                                }
+                                $sub.= $cmd->getCache('value', 'NULL');
                             }
                         }
-                    }
-                    else {
-                        snips::debug('[string] cmd id is not set');
-                        $sub.= '';
                     }
                 }
                 else {
-                    if (isset($vars[$key])) {
-                        $cmd_id = str_replace('#', '', $vars[$key]);
-                        $cmd = cmd::byId($cmd_id);
-                        snips::debug('[number] cmd id is ' . $cmd_id);
-                        if (is_object($cmd)) {
-                            if ($cmd->getName() == 'intensity_percent' || $cmd->getName() == 'intensity_percentage') {
-                                $sub.= $cmd->getConfiguration('orgVal');
-                            }
-                            else {
-                                if ($cmd->getValue()) {
-                                    $sub.= $cmd->getValue();
-                                }
-                                else {
-                                    $sub.= $cmd->getCache('value', 'NULL');
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        snips::debug('[number] cmd id not set');
-                        $sub.= '';
-                    }
+                    snips::debug('[TTs] The '.$key.' variable cmd is not set');
+                    $sub.= '';
                 }
-
                 $speaking_text.= $sub;
             }
 
@@ -304,7 +275,7 @@ class snips extends eqLogic
     {
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $port = intval(config::byKey('mqttPort', 'snips', 1883));
-        $client = new Mosquitto\Client('JeedomSnipsPub');
+        $client = new Mosquitto\Client();
         $client->connect($addr, $port, 60);
         $client->publish($topic, $payload);
         for ($i = 0; $i < 100; $i++) {
@@ -333,16 +304,9 @@ class snips extends eqLogic
 
     public static
 
-    function debug($info, $in_console = false)
+    function debug($info)
     {
-        if ($in_console) {
-            ChromePhp::log($info);
-        }
-        else {
-            //log::add(snips, 'debug', $info);
-            fwrite(STDOUT, $info . '\n');
-            //fwrite(STDOUT, $res . '\n');
-        }
+        log::add("snips", 'debug', $info);
     }
 
     public static
@@ -388,20 +352,20 @@ class snips extends eqLogic
     public static
 
     function reloadAssistant()
-    {
+    {   
+        snips::debug('[Load Assistant] Assistant is being reloaded!');
         $assistant_file = dirname(__FILE__) . '/../../assistant.json';
         $json_string = file_get_contents($assistant_file);
         $assistant = json_decode($json_string, true);
-        $language = $assistant['language'];
-        $assistant_name = $assistant["name"];
-        $assistant_id = $assistant_hotword = $obj = object::byName($assistant_name);
+        
+        $obj = object::byName('Snips-Intents');
         if (!isset($obj) || !is_object($obj)) {
             $obj = new object();
         }
-
         $obj->setName('Snips-Intents');
         $obj->setIsVisible(1);
         $obj->setConfiguration('id', $assistant["id"]);
+        $obj->setConfiguration('name',$assistant["name"]);
         $obj->setConfiguration('hotword', $assistant['hotword']);
         $obj->setConfiguration('language', $assistant['language']);
         $obj->setConfiguration('createdAt', $assistant['createdAt']);
@@ -442,7 +406,6 @@ class snips extends eqLogic
             foreach($cmds as $cmd) {
                 $cmd->remove();
             }
-
             $eq->remove();
         }
     }
@@ -455,8 +418,9 @@ class snips extends eqLogic
         $site_id = $payload->{'siteId'};
         $session_id = $payload->{'sessionId'};
         $query_input = $payload->{'input'};
-        snips::debug('findAndDoAction, Intent:' . $intent_name . ' siteId:' . $site_id . ' sessionId:' . $session_id);
+        snips::debug('[Binding Execution] Intent:' . $intent_name . ' siteId:' . $site_id . ' sessionId:' . $session_id);
         $slots_values = array();
+
         foreach($payload->{'slots'} as $slot) {
             if (is_string($slot->{'value'}->{'value'})) {
                 $slots_values[$slot->{'slotName'}] = strtolower(str_replace(' ', '', $slot->{'value'}->{'value'}));
@@ -477,11 +441,11 @@ class snips extends eqLogic
         else {
             $bindings_match_coming_slots = array();
             foreach($bindings as $binding) {
-                snips::debug('[Slots] Cur binding name : ' . $binding['name']);
-                snips::debug('[Slots] Binding count is : ' . count($binding['nsr_slots']));
-                snips::debug('[Slots] Snips count is : ' . count($slots_values));
+                snips::debug('[Binding Execution] Cur binding name : ' . $binding['name']);
+                snips::debug('[Binding Execution] Binding count is : ' . count($binding['nsr_slots']));
+                snips::debug('[Binding Execution] Snips count is : ' . count($slots_values));
                 if (count($binding['nsr_slots']) === count($slots_values)) {
-                    snips::debug('[Slots] Binding has corr number of slot: ' . $binding['name']);
+                    snips::debug('[Binding Execution] Binding has corr number of slot: ' . $binding['name']);
                     $slot_all_exists_indicator = 1;
                     foreach($binding['nsr_slots'] as $slot) {
                         if (array_key_exists($slot, $slots_values)) {
@@ -518,7 +482,7 @@ class snips extends eqLogic
                             $aft_value = $condition['aft'];
                         }
 
-                        snips::debug('[Condition] Condition Aft value is : ' . $aft_value);
+                        snips::debug('[Binding Execution][Condition] Condition Aft value is : ' . $aft_value);
                         if ($pre_value == $aft_value) {
                             $condition_all_true_indicator*= 1;
                         }
@@ -548,12 +512,13 @@ class snips extends eqLogic
                         scenarioExpression::createAndExec('action', $action['cmd'], $options);
                     }
                     else {
-                        snips::debug('Found binding action, but it is not enabled');
+                        snips::debug('[Binding Execution] Found binding action, but it is not enabled');
                     }
                 }
 
                 $text = snips::generateFeedback($binding['tts']['text'], (array)$binding['tts']['vars'], false);
-                snips::debug('Text generated is ' . $text . ' |||| Orginal text is ' . $binding['tts']['text']);
+                snips::debug('[Binding Execution] Generated text is ' . $text);
+                snips::debug('[Binding Execution] Orginal text is ' . $binding['tts']['text']);
                 snips::sayFeedback($text, $session_id);
             }
         }
@@ -566,18 +531,18 @@ class snips extends eqLogic
 
     function setSlotsCmd($slots_values, $intent, $_options = null)
     {
-        snips::debug('Set slots cmd values');
+        snips::debug('[Slot Set] Set slots cmd values');
         $eq = eqLogic::byLogicalId($intent, 'snips');
         foreach($slots_values as $slot => $value) {
-            snips::debug('[setSlotsCmd] Slots name is :' . $slot);
+            snips::debug('[Slot Set] Slots name is :' . $slot);
             $cmd = $eq->getCmd(null, $slot);
             if ($_options) {
-                snips::debug('[setSlotsCmd] Slots option entered, entityId is:' . $cmd->getConfiguration('entityId'));
+                snips::debug('[Slot Set] Slots option entered, entityId is:' . $cmd->getConfiguration('entityId'));
                 if ($cmd->getConfiguration('entityId') == 'snips/percentage') {
                     $org = $value;
                     $value = snips::percentageRemap($_options['LT'], $_options['HT'], $value);
                     $cmd->setConfiguration('orgVal', $org);
-                    snips::debug('[setSlotsCmd] Slots is percentage, value after convert:' . $value);
+                    snips::debug('[Slot Set] Slots is percentage, value after convert:' . $value);
                 }
             }
 
@@ -607,7 +572,7 @@ class snips extends eqLogic
 
     function resetSlotsCmd($slots_values = false, $intent = false)
     {
-        snips::debug('[' . date('Y-m-d H:i:s') . '][snips::resetSlotsCmd] Reset all the slots');
+        snips::debug('[Slot Reset] Reset all the slots');
         if ($slots_values == false && $intent == false) {
             $eqs = eqLogic::byType('snips');
             foreach($eqs as $eq) {
@@ -641,7 +606,7 @@ class snips extends eqLogic
         foreach($eqs as $eq) {
             $org_bindings = $eq->getConfiguration('bindings');
             $json_string = json_encode($org_bindings);
-            snips::debug('[exportConfigration] json_string type is: ' . gettype($json_string) , true);
+            snips::debug('[Export Config] json_string type is: ' . gettype($json_string));
             preg_match_all('/#[^#]*[0-9]+#/', $json_string, $matches);
             $human_cmd = cmd::cmdToHumanReadable($matches[0]);
             foreach($human_cmd as $key => $cmd_text) {
@@ -652,29 +617,29 @@ class snips extends eqLogic
             $matches_c1 = $matches_c;
             foreach($matches_c[0] as $key => $value) {
                 $matches_c[0][$key] = str_replace('"pre":"', '#', $value);
-                snips::debug('[exportConfigration] 1st : ' . $matches_c[0][$key], true);
+                snips::debug('[Export Config] 1st : ' . $matches_c[0][$key]);
                 $matches_c[0][$key] = str_replace('"', '#', $matches_c[0][$key]);
-                snips::debug('[exportConfigration] 2nd : ' . $matches_c[0][$key], true);
+                snips::debug('[Export Config] 2nd : ' . $matches_c[0][$key]);
             }
 
             $humand_cond = cmd::cmdToHumanReadable($matches_c[0]);
             foreach($humand_cond as $key => $cmd_text) {
-                snips::debug('[exportConfigration] key word : ' . $matches_c1[0][$key] . ' replace ' . '"pre":"' . $cmd_text . '"', true);
+                snips::debug('[Export Config] key word : ' . $matches_c1[0][$key] . ' replace ' . '"pre":"' . $cmd_text . '"');
                 $json_string = str_replace($matches_c1[0][$key], '"pre":"' . $cmd_text . '"', $json_string);
             }
 
             $aft_bindings = json_decode($json_string);
-            snips::debug('[exportConfigration] vars: ' . $aft_bindings, true);
+            snips::debug('[Export Config] vars: ' . $aft_bindings);
             $binding_conf[$eq->getLogicalId() ] = $aft_bindings;
         }
 
         $file = fopen(dirname(__FILE__) . '/../../config_backup/' . $name . '.json', 'w');
         $res = fwrite($file, json_encode($binding_conf));
         if ($res) {
-            snips::debug('success output', true);
+            snips::debug('[Export Config] Success output');
         }
         else {
-            snips::debug('faild output', true);
+            snips::debug('[Export Config] Faild output');
         }
     }
 
@@ -682,14 +647,17 @@ class snips extends eqLogic
 
     function importConfigration($configFileName)
     {
-        snips::debug('[importConfigration] asked to import file: ' . $configFileName, true);
+        snips::debug('[Import Config] Asked to import file: ' . $configFileName);
         $json_string = file_get_contents(dirname(__FILE__) . '/../../config_backup/' . $configFileName);
         preg_match_all('/("pre":")(#.*?#)(")/', $json_string, $matches);
         $cmd_ids = cmd::humanReadableToCmd($matches[2]);
+
         foreach($cmd_ids as $key => $cmd_id) {
             $cmd_id = str_replace('#', '', $cmd_id);
-            snips::debug('[importConfigration] key word : ' . $matches[2][$key] . ' replace ' . $cmd_id, true);
-            $json_string = str_replace($matches[2][$key], $cmd_id, $json_string);
+
+            snips::debug('[Import Config] key word : ' . '"pre":"'.$matches[2][$key].'"' . ' replace ' . '"pre":"'.$cmd_id.'"');
+
+            $json_string = str_replace('"pre":"'.$matches[2][$key].'"', '"pre":"'.$cmd_id.'"', $json_string);
         }
 
         $data = json_decode($json_string, true);
@@ -726,28 +694,32 @@ class snips extends eqLogic
         $ip_addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $connection = ssh2_connect($ip_addr, 22);
         if (!$connection) {
-            snips::debug('[fetchAssistantJson]Password resutlt : Faild', true);
+            snips::debug('[FetchAssistantJson]Password resutlt : Faild');
             return -2;
         }
 
         $resp = ssh2_auth_password($connection, $usrename, $password);
         if ($resp) {
-            snips::debug('[fetchAssistantJson]Password resutlt : Success', true);
+            snips::debug('[FetchAssistantJson]Password resutlt : Success');
         }
         else {
-            snips::debug('[fetchAssistantJson]Password resutlt : Faild', true);
+            snips::debug('[FetchAssistantJson]Password resutlt : Faild');
             return -1;
         }
 
         $res = ssh2_scp_recv($connection, '/usr/share/snips/assistant/assistant.json', dirname(__FILE__) . '/../../assistant.json');
         if ($res) {
-            ssh2_disconnect($connection);
-            snips::debug('[fetchAssistantJson]Fecth resutlt : Success', true);
+            ssh2_exec($connection, 'exit');
+            unset($connection);
+            //ssh2_disconnect($connection);
+            snips::debug('[FetchAssistantJson]Fecth resutlt : Success');
             return 1;
         }
         else {
-            ssh2_disconnect($connection);
-            snips::debug('[fetchAssistantJson]Fecth resutlt : Faild', true);
+            ssh2_exec($connection, 'exit');
+            unset($connection);
+            //ssh2_disconnect($connection);
+            snips::debug('[FetchAssistantJson]Fecth resutlt : Faild');
             return 0;
         }
     }
@@ -815,8 +787,9 @@ class snips extends eqLogic
         $slots = $this->getConfiguration('slots');
         foreach($slots as $slot) {
             $slotCmd = $this->getCmd(null, $slot['name']);
-            snips::debug('Type is ' . gettype($slotCmd) , true);
+            snips::debug('[postSave] Type is ' . gettype($slotCmd));
             if (!is_object($slotCmd)) {
+                snips::debug('[Post Save] Create ' . gettype($slotCmd));
                 $slotCmd = new snipsCmd();
             }
 
