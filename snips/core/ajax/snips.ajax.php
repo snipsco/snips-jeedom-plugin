@@ -18,6 +18,16 @@ try {
         ajax::success($res);
     }
 
+    if (init('action') == 'tryToFetchDefault') {
+        $res = snips::tryToFetchDefault();
+
+        if ($res == 1) {
+            snips::reloadAssistant();
+        }
+        
+        ajax::success($res);
+    }
+
     if (init('action') == 'isSnipsRunLocal') {
         $res = snips::isSnipsRunLocal();
         ajax::success($res);

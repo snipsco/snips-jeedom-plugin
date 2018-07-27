@@ -305,76 +305,112 @@ $('.reload').on('click', function () {
         },
         callback: function (result) {
             if (result) {
-                bootbox.prompt({
-                    title: "Username (default: pi)",
-                    inputType: 'text',
-                    callback: function (result) {
-                        if (result) {
-                            username = result;
-                            bootbox.prompt({
-                                title: "Password (default: raspberry)",
-                                inputType: 'password',
-                                callback: function (result) {
-                                    if (result) {
-                                        password = result;
-                                        var loading = bootbox.dialog({
-                                            message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading assistant from remote site...</div>',
-                                            closeButton: false
-                                        });
-                                        $.ajax({
-                                            type: "POST",
-                                            url: "plugins/snips/core/ajax/snips.ajax.php",
-                                            data: {
-                                                action: "reload",
-                                                username: username,
-                                                password: password,
-                                            },
-                                            dataType: 'json',
-                                            global: false,
-                                            error: function (request, status, error) {
-                                                handleAjaxError(request, status, error);
-                                            },
-                                            success: function (data) {
-                                                var msg = '';
-                                                var title = '';
-                                                loading.modal('hide');
-                                                if (data.result == 1) {
-                                                    title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> Successed</a>';
-                                                    msg = 'Assistant loaded!';
-                                                } else
-                                                if (data.result == 0) {
-                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
-                                                    msg = 'Can not fetch assistant!';
-                                                } else
-                                                if (data.result == -1) {
-                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
-                                                    msg = 'Wrong username/ password!';
-                                                } else
-                                                if (data.result == -2) {
-                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
-                                                    msg = 'Connection error. Please go -> [plugin] -> [snips] -> [configuration]. Check if you set a correct [Snips site IP address]!';
-                                                } else {
-                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
-                                                    msg = data.result;
-                                                }
-
-                                                bootbox.alert({
-                                                    title: title,
-                                                    message: msg,
-                                                    callback: function (result) {
-                                                        location.reload();
-                                                    },
-                                                    closeButton: false
-                                                });
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                    }
+                var loading = bootbox.dialog({
+                    message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Trying to load assistant...</div>',
+                    closeButton: false
                 });
-            }
+                $.ajax({
+                        type: "POST",
+                        url: "plugins/snips/core/ajax/snips.ajax.php",
+                        data: {
+                            action: "tryToFetchDefault",
+                        },
+                        dataType: 'json',
+                        global: false,
+                        error: function (request, status, error) {
+                            handleAjaxError(request, status, error);
+                        },
+                        success: function (data) {
+                            var msg = '';
+                            var title = '';
+                            loading.modal('hide');
+                            if (data.result == 1) {
+                                title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> Successed</a>';
+                                msg = 'Assistant loaded!';
+
+                                bootbox.alert({
+                                    title: title,
+                                    message: msg,
+                                    callback: function (result) {
+                                        location.reload();
+                                    },
+                                    closeButton: false
+                                });
+                            } else {
+                                bootbox.prompt({
+                                    title: "SSH username: ",
+                                    inputType: 'text',
+                                    callback: function (result) {
+                                        if (result) {
+                                            username = result;
+                                            bootbox.prompt({
+                                                title: "SSH password: ",
+                                                inputType: 'password',
+                                                callback: function (result) {
+                                                    if (result) {
+                                                        password = result;
+                                                        var loading2 = bootbox.dialog({
+                                                            message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading assistant from remote site...</div>',
+                                                            closeButton: false
+                                                        });
+                                                        $.ajax({
+                                                            type: "POST",
+                                                            url: "plugins/snips/core/ajax/snips.ajax.php",
+                                                            data: {
+                                                                action: "reload",
+                                                                username: username,
+                                                                password: password,
+                                                            },
+                                                            dataType: 'json',
+                                                            global: false,
+                                                            error: function (request, status, error) {
+                                                                handleAjaxError(request, status, error);
+                                                            },
+                                                            success: function (data) {
+                                                                var msg = '';
+                                                                var title = '';
+                                                                loading2.modal('hide');
+                                                                if (data.result == 1) {
+                                                                    title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> Successed</a>';
+                                                                    msg = 'Assistant loaded!';
+                                                                } else
+                                                                if (data.result == 0) {
+                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                                    msg = 'Can not fetch assistant!';
+                                                                } else
+                                                                if (data.result == -1) {
+                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                                    msg = 'Wrong username/ password!';
+                                                                } else
+                                                                if (data.result == -2) {
+                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                                    msg = 'Connection error. Please go -> [plugin] -> [snips] -> [configuration]. Check if you set a correct [Snips site IP address]!';
+                                                                } else {
+                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                                    msg = data.result;
+                                                                }
+
+                                                                bootbox.alert({
+                                                                    title: title,
+                                                                    message: msg,
+                                                                    callback: function (result) {
+                                                                        location.reload();
+                                                                    },
+                                                                    closeButton: false
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+
+                            }
+                        }
+                    });
+            }      
         }
     });
 });
@@ -731,7 +767,7 @@ function addBinding(_binding) {
 
     div += '<h4 class="panel-title">';
     div += '<a data-toggle="collapse" data-parent="#div_bindings" href="#collapse' + random + '">';
-    div += '<div class="name" style="display:inline-block;">' + _binding.name + '</div>';
+    div += '<div class="name" style="display:inline-block;width: 50%;height: 100%; ">' + _binding.name + '</div>';
     div += '</a>';
     div += '<span class="pull-right">';
 

@@ -217,6 +217,7 @@ class snips extends eqLogic
                 "siteId" => "default",
                 "lang" => $lang
             );
+            snips::deubg('[MQTT] Publish: '.$text);
             self::publish($topic, json_encode($payload));
         }
         else {
@@ -225,6 +226,7 @@ class snips extends eqLogic
                 'text' => $text,
                 "sessionId" => $session_id
             );
+            snips::deubg('[MQTT] Publish: '.$text);
             self::publish($topic, json_encode($payload));
         }
     }
@@ -272,7 +274,7 @@ class snips extends eqLogic
     public static
 
     function publish($topic, $payload)
-    {
+    {   
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $port = intval(config::byKey('mqttPort', 'snips', 1883));
         $client = new Mosquitto\Client();
@@ -361,7 +363,9 @@ class snips extends eqLogic
         $obj = object::byName('Snips-Intents');
         if (!isset($obj) || !is_object($obj)) {
             $obj = new object();
+            snips::debug('[Load Assistant] Created object: Snips-Intents');
         }
+
         $obj->setName('Snips-Intents');
         $obj->setIsVisible(1);
         $obj->setConfiguration('id', $assistant["id"]);
@@ -387,6 +391,7 @@ class snips extends eqLogic
                 $elogic->setConfiguration('language', $intent['language']);
                 $elogic->setObject_id(object::byName('Snips-Intents')->getId());
                 $elogic->save();
+                snips::debug('[Load Assistant] Created intent entity: '.$intent['name']);
             }
         }
     }
@@ -398,14 +403,17 @@ class snips extends eqLogic
         $obj = object::byName('Snips-Intents');
         if (is_object($obj)) {
             $obj->remove();
+            snips::debug('[Remove Assistant] Removed object: Snips-Intents');
         }
 
         $eqLogics = eqLogic::byType('snips');
         foreach($eqLogics as $eq) {
             $cmds = snipsCmd::byEqLogicId($eq->getLogicalId);
             foreach($cmds as $cmd) {
+                snips::debug('[Remove Assistant] Removed slot cmd: '.$cmd->getName());
                 $cmd->remove();
             }
+            snips::debug('[Remove Assistant] Removed intent entity: '.$eq->getName());
             $eq->remove();
         }
     }
@@ -689,12 +697,19 @@ class snips extends eqLogic
 
     public static
 
+    function tryToFetchDefault(){
+        $res = snips::fetchAssistantJson('pi', 'raspberry');
+        return $res; 
+    }
+
+    public static
+
     function fetchAssistantJson($usrename, $password)
     {   
         $ip_addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $connection = ssh2_connect($ip_addr, 22);
         if (!$connection) {
-            snips::debug('[FetchAssistantJson]Password resutlt : Faild');
+            snips::debug('[FetchAssistantJson]Password resutlt : Faild code: -2');
             return -2;
         }
 
@@ -703,7 +718,7 @@ class snips extends eqLogic
             snips::debug('[FetchAssistantJson]Password resutlt : Success');
         }
         else {
-            snips::debug('[FetchAssistantJson]Password resutlt : Faild');
+            snips::debug('[FetchAssistantJson]Password resutlt : Faild code: -1');
             return -1;
         }
 
@@ -711,22 +726,16 @@ class snips extends eqLogic
         if ($res) {
             ssh2_exec($connection, 'exit');
             unset($connection);
-            //ssh2_disconnect($connection);
             snips::debug('[FetchAssistantJson]Fecth resutlt : Success');
             return 1;
         }
         else {
             ssh2_exec($connection, 'exit');
             unset($connection);
-            //ssh2_disconnect($connection);
-            snips::debug('[FetchAssistantJson]Fecth resutlt : Faild');
+            snips::debug('[FetchAssistantJson]Fecth resutlt : Faild code: 0');
             return 0;
         }
     }
-
-    public static
-
-    function tryToReload
 
     public
 
