@@ -30,13 +30,6 @@ if (!isConnect()) {
                 <input class="configKey form-control" data-l1key="mqttAddr" placeholder="127.0.0.1"/>
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-lg-4 control-label">{{Port}}</label>
-            <div class="col-lg-2">
-                <input class="configKey form-control" data-l1key="mqttPort" placeholder="1883" />
-            </div>
-        </div>
-
   </fieldset>
 </form>
 

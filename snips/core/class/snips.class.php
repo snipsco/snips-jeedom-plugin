@@ -38,7 +38,7 @@ class snips extends eqLogic
         $return = array();
         $socket = socket_create(AF_INET, SOCK_STREAM, 0);
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
-        $port = config::byKey('mqttPort', 'snips', '1883');
+        $port = 1883;
         $server = socket_connect($socket, $addr, $port);
         $return[] = array(
             'test' => __('Mosquitto', __FILE__) ,
@@ -131,7 +131,7 @@ class snips extends eqLogic
     function mqttClient()
     {
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
-        $port = intval(config::byKey('mqttPort', 'snips', '1883'));
+        $port = 1883;
         snips::debug('[MQTT] Connection, Host: ' . $addr . ', Port: ' . $port);
         $client = new Mosquitto\Client(); 
         $client->onConnect('snips::connect');
@@ -217,7 +217,7 @@ class snips extends eqLogic
                 "siteId" => "default",
                 "lang" => $lang
             );
-            snips::deubg('[MQTT] Publish: '.$text);
+            snips::debug('[MQTT] Publish: '.$text);
             self::publish($topic, json_encode($payload));
         }
         else {
@@ -226,7 +226,7 @@ class snips extends eqLogic
                 'text' => $text,
                 "sessionId" => $session_id
             );
-            snips::deubg('[MQTT] Publish: '.$text);
+            snips::debug('[MQTT] Publish: '.$text);
             self::publish($topic, json_encode($payload));
         }
     }
@@ -276,7 +276,7 @@ class snips extends eqLogic
     function publish($topic, $payload)
     {   
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
-        $port = intval(config::byKey('mqttPort', 'snips', 1883));
+        $port = 1883;
         $client = new Mosquitto\Client();
         $client->connect($addr, $port, 60);
         $client->publish($topic, $payload);
