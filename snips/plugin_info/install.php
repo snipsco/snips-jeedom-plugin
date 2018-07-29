@@ -53,7 +53,24 @@ function snips_remove() {
         $cron->remove();
     }
 
-    snips::debug('Removed Snips Voice assistant!');
+    $obj = object::byName('Snips-Intents');
+    if (is_object($obj)) {
+        $obj->remove();
+        snips::debug('[Snips Remove] Removed object: Snips-Intents');
+    }
+
+    $eqLogics = eqLogic::byType('snips');
+    foreach($eqLogics as $eq) {
+        $cmds = snipsCmd::byEqLogicId($eq->getLogicalId);
+        foreach($cmds as $cmd) {
+            snips::debug('[Snips Remove] Removed slot cmd: '.$cmd->getName());
+            $cmd->remove();
+        }
+        snips::debug('[Snips Remove] Removed intent entity: '.$eq->getName());
+        $eq->remove();
+    }
+
+    snips::debug('[Snips Remove] Removed Snips Voice assistant!');
 
     //log::add('snips','info','Suppression extension');
     $resource_path = realpath(dirname(__FILE__) . '/../resources');

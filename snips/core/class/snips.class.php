@@ -374,6 +374,7 @@ class snips extends eqLogic
         $obj->setConfiguration('language', $assistant['language']);
         $obj->setConfiguration('createdAt', $assistant['createdAt']);
         $obj->save();
+
         foreach($assistant['intents'] as $intent) {
             if (is_object(snips::byLogicalId($intent['id'], 'snips'))) {
                 return;
@@ -541,22 +542,26 @@ class snips extends eqLogic
     {
         snips::debug('[Slot Set] Set slots cmd values');
         $eq = eqLogic::byLogicalId($intent, 'snips');
-        foreach($slots_values as $slot => $value) {
-            snips::debug('[Slot Set] Slots name is :' . $slot);
-            $cmd = $eq->getCmd(null, $slot);
-            if ($_options) {
-                snips::debug('[Slot Set] Slots option entered, entityId is:' . $cmd->getConfiguration('entityId'));
-                if ($cmd->getConfiguration('entityId') == 'snips/percentage') {
-                    $org = $value;
-                    $value = snips::percentageRemap($_options['LT'], $_options['HT'], $value);
-                    $cmd->setConfiguration('orgVal', $org);
-                    snips::debug('[Slot Set] Slots is percentage, value after convert:' . $value);
+        if (is_object($eq)) {
+            foreach($slots_values as $slot => $value) {
+                snips::debug('[Slot Set] Slots name is :' . $slot);
+                $cmd = $eq->getCmd(null, $slot);
+                if ($_options) {
+                    snips::debug('[Slot Set] Slots option entered, entityId is:' . $cmd->getConfiguration('entityId'));
+                    if ($cmd->getConfiguration('entityId') == 'snips/percentage') {
+                        $org = $value;
+                        $value = snips::percentageRemap($_options['LT'], $_options['HT'], $value);
+                        $cmd->setConfiguration('orgVal', $org);
+                        snips::debug('[Slot Set] Slots is percentage, value after convert:' . $value);
+                    }
                 }
-            }
 
-            $eq->checkAndUpdateCmd($cmd, $value);
-            $cmd->setValue($value);
-            $cmd->save();
+                $eq->checkAndUpdateCmd($cmd, $value);
+                $cmd->setValue($value);
+                $cmd->save();
+            }
+        }else{
+            snips::debug('[Slot Set] Did not find entiry:' . $intent);
         }
     }
 
@@ -699,6 +704,7 @@ class snips extends eqLogic
 
     function tryToFetchDefault(){
         $res = snips::fetchAssistantJson('pi', 'raspberry');
+        snips::debug('[TryToFetchDefault] Result code: '.$res);
         return $res; 
     }
 
@@ -707,18 +713,19 @@ class snips extends eqLogic
     function fetchAssistantJson($usrename, $password)
     {   
         $ip_addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
-        $connection = ssh2_connect($ip_addr, 22);
+        snips::debug('[FetchAssistantJson]Connection : Trying to connect to: '.$ip_addr);
+        $connection = ssh2_connect($ip_addr, 22); 
         if (!$connection) {
-            snips::debug('[FetchAssistantJson]Password resutlt : Faild code: -2');
+            snips::debug('[FetchAssistantJson]Connection: Faild code: -2');
             return -2;
         }
 
         $resp = ssh2_auth_password($connection, $usrename, $password);
         if ($resp) {
-            snips::debug('[FetchAssistantJson]Password resutlt : Success');
+            snips::debug('[FetchAssistantJson]Verification: Success');
         }
         else {
-            snips::debug('[FetchAssistantJson]Password resutlt : Faild code: -1');
+            snips::debug('[FetchAssistantJson]Verification: Faild code: -1');
             return -1;
         }
 
@@ -735,6 +742,30 @@ class snips extends eqLogic
             snips::debug('[FetchAssistantJson]Fecth resutlt : Faild code: 0');
             return 0;
         }
+    }
+
+    public static 
+
+    function lightBrightnessShift($_cmdStatus, $__cmdAction, $_min, $_max, $_step)
+    {
+        $cmd = cmd::byString($LIGHT_BRIGHTNESS_VALUE);
+
+        if (is_object($cmd))
+        if ($cmd->getValue()) $current_val = $cmd->getValue();
+        else $current_val = $cmd->getCache('value', 'NULL');
+        $options = array();
+
+        if ($OPERATION === 'UP') $options['slider'] = $current_val + round(($MAX_VALUE - $MIN_VALUE) * $STEP_VALUE);
+        else
+        if ($OPERATION === 'DOWN') $options['slider'] = $current_val - round(($MAX_VALUE - $MIN_VALUE) * $STEP_VALUE);
+
+        if ($options['slider'] < $MIN_VALUE) $options['slider'] = $MIN_VALUE;
+
+        if ($options['slider'] > $MAX_VALUE) $options['slider'] = $MAX_VALUE;
+        fwrite(STDOUT, '[Scenario] Light shift for [' . $LIGHT_BRIGHTNESS_ACTION . '], from -> ' . $options['slider'] . ' to ->' . $current_val . '\n');
+        $cmdSet = cmd::byString($LIGHT_BRIGHTNESS_ACTION);
+
+        if (is_object($cmdSet)) $cmdSet->execCmd($options);
     }
 
     public
