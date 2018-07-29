@@ -746,24 +746,26 @@ class snips extends eqLogic
 
     public static 
 
-    function lightBrightnessShift($_cmdStatus, $__cmdAction, $_min, $_max, $_step)
+    function lightBrightnessShift($_cmdStatus, $_cmdAction, $_min, $_max, $_step, $_up_down)
     {
-        $cmd = cmd::byString($LIGHT_BRIGHTNESS_VALUE);
+        $cmd = cmd::byString($_cmdStatus);
 
         if (is_object($cmd))
         if ($cmd->getValue()) $current_val = $cmd->getValue();
         else $current_val = $cmd->getCache('value', 'NULL');
         $options = array();
 
-        if ($OPERATION === 'UP') $options['slider'] = $current_val + round(($MAX_VALUE - $MIN_VALUE) * $STEP_VALUE);
+        if ($_up_down === 'UP') $options['slider'] = $current_val + round(($_max - $_min) * $_step);
         else
-        if ($OPERATION === 'DOWN') $options['slider'] = $current_val - round(($MAX_VALUE - $MIN_VALUE) * $STEP_VALUE);
+        if ($_up_down === 'DOWN') $options['slider'] = $current_val - round(($_max - $_min) * $_step);
 
-        if ($options['slider'] < $MIN_VALUE) $options['slider'] = $MIN_VALUE;
+        if ($options['slider'] < $_min) $options['slider'] = $_min;
 
-        if ($options['slider'] > $MAX_VALUE) $options['slider'] = $MAX_VALUE;
-        fwrite(STDOUT, '[Scenario] Light shift for [' . $LIGHT_BRIGHTNESS_ACTION . '], from -> ' . $options['slider'] . ' to ->' . $current_val . '\n');
-        $cmdSet = cmd::byString($LIGHT_BRIGHTNESS_ACTION);
+        if ($options['slider'] > $_max) $options['slider'] = $_max;
+
+        snips::debug('[lightBrightnessShift] Shift action: [' . $_cmdAction . '], from -> ' . $options['slider'] . ' to ->' . $current_val);
+
+        $cmdSet = cmd::byString($_cmdAction);
 
         if (is_object($cmdSet)) $cmdSet->execCmd($options);
     }
