@@ -208,13 +208,13 @@ class snips extends eqLogic
 
     public static
 
-    function sayFeedback($text, $session_id = null, $lang = 'en_GB')
+    function sayFeedback($text, $session_id = null, $lang = 'en_GB', $siteId = 'default')
     {
         if ($session_id == null) {
             $topic = 'hermes/tts/say';
             $payload = array(
                 'text' => str_replace('{#}', 'Value', $text) ,
-                "siteId" => "default",
+                "siteId" => $siteId,
                 "lang" => $lang
             );
             snips::debug('[MQTT] Publish: '.$text);
@@ -852,7 +852,6 @@ class snips extends eqLogic
                     snips::debug('[PostSave] Created slot cmd: ' . $slot['name']);
                     $slotCmd = new snipsCmd();
                 }
-
                 $slotCmd->setName($slot['name']);
                 $slotCmd->setEqLogic_id($this->getId());
                 $slotCmd->setLogicalId($slot['name']);
@@ -911,5 +910,22 @@ class snips extends eqLogic
 class snipsCmd extends cmd
 
 {
+    public 
 
+    function execute($_options) 
+    {
+        $eqlogic = $this->getEqLogic();
+        switch ($this->getLogicalId()) {        
+            case 'say': 
+                
+                if($_options['title'] != '' && isset($_options['title'])){
+                    $siteId = $_options['title'];
+                }else{
+                    $siteId = 'default';
+                }
+                
+                snips::sayFeedback($_options['message'], null, $elogic->getConfiguration('language'), $siteId);
+                break;
+        }
+    }
 }
