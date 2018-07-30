@@ -470,7 +470,6 @@ $('.importConfigration').on('click', function () {
         },
         success: function (data) {
             if (isset(data.result) && data.result != null && data.result != '') {
-
                 var options = [{
                     text: 'Choose a configuration file...',
                     value: '',
