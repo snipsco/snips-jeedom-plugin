@@ -379,11 +379,11 @@ class snips extends eqLogic
             $elogic = snips::byLogicalId($intent['id'], 'snips');
             if (!is_object($elogic)) {
                 $elogic = new snips();
+                $elogic->setLogicalId($intent['id']);
+                $elogic->setName($intent['name']);
                 snips::debug('[Load Assistant] Created intent entity: '.$intent['name']);
             }
             $elogic->setEqType_name('snips');
-            $elogic->setLogicalId($intent['id']);
-            $elogic->setName($intent['name']);
             $elogic->setIsEnable(1);
             $elogic->setConfiguration('snipsType', 'Intent');
             $elogic->setConfiguration('slots', $intent['slots']);
@@ -397,11 +397,11 @@ class snips extends eqLogic
         $elogic = snips::byLogicalId('Snips-TTS', 'snips');
         if (!is_object($elogic)) {
             $elogic = new snips();
+            $elogic->setName('Snips-TTS');
+            $elogic->setLogicalId('Snips-TTS');
             snips::debug('[Load Assistant] Created TTS entity: Snips-TTS');
         }
         $elogic->setEqType_name('snips');
-        $elogic->setLogicalId('Snips-TTS');
-        $elogic->setName('Snips-TTS');
         $elogic->setIsEnable(1);
         $elogic->setConfiguration('snipsType', 'TTS');
         $elogic->setConfiguration('language', $intent['language']);
@@ -866,21 +866,21 @@ class snips extends eqLogic
             }
         }else if($this->getConfiguration('snipsType') == 'TTS'){
 
-            if (!is_object('say')) {
+            $ttsCmd = $this->getCmd(null, 'say');
+            if (!is_object($ttsCmd)) {
                 snips::debug('[PostSave] Created tts cmd: say');
-                $slotCmd = new snipsCmd();
+                $ttsCmd = new snipsCmd();
+                $ttsCmd->setName('say');
+                $ttsCmd->setLogicalId('say');
             }
-            $slotCmd->setName('say');
-            $slotCmd->setEqLogic_id($this->getId());
-            $slotCmd->setLogicalId('say');
-            $slotCmd->setType('action');
-            $slotCmd->setSubType('message');
-            $slotCmd->setDisplay('title_disable', 0);
-            $slotCmd->setDisplay('title_placeholder', 'Site Id');
-            $slotCmd->setDisplay('message_placeholder', 'Message');
-            $slotCmd->save();
-        }
-            
+            $ttsCmd->setEqLogic_id($this->getId());
+            $ttsCmd->setType('action');
+            $ttsCmd->setSubType('message');
+            $ttsCmd->setDisplay('title_disable', 0);
+            $ttsCmd->setDisplay('title_placeholder', 'Site Id');
+            $ttsCmd->setDisplay('message_placeholder', 'Message');
+            $ttsCmd->save();
+        }   
     }
 
     public
