@@ -87,9 +87,12 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Optimise the intent select modal // improvement
 
 # Develop Diary
+31, Jul, 2018
+- [ ] Replant dynamic tts function
+
 30, Jul, 2018 
 - [x] Merge [beta-release] to [master]
-- [ ] Add feature: tts command
+- [x] Add feature: tts command
 
 29, Jul, 2018
 ```
