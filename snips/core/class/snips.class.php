@@ -395,6 +395,22 @@ class snips extends eqLogic
                 snips::debug('[Load Assistant] Created intent entity: '.$intent['name']);
             }
         }
+
+        if (is_object(snips::byLogicalId('Snips-TTS', 'snips'))) {
+            return;
+        }
+        else {
+            $elogic = new snips();
+            $elogic->setEqType_name('snips');
+            $elogic->setLogicalId('Snips-TTS');
+            $elogic->setName('Snips-TTS');
+            $elogic->setIsEnable(1);
+            $elogic->setConfiguration('snipsType', 'tts');
+            $elogic->setConfiguration('language', $intent['language']);
+            $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+            $elogic->save();
+            snips::debug('[Load Assistant] Created TTS entity: Snips-TTS');
+        }
     }
 
     public static
@@ -786,70 +802,90 @@ class snips extends eqLogic
 
     function preSave()
     {
-        $slots = $this->getConfiguration('slots');
-        $slotSet = array();
-        foreach($slots as $slot) {
-            $slotSet[] = $slot['name'];
-        }
-
-        $bindings = $this->getConfiguration('bindings');
-        foreach($bindings as $key => $binding) {
-            $necessary_slots = array();
-            $conditions = $binding['condition'];
-            foreach($conditions as $condition) {
-                if (!in_array(cmd::byId($condition['pre'])->getName() , $necessary_slots)) {
-                    $necessary_slots[] = cmd::byId($condition['pre'])->getName();
-                }
+        if($this->getConfiguration('snipsType') == 'Intent'){
+            $slots = $this->getConfiguration('slots');
+            $slotSet = array();
+            foreach($slots as $slot) {
+                $slotSet[] = $slot['name'];
             }
 
-            $actions = $binding['action'];
-            foreach($actions as $action) {
-                $options = $action['options'];
-                foreach($options as $option) {
-                    if (preg_match("/^#.*#$/", $option)) {
-                        if (in_array(cmd::byId(str_replace('#', '', $option))->getName() , $slotSet)) {
-                            if (!in_array(cmd::byId(str_replace('#', '', $option))->getName() , $necessary_slots)) {
-                                $necessary_slots[] = cmd::byId(str_replace('#', '', $option))->getName();
+            $bindings = $this->getConfiguration('bindings');
+            foreach($bindings as $key => $binding) {
+                $necessary_slots = array();
+                $conditions = $binding['condition'];
+                foreach($conditions as $condition) {
+                    if (!in_array(cmd::byId($condition['pre'])->getName() , $necessary_slots)) {
+                        $necessary_slots[] = cmd::byId($condition['pre'])->getName();
+                    }
+                }
+
+                $actions = $binding['action'];
+                foreach($actions as $action) {
+                    $options = $action['options'];
+                    foreach($options as $option) {
+                        if (preg_match("/^#.*#$/", $option)) {
+                            if (in_array(cmd::byId(str_replace('#', '', $option))->getName() , $slotSet)) {
+                                if (!in_array(cmd::byId(str_replace('#', '', $option))->getName() , $necessary_slots)) {
+                                    $necessary_slots[] = cmd::byId(str_replace('#', '', $option))->getName();
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            if (!empty($necessary_slots)) {
-                $bindings[$key]['nsr_slots'] = $necessary_slots;
-            }
+                if (!empty($necessary_slots)) {
+                    $bindings[$key]['nsr_slots'] = $necessary_slots;
+                }
 
-            unset($necessary_slots);
+                unset($necessary_slots);
+            }
+            $this->setConfiguration('bindings', $bindings);
         }
-
-        $this->setConfiguration('bindings', $bindings);
     }
 
     public
 
     function postSave()
     {
-        $slots = $this->getConfiguration('slots');
-        foreach($slots as $slot) {
-            $slotCmd = $this->getCmd(null, $slot['name']);
-            
-            if (!is_object($slotCmd)) {
-                snips::debug('[PostSave] Created: ' . $slot['name']);
+        if($this->getConfiguration('snipsType') == 'Intent'){
+            $slots = $this->getConfiguration('slots');
+            foreach($slots as $slot) {
+                $slotCmd = $this->getCmd(null, $slot['name']);
+                
+                if (!is_object($slotCmd)) {
+                    snips::debug('[PostSave] Created slot cmd: ' . $slot['name']);
+                    $slotCmd = new snipsCmd();
+                }
+
+                $slotCmd->setName($slot['name']);
+                $slotCmd->setEqLogic_id($this->getId());
+                $slotCmd->setLogicalId($slot['name']);
+                $slotCmd->setType('info');
+                $slotCmd->setSubType('string');
+                $slotCmd->setConfiguration('id', $slot['id']);
+                $slotCmd->setConfiguration('entityId', $slot['entityId']);
+                $slotCmd->setConfiguration('missingQuestion', $slot['missingQuestion']);
+                $slotCmd->setConfiguration('required', $slot['required']);
+                $slotCmd->save();
+            }
+        }else if($this->getConfiguration('snipsType') == 'TTS'){
+
+            if (!is_object('say')) {
+                snips::debug('[PostSave] Created tts cmd: say']);
                 $slotCmd = new snipsCmd();
             }
 
-            $slotCmd->setName($slot['name']);
+            $slotCmd->setName('say');
             $slotCmd->setEqLogic_id($this->getId());
-            $slotCmd->setLogicalId($slot['name']);
-            $slotCmd->setType('info');
-            $slotCmd->setSubType('string');
-            $slotCmd->setConfiguration('id', $slot['id']);
-            $slotCmd->setConfiguration('entityId', $slot['entityId']);
-            $slotCmd->setConfiguration('missingQuestion', $slot['missingQuestion']);
-            $slotCmd->setConfiguration('required', $slot['required']);
+            $slotCmd->setLogicalId('say');
+            $slotCmd->setType('action');
+            $slotCmd->setSubType('message');
+            $slotCmd->setDisplay('title_disable', 1);
+            $slotCmd->setDisplay('title_placeholder', 'Site Id');
+            $slotCmd->setDisplay('message_placeholder', 'Message');
             $slotCmd->save();
         }
+            
     }
 
     public
@@ -875,6 +911,7 @@ class snips extends eqLogic
     function postRemove()
     {
     }
+        }
 }
 
 class snipsCmd extends cmd
