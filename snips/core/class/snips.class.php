@@ -847,7 +847,6 @@ class snips extends eqLogic
             $slots = $this->getConfiguration('slots');
             foreach($slots as $slot) {
                 $slotCmd = $this->getCmd(null, $slot['name']);
-                
                 if (!is_object($slotCmd)) {
                     snips::debug('[PostSave] Created slot cmd: ' . $slot['name']);
                     $slotCmd = new snipsCmd();
@@ -864,7 +863,6 @@ class snips extends eqLogic
                 $slotCmd->save();
             }
         }else if($this->getConfiguration('snipsType') == 'TTS'){
-
             $ttsCmd = $this->getCmd(null, 'say');
             if (!is_object($ttsCmd)) {
                 snips::debug('[PostSave] Created tts cmd: say');
