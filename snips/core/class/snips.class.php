@@ -917,14 +917,14 @@ class snipsCmd extends cmd
         $eqlogic = $this->getEqLogic();
         switch ($this->getLogicalId()) {        
             case 'say': 
-                
+                snips::debug('[cmdExecution] cmd: say');
                 if($_options['title'] != '' && isset($_options['title'])){
                     $siteId = $_options['title'];
                 }else{
                     $siteId = 'default';
                 }
-                
-                snips::sayFeedback($_options['message'], null, $elogic->getConfiguration('language'), $siteId);
+                snips::debug('[cmdExecution] siteId: '.$siteId.' asked to say :'.$_options['message']);
+                snips::sayFeedback($_options['message'], null, $eqlogic->getConfiguration('language'), $siteId);
                 break;
         }
     }
