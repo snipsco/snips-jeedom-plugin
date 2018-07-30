@@ -336,7 +336,7 @@ $('.reload').on('click', function () {
                                     },
                                     closeButton: false
                                 });
-                            } else {
+                            } else if(data.result == 0 || data.result == -1 || data.result == -2){
                                 bootbox.prompt({
                                     title: "SSH username: ",
                                     inputType: 'text',
@@ -407,6 +407,12 @@ $('.reload').on('click', function () {
                                     }
                                 });
 
+                            }else{
+                                bootbox.alert({
+                                    title: '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>',
+                                    message: data.result,
+                                    closeButton: false
+                                });
                             }
                         }
                     });

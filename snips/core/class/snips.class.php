@@ -376,41 +376,37 @@ class snips extends eqLogic
         $obj->save();
 
         foreach($assistant['intents'] as $intent) {
-            if (is_object(snips::byLogicalId($intent['id'], 'snips'))) {
-                return;
-            }
-            else {
+            $elogic = snips::byLogicalId($intent['id'], 'snips');
+            if (!is_object($elogic)) {
                 $elogic = new snips();
-                $elogic->setEqType_name('snips');
-                $elogic->setLogicalId($intent['id']);
-                $elogic->setName($intent['name']);
-                $elogic->setIsEnable(1);
-                $elogic->setConfiguration('snipsType', 'Intent');
-                $elogic->setConfiguration('slots', $intent['slots']);
-                $elogic->setConfiguration('isSnipsConfig', 1);
-                $elogic->setConfiguration('isInteraction', 0);
-                $elogic->setConfiguration('language', $intent['language']);
-                $elogic->setObject_id(object::byName('Snips-Intents')->getId());
-                $elogic->save();
                 snips::debug('[Load Assistant] Created intent entity: '.$intent['name']);
             }
-        }
-
-        if (is_object(snips::byLogicalId('Snips-TTS', 'snips'))) {
-            return;
-        }
-        else {
-            $elogic = new snips();
             $elogic->setEqType_name('snips');
-            $elogic->setLogicalId('Snips-TTS');
-            $elogic->setName('Snips-TTS');
+            $elogic->setLogicalId($intent['id']);
+            $elogic->setName($intent['name']);
             $elogic->setIsEnable(1);
-            $elogic->setConfiguration('snipsType', 'tts');
+            $elogic->setConfiguration('snipsType', 'Intent');
+            $elogic->setConfiguration('slots', $intent['slots']);
+            $elogic->setConfiguration('isSnipsConfig', 1);
+            $elogic->setConfiguration('isInteraction', 0);
             $elogic->setConfiguration('language', $intent['language']);
             $elogic->setObject_id(object::byName('Snips-Intents')->getId());
-            $elogic->save();
+            $elogic->save();  
+        }
+
+        $elogic = snips::byLogicalId('Snips-TTS', 'snips');
+        if (!is_object($elogic)) {
+            $elogic = new snips();
             snips::debug('[Load Assistant] Created TTS entity: Snips-TTS');
         }
+        $elogic->setEqType_name('snips');
+        $elogic->setLogicalId('Snips-TTS');
+        $elogic->setName('Snips-TTS');
+        $elogic->setIsEnable(1);
+        $elogic->setConfiguration('snipsType', 'TTS');
+        $elogic->setConfiguration('language', $intent['language']);
+        $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+        $elogic->save();
     }
 
     public static
@@ -871,16 +867,15 @@ class snips extends eqLogic
         }else if($this->getConfiguration('snipsType') == 'TTS'){
 
             if (!is_object('say')) {
-                snips::debug('[PostSave] Created tts cmd: say']);
+                snips::debug('[PostSave] Created tts cmd: say');
                 $slotCmd = new snipsCmd();
             }
-
             $slotCmd->setName('say');
             $slotCmd->setEqLogic_id($this->getId());
             $slotCmd->setLogicalId('say');
             $slotCmd->setType('action');
             $slotCmd->setSubType('message');
-            $slotCmd->setDisplay('title_disable', 1);
+            $slotCmd->setDisplay('title_disable', 0);
             $slotCmd->setDisplay('title_placeholder', 'Site Id');
             $slotCmd->setDisplay('message_placeholder', 'Message');
             $slotCmd->save();
@@ -911,10 +906,10 @@ class snips extends eqLogic
     function postRemove()
     {
     }
-        }
 }
 
 class snipsCmd extends cmd
 
 {
+
 }
