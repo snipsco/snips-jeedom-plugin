@@ -86,10 +86,48 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Adapt to dark theme // improvement
 - [ ] Optimise the intent select modal // improvement
 
-
-
-
 # Develop Diary
+30, Jul, 2018 
+- [x] Merge [beta-release] to [master]
+- [ ] Add feature: tts command
+
+29, Jul, 2018
+```
+Version: 2018-07-29 20:55:36
+
+Updated Logo.
+Added more debug output.
+```
+
+27, Jul, 2018
+```
+Version: 2018-07-27 18:21:29
+
+Add feature: simplfied steps for loading assistant. 
+```
+
+26, Jul, 2018
+```
+Version: 2018-07-26 16:08:40
+
+Fixed bug: ssh2_disconnect not found. (Reported by @Cecece)
+Fixed bug: some of the import binding data can not be displayed correctly.
+Change: moved to 'communication' cotegory from 'automation'.
+Change: all the log will be shown udner snips(debug level).
+Improved stability.
+```
+
+25, Jul, 2018
+- [x] Added examples in tutorial
+```
+Version: 2018-07-25 18:42:36
+
+Fixed bug: ssh can not fetch assistant. (Reported by @rudloffl)
+```
+
+24, Jul, 2018
+- [x] Finished tutorial documentation
+
 23, Jul, 2018
 - [x] Add feature: support lightShift intent
 
