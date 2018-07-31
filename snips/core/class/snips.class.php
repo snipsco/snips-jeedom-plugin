@@ -208,6 +208,33 @@ class snips extends eqLogic
 
     public static
 
+    function playTTS($_player_cmd, $_message, $_sessionId = null){
+        $cmd = cmd::byString($_player_cmd);
+
+        if (is_object($cmd)) {
+            $options = array();
+
+            $options['message'] = $_message;
+            if ($cmd->getType() == 'snips') {
+                $options['title'] = 'default';
+            }else{
+                $options['title'] = '50';
+            }
+            
+            $options['sessionId'] = $_sessionId;
+
+            snips::debug('[playTTS] Player: '.$_player_cmd.' Message: '.$options['message'].' Title: '.$options['title']);
+            $cmd->execCmd($options); 
+            return;
+        }else{
+            snips::debug('[playTTS] Can not find player cmd: '.$_player_cmd);
+            return;
+        }
+            
+    }
+
+    public static
+
     function sayFeedback($text, $session_id = null, $lang = 'en_GB', $siteId = 'default')
     {
         if ($session_id == null) {
@@ -540,7 +567,9 @@ class snips extends eqLogic
                 $text = snips::generateFeedback($binding['tts']['text'], (array)$binding['tts']['vars'], false);
                 snips::debug('[Binding Execution] Generated text is ' . $text);
                 snips::debug('[Binding Execution] Orginal text is ' . $binding['tts']['text']);
-                snips::sayFeedback($text, $session_id);
+
+                snips::playTTS($binding['tts']['player'], $text, $session_id);
+                //snips::sayFeedback($text, $session_id);
             }
         }
 
@@ -558,19 +587,21 @@ class snips extends eqLogic
             foreach($slots_values as $slot => $value) {
                 snips::debug('[Slot Set] Slots name is :' . $slot);
                 $cmd = $eq->getCmd(null, $slot);
-                if ($_options) {
-                    snips::debug('[Slot Set] Slots option entered, entityId is:' . $cmd->getConfiguration('entityId'));
-                    if ($cmd->getConfiguration('entityId') == 'snips/percentage') {
-                        $org = $value;
-                        $value = snips::percentageRemap($_options['LT'], $_options['HT'], $value);
-                        $cmd->setConfiguration('orgVal', $org);
-                        snips::debug('[Slot Set] Slots is percentage, value after convert:' . $value);
+                if (is_object($cmd)) {
+                    if ($_options) {
+                        snips::debug('[Slot Set] Slots option entered, entityId is:' . $cmd->getConfiguration('entityId'));
+                        if ($cmd->getConfiguration('entityId') == 'snips/percentage') {
+                            $org = $value;
+                            $value = snips::percentageRemap($_options['LT'], $_options['HT'], $value);
+                            $cmd->setConfiguration('orgVal', $org);
+                            snips::debug('[Slot Set] Slots is percentage, value after convert:' . $value);
+                        }
                     }
-                }
 
-                $eq->checkAndUpdateCmd($cmd, $value);
-                $cmd->setValue($value);
-                $cmd->save();
+                    $eq->checkAndUpdateCmd($cmd, $value);
+                    $cmd->setValue($value);
+                    $cmd->save();
+                }  
             }
         }else{
             snips::debug('[Slot Set] Did not find entiry:' . $intent);
@@ -922,7 +953,7 @@ class snipsCmd extends cmd
                     $siteId = 'default';
                 }
                 snips::debug('[cmdExecution] siteId: '.$siteId.' asked to say :'.$_options['message']);
-                snips::sayFeedback($_options['message'], null, $eqlogic->getConfiguration('language'), $siteId);
+                snips::sayFeedback($_options['message'], $_options['sessionId'], $eqlogic->getConfiguration('language'), $siteId);
                 break;
         }
     }
