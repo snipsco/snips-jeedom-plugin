@@ -88,7 +88,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 
 # Develop Diary
 31, Jul, 2018
-- [ ] Replant dynamic tts function
+- [x] Replant dynamic tts function
 
 30, Jul, 2018 
 - [x] Merge [beta-release] to [master]
