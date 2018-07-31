@@ -25,7 +25,7 @@ if (!isConnect()) {
 <form class="form-horizontal">
     <fieldset>
         <div class="form-group">
-            <label class="col-lg-4 control-label" >{{Snips' site IP address}}</label>
+            <label class="col-lg-4 control-label" >{{IP address of the master snips site}}</label>
             <div class="col-lg-2">
                 <input class="configKey form-control" data-l1key="mqttAddr" placeholder="127.0.0.1"/>
             </div>

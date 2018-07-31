@@ -105,7 +105,33 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
 
   </div>
-  <legend><i class="fa fa-bolt"></i> {{All Intents}}</legend>
+
+  <legend><i class="fa fa-bullhorn"></i> {{Snips sites}}</legend>
+
+  <!--Management of All the Intents (Objects)-->
+  <div class="eqLogicThumbnailContainer">
+    <?php
+      if (!$eqLogics) {
+          echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">Please load assistant</span></center>';
+      }else{
+        foreach ($eqLogics as $eqLogic) {
+          if ($eqLogic->getConfiguration('snipsType') == 'TTS') {
+
+            $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
+
+            echo '<div data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 180px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
+            echo '<img src="/plugins/snips/3rdparty/icons/robot.png" height="100" width="100" />';
+            echo "<br>";
+            echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="label label-primary" style="text-shadow : none;">default @ '.config::byKey('mqttAddr', 'snips', '127.0.0.1').'</span><br><strong> Snips-TTS</strong></span>';
+            echo '</div>';
+          }
+        }
+      }
+  ?>
+  </div>
+
+
+  <legend><i class="fa fa-bolt"></i> {{Intents}}</legend>
 
   <!--Management of All the Intents (Objects)-->
   <div class="eqLogicThumbnailContainer">

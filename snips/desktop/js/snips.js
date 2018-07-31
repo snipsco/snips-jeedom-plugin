@@ -861,13 +861,24 @@ function addBinding(_binding) {
 
     div += '<hr/>';
 
-    div += '<div class="section-title" ><strong>{{Feedback Tts}}</strong>';
-    div += '<a class="btn btn-primary btn-xs playFeedback" style="margin-left: 15px;"><i class="fa fa-play"></i> {{Test Play}}</a>';
+    div += '<div class="section-title" ><strong>{{TTS}}</strong>';
+    //div += '<a class="btn btn-primary btn-xs playFeedback" style="margin-left: 15px;"><i class="fa fa-play"></i> {{Test Play}}</a>';
     div += '</div>';
 
     div += '<div class="div_feedback form-group">'
 
     div += '<div class="col-sm-6">';
+
+    div += '<div class="input-group input-group-sm">';
+    div += '<span class="input-group-addon" id="basic-addon1" style="width: 100px">Player</span>';
+    div += '<input class="bindingAttr form-control input-sm cmdAction" data-l1key="tts" data-l2key="player" />';
+    div += '<span class="input-group-btn">';
+    //div += '<a class="btn btn-default btn-sm listAction" data-type="action" ><i class="fa fa-tasks"></i></a>';
+    div += '<a class="btn btn-default btn-sm listCmdAction" data-type="action"><i class="fa fa-list-alt"></i></a>';
+    div += '<a class="btn btn-default playFeedback btn-sm" data-type="action" title="{{test play}}"><i class="fa fa-play"></i></a>';
+    div += '</span></div>';
+
+
     div += '<textarea class="bindingAttr form-control ta_autosize feedbackSpeech"' +
         'data-l1key="tts" data-l2key="text" rows="2"' +
         'style="resize: none; overflow: hidden; word-wrap: break-word; height: 30px; font-size:12px;"' +
@@ -887,6 +898,19 @@ function addBinding(_binding) {
     div += '</div>';
 
     $('#div_bindings').append(div);
+
+    if (!isset(_binding.tts)) {
+
+        _binding.tts = {
+            "vars": {},
+            "player": '#[Snips-Intents][Snips-TTS][say]#'
+        };
+    }
+
+    if (_binding.tts.player == '' || !isset(_binding.tts.player)) {
+        _binding.tts.player = '#[Snips-Intents][Snips-TTS][say]#';
+    }
+
     $('#div_bindings .binding:last').setValues(_binding, '.bindingAttr');
     if (is_array(_binding.condition)) {
         for (var i in _binding.condition) {
@@ -905,13 +929,6 @@ function addBinding(_binding) {
         if ($.trim(_binding.action) != '') {
             addAction(_binding.action, $('#div_bindings .binding:last'));
         }
-    }
-
-    if (!isset(_binding.tts)) {
-
-        _binding.tts = {
-            "vars": {}
-        };
     }
 
     if (is_array(_binding.tts.vars)) {
