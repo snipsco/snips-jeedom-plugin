@@ -605,7 +605,7 @@ $("#div_bindings").delegate(".playFeedback", 'click', function () {
     });
 
     var language = $('span[data-l1key=configuration][data-l2key=language]').text();
-    var cmdPlayer = $('input[data-l1key=tts][data-l2key=player]').val();
+    var cmdPlayer = $(this).closest('.binding').find('input[data-l1key=tts][data-l2key=player]').val();
     $.ajax({
         type: "POST",
         url: "plugins/snips/core/ajax/snips.ajax.php",

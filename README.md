@@ -80,7 +80,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Load assistant remotely // mandatory
 - [x] Import & export // mandatory
 - [x] Light shift function // mandatory
-- [ ] Dynamic TTS player selection // mandatory
+- [x] Dynamic TTS player selection // mandatory
 - [ ] Multi-intent, 1 slot multiple value // improvement
 - [ ] Find a way to map binary to text // improvement
 - [ ] Adapt to dark theme // improvement
