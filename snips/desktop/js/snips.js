@@ -124,6 +124,18 @@ $("body").off('click', '.listAction').on('click', '.listAction', function () {
     });
 });
 
+$("body").off('click', '.listCmdPlayer').on('click', '.listCmdPlayer', function () {
+    var el = $(this);
+    jeedom.cmd.getSelectModal({
+        cmd: {
+            type: 'action'
+        }
+    }, function (result) {
+        var input = el.closest('.binding').find('input[data-l1key=tts][data-l2key=player]');
+        input.value(result.human);
+    });
+});
+
 $("body").delegate(".listInfoCmd", 'click', function () {
     var el = $(this);
     jeedom.cmd.getSelectModal({
@@ -594,7 +606,6 @@ $("#div_bindings").delegate(".playFeedback", 'click', function () {
 
     var language = $('span[data-l1key=configuration][data-l2key=language]').text();
     var cmdPlayer = $('input[data-l1key=tts][data-l2key=player]').val();
-    console.log('[playFeedback] :' + cmdPlayer);
     $.ajax({
         type: "POST",
         url: "plugins/snips/core/ajax/snips.ajax.php",
@@ -876,7 +887,7 @@ function addBinding(_binding) {
     div += '<input class="bindingAttr form-control input-sm cmdAction" data-l1key="tts" data-l2key="player" />';
     div += '<span class="input-group-btn">';
     //div += '<a class="btn btn-default btn-sm listAction" data-type="action" ><i class="fa fa-tasks"></i></a>';
-    div += '<a class="btn btn-default btn-sm listCmdAction" data-type="action"><i class="fa fa-list-alt"></i></a>';
+    div += '<a class="btn btn-default btn-sm listCmdPlayer" data-type="action"><i class="fa fa-list-alt"></i></a>';
     div += '<a class="btn btn-default playFeedback btn-sm" data-type="action" title="{{test play}}"><i class="fa fa-play"></i></a>';
     div += '</span></div>';
 

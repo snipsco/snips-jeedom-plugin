@@ -1,8 +1,8 @@
 <?php
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
-ini_set("display_errors","On");
-error_reporting(E_ALL);
+//ini_set("display_errors","On");
+//error_reporting(E_ALL);
 
 class snips extends eqLogic
 
@@ -390,10 +390,10 @@ class snips extends eqLogic
         $obj = object::byName('Snips-Intents');
         if (!isset($obj) || !is_object($obj)) {
             $obj = new object();
+            $obj->setName('Snips-Intents');
             snips::debug('[Load Assistant] Created object: Snips-Intents');
         }
-
-        $obj->setName('Snips-Intents');
+        
         $obj->setIsVisible(1);
         $obj->setConfiguration('id', $assistant["id"]);
         $obj->setConfiguration('name',$assistant["name"]);
@@ -522,16 +522,21 @@ class snips extends eqLogic
                         else {
                             $pre_value = $cmd->getCache('value', 'NULL');
                         }
-
+                        snips::debug('[Binding Execution][Condition] Condition Aft string: '.$condition['aft']);
                         if (is_string($condition['aft'])) {
-                            $aft_value = strtolower(str_replace(' ', '', $condition['aft']));
+                            $aft_value = explode(',',strtolower(str_replace(' ', '', $condition['aft'])));
+                            foreach ($aft_value as $key => $value) {
+                                snips::debug('[Binding Execution][Condition] Condition Aft value index: '.$key.' value: ' . $value);
+                            }
+                            //$aft_value = strtolower(str_replace(' ', '', $condition['aft']));
                         }
                         else {
-                            $aft_value = $condition['aft'];
+                            $aft_value = array($condition['aft']);
+                            snips::debug('[Binding Execution][Condition] Condition Aft value is : ' . $aft_value);
                         }
 
-                        snips::debug('[Binding Execution][Condition] Condition Aft value is : ' . $aft_value);
-                        if ($pre_value == $aft_value) {
+                        
+                        if (in_array($pre_value , $aft_value)) {
                             $condition_all_true_indicator*= 1;
                         }
                         else {
@@ -568,6 +573,8 @@ class snips extends eqLogic
                 snips::debug('[Binding Execution] Generated text is ' . $text);
                 snips::debug('[Binding Execution] Orginal text is ' . $binding['tts']['text']);
 
+                snips::debug('[Binding Execution] Player is ' . $binding['tts']['player']);
+                
                 snips::playTTS($binding['tts']['player'], $text, $session_id);
                 //snips::sayFeedback($text, $session_id);
             }
@@ -792,25 +799,23 @@ class snips extends eqLogic
     function lightBrightnessShift($_cmdStatus, $_cmdAction, $_min, $_max, $_step, $_up_down)
     {
         $cmd = cmd::byString($_cmdStatus);
-
         if (is_object($cmd))
         if ($cmd->getValue()) $current_val = $cmd->getValue();
         else $current_val = $cmd->getCache('value', 'NULL');
         $options = array();
-
         if ($_up_down === 'UP') $options['slider'] = $current_val + round(($_max - $_min) * $_step);
         else
         if ($_up_down === 'DOWN') $options['slider'] = $current_val - round(($_max - $_min) * $_step);
-
         if ($options['slider'] < $_min) $options['slider'] = $_min;
-
         if ($options['slider'] > $_max) $options['slider'] = $_max;
-
-        snips::debug('[lightBrightnessShift] Shift action: [' . $_cmdAction . '], from -> ' . $options['slider'] . ' to ->' . $current_val);
-
         $cmdSet = cmd::byString($_cmdAction);
-
-        if (is_object($cmdSet)) $cmdSet->execCmd($options);
+        if (is_object($cmdSet)) {
+            $cmdSet->execCmd($options);
+            snips::debug('[lightBrightnessShift] Shift action: ' . $cmdSet->getHumanName() . ', from -> ' . $options['slider'] . ' to ->' . $current_val);
+        }else{
+            snips::debug('[lightBrightnessShift] Can not find cmd: '. $_cmdAction);
+        }
+        
     }
 
     public
