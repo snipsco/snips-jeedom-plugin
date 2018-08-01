@@ -87,6 +87,9 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Optimise the intent select modal // improvement
 
 # Develop Diary
+1, Aug, 2018
+- [x] Support synonyms in condtion 
+
 31, Jul, 2018
 - [x] Replant dynamic tts function
 
