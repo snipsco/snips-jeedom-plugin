@@ -1,8 +1,8 @@
 <?php
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
-// ini_set("display_errors","On");
-// error_reporting(E_ALL);
+ini_set("display_errors","On");
+error_reporting(E_ALL);
 
 class snips extends eqLogic
 
@@ -208,15 +208,15 @@ class snips extends eqLogic
 
     public static
 
-    function playTTS($_player_cmd, $_message, $_sessionId = null){
+    function playTTS($_player_cmd, $_message, $_sessionId = null, $_siteId = 'default'){
         $cmd = cmd::byString($_player_cmd);
 
         if (is_object($cmd)) {
             $options = array();
 
             $options['message'] = $_message;
-            if ($cmd->getType() == 'snips') {
-                $options['title'] = 'default';
+            if (eqLogic::byId($cmd->getEqLogic_id())->getEqType_name() == 'snips') {
+                $options['title'] = $_siteId;
             }else{
                 $options['title'] = '50';
             }
@@ -941,7 +941,7 @@ class snipsCmd extends cmd
 {
     public 
 
-    function execute($_options) 
+    function execute($_options = array()) 
     {
         $eqlogic = $this->getEqLogic();
         switch ($this->getLogicalId()) {        

@@ -593,7 +593,8 @@ $("#div_bindings").delegate(".playFeedback", 'click', function () {
     });
 
     var language = $('span[data-l1key=configuration][data-l2key=language]').text();
-
+    var cmdPlayer = $('input[data-l1key=tts][data-l2key=player]').val();
+    console.log('[playFeedback] :' + cmdPlayer);
     $.ajax({
         type: "POST",
         url: "plugins/snips/core/ajax/snips.ajax.php",
@@ -601,6 +602,7 @@ $("#div_bindings").delegate(".playFeedback", 'click', function () {
             action: "playFeedback",
             text: org_text,
             vars: vars,
+            cmd: cmdPlayer,
             lang: language,
         },
         dataType: 'json',
