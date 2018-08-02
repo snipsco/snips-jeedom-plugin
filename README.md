@@ -87,8 +87,20 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Optimise the intent select modal // improvement
 
 # Develop Diary
+2, Aug, 2018
+- [ ] Non-linear tts feadback
+
 1, Aug, 2018
 - [x] Support synonyms in condtion 
+```
+Beta release
+Version: 2018-08-01 18:25:37
+
+Add feature: allow to select a non-snips tts command.
+Add feature: support synonyms in conditon.
+
+Improved stability.
+```
 
 31, Jul, 2018
 - [x] Replant dynamic tts function
@@ -99,6 +111,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 
 29, Jul, 2018
 ```
+Beta release
 Version: 2018-07-29 20:55:36
 
 Updated Logo.
@@ -107,6 +120,7 @@ Added more debug output.
 
 27, Jul, 2018
 ```
+Beta release
 Version: 2018-07-27 18:21:29
 
 Add feature: simplfied steps for loading assistant. 
@@ -114,6 +128,7 @@ Add feature: simplfied steps for loading assistant.
 
 26, Jul, 2018
 ```
+Beta release
 Version: 2018-07-26 16:08:40
 
 Fixed bug: ssh2_disconnect not found. (Reported by @Cecece)
@@ -126,6 +141,7 @@ Improved stability.
 25, Jul, 2018
 - [x] Added examples in tutorial
 ```
+Beta release
 Version: 2018-07-25 18:42:36
 
 Fixed bug: ssh can not fetch assistant. (Reported by @rudloffl)
