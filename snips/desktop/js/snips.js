@@ -131,7 +131,7 @@ $("body").off('click', '.listCmdPlayer').on('click', '.listCmdPlayer', function 
             type: 'action'
         }
     }, function (result) {
-        var input = el.closest('.binding').find('input[data-l1key=tts][data-l2key=player]');
+        var input = el.closest('.binding').find('.input[data-l1key=ttsPlayer]');
         input.value(result.human);
     });
 });
@@ -143,7 +143,7 @@ $("body").delegate(".listInfoCmd", 'click', function () {
             type: 'info'
         }
     }, function (result) {
-        var input = el.closest('.infoCmd').find('.bindingAttr[data-l1key=tts][data-l2key=vars]');
+        var input = el.closest('.infoCmd').find('.ttsVarAttr[data-l1key=cmd]');
         input.value(result.human);
 
         console.log('subType is '+ result.cmd.subType);
@@ -274,20 +274,20 @@ $("#div_bindings").delegate(".feedbackSpeech", 'keyup', function () {
 
     var el = $(this).closest('.binding');
 
-    var listVarCount = el.find('.div_infoCmd').find('.infoCmd').length;
+    var listVarCount = el.find('.div_infoCmd').find('.varCmd').length;
     var textVarCount = $(this).val().split('{#}').length - 1;
 
     var count = 0;
     while (listVarCount != textVarCount) {
         count += 1;
         if (listVarCount > textVarCount) {
-            el.find('.div_infoCmd').find('.infoCmd:last').remove();
+            el.find('.div_infoCmd').find('.varCmd:last').remove();
 
         } else if (listVarCount < textVarCount) {
             addInfoCmd({}, el);
 
         }
-        var listVarCount = el.find('.div_infoCmd').find('.infoCmd').length;
+        var listVarCount = el.find('.div_infoCmd').find('.varCmd').length;
         var textVarCount = $(this).val().split('{#}').length - 1;
         if (count > 10) {
             break;
@@ -609,12 +609,14 @@ $("#div_bindings").delegate(".playFeedback", 'click', function () {
     var org_text = $(this).closest('.binding').find('.feedbackSpeech').val();
     var vars = [];
 
-    $(this).closest('.binding').find('.infoCmd').find('.bindingAttr').each(function () {
-        vars.push($(this).val());
-    });
+    // $(this).closest('.binding').find('.varCmd').find('.ttsVarAttr').each(function () {
+    //     vars.push($(this).val());
+    //     
+    // });
+    vars = $(this).closest('.binding').find('.varCmd').getValues('.ttsVarAttr');
 
     var language = $('span[data-l1key=configuration][data-l2key=language]').text();
-    var cmdPlayer = $(this).closest('.binding').find('input[data-l1key=tts][data-l2key=player]').val();
+    var cmdPlayer = $(this).closest('.binding').find('input[data-l1key=ttsPlayer]').val();
     $.ajax({
         type: "POST",
         url: "plugins/snips/core/ajax/snips.ajax.php",
@@ -737,6 +739,7 @@ function printEqLogic(_eqLogic) {
         for (var i in _eqLogic.configuration.bindings) {
             addBinding(_eqLogic.configuration.bindings[i], false);
         }
+
         jeedom.cmd.displayActionsOption({
             params: actionOptions,
             async: false,
@@ -767,6 +770,7 @@ function saveEqLogic(_eqLogic) {
         var binding = $(this).getValues('.bindingAttr')[0];
         binding.condition = $(this).find('.condition').getValues('.conditionAttr');
         binding.action = $(this).find('.action').getValues('.expressionAttr');
+        binding.ttsVar = $(this).find('.varCmd').getValues('.ttsVarAttr');
         _eqLogic.configuration.bindings.push(binding);
     });
     return _eqLogic;
@@ -889,7 +893,7 @@ function addBinding(_binding) {
 
     div += '<div class="input-group input-group-sm">';
     div += '<span class="input-group-addon" id="basic-addon1" style="width: 100px">Player</span>';
-    div += '<input class="bindingAttr form-control input-sm cmdAction" data-l1key="tts" data-l2key="player" />';
+    div += '<input class="bindingAttr form-control input-sm cmdAction" data-l1key="ttsPlayer"/>';
     div += '<span class="input-group-btn">';
     //div += '<a class="btn btn-default btn-sm listAction" data-type="action" ><i class="fa fa-tasks"></i></a>';
     div += '<a class="btn btn-default btn-sm listCmdPlayer" data-type="action"><i class="fa fa-list-alt"></i></a>';
@@ -898,7 +902,7 @@ function addBinding(_binding) {
 
 
     div += '<textarea class="bindingAttr form-control ta_autosize feedbackSpeech"' +
-        'data-l1key="tts" data-l2key="text" rows="2"' +
+        'data-l1key="ttsMessage" rows="2"' +
         'style="resize: none; overflow: hidden; word-wrap: break-word; height: 30px; font-size:12px;"' +
         'placeholder="Speech text" data-toggle="tooltip" ' +
         'data-placement="bottom" title="Use \'{#}\' to add dynamic variable, then setup variables follwing the same order">';
@@ -917,17 +921,14 @@ function addBinding(_binding) {
 
     $('#div_bindings').append(div);
 
-    if (!isset(_binding.tts)) {
+    if (!isset(_binding.ttsPlayer)) {
 
-        _binding.tts = {
-            "vars": {},
-            "player": '#[Snips-Intents][Snips-TTS][say]#'
-        };
+        _binding.ttsPlayer = '#[Snips-Intents][Snips-TTS][say]#';
     }
 
-    if (_binding.tts.player == '' || !isset(_binding.tts.player)) {
-        _binding.tts.player = '#[Snips-Intents][Snips-TTS][say]#';
-    }
+    // if (_binding.tts.player == '' || !isset(_binding.tts.player)) {
+    //     _binding.tts.player = '#[Snips-Intents][Snips-TTS][say]#';
+    // }
 
     $('#div_bindings .binding:last').setValues(_binding, '.bindingAttr');
     if (is_array(_binding.condition)) {
@@ -949,13 +950,13 @@ function addBinding(_binding) {
         }
     }
 
-    if (is_array(_binding.tts.vars)) {
-        for (var i in _binding.tts.vars) {
-            addInfoCmd(_binding.tts.vars[i], $('#div_bindings .binding:last'));
+    if (is_array(_binding.ttsVar)) {
+        for (var i in _binding.ttsVar) {
+            addInfoCmd(_binding.ttsVar[i], $('#div_bindings .binding:last'));
         }
     } else {
-        if ($.trim(_binding.tts.vars) != '') {
-            addInfoCmd(_binding.tts.vars, $('#div_bindings .binding:last'));
+        if ($.trim(_binding.ttsVar) != '') {
+            addInfoCmd(_binding.ttsVar, $('#div_bindings .binding:last'));
         }
     }
 
@@ -1108,7 +1109,7 @@ function addInfoCmd(_infoCmd, _el) {
     div += '<div class="input-group input-group-sm infoCmd" >';
     div += '<span class="input-group-btn ">';
     div += '<a class="btn btn-default btn-sm" style="width: 100px" data-toggle="tooltip" data-placement="top" title="Drag to change order"><span class="glyphicon glyphicon-sort" aria-hidden="true"></span>' + "&nbsp;&nbsp;&nbsp;" + 'Variable</a></span>'
-    div += '<input value="" class="bindingAttr form-control input-sm" data-l1key="tts" data-l2key="vars" >';
+    div += '<input value="" class="ttsVarAttr form-control input-sm" data-l1key="cmd" >';
     div += '<span class="input-group-btn">';
     div += '    <button class="btn btn-default listInfoCmd" type="button" title="{{Select a value}}">';
     div += '    <i class="fa fa-list-alt"></i>';
@@ -1117,29 +1118,30 @@ function addInfoCmd(_infoCmd, _el) {
     div += '</div>';
 
     div += '<div class="infoOptions">';
-    console.log('current var is :'+ _infoCmd);
-    console.log('current var is :'+ typeof _infoCmd );
-    // if (isset(_infoCmd.options.HT) && isset(_action.options.LT)) {
 
-    //     div += '<span class="input-group input-group-sm">';
-    //     div += '<span class="input-group-addon" style="width: 100px">0% => </span>';
-    //     div += '<input class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="LT">';
+    console.log('current var is :'+ _infoCmd.cmd);
 
-    //     div += '<span class="input-group-addon" style="width: 100px">100% => </span>';
-    //     div += '<input class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="HT">';
-    //     div += '<span>'
+    if (isset(_infoCmd.options)) {
 
-    // }
+        div += '<span class="input-group input-group-sm">';
+        div += '<span class="input-group-addon" style="width: 100px">0% => </span>';
+        div += '<input class="ttsVarAttr form-control input-sm" data-l1key="options" data-l2key="zero">';
+
+        div += '<span class="input-group-addon" style="width: 100px">100% => </span>';
+        div += '<input class="ttsVarAttr form-control input-sm" data-l1key="options" data-l2key="one">';
+        div += '<span>'
+
+    }
 
     div += '</div>';
     div += '</div>';
 
-    if ($.isEmptyObject(_infoCmd)) {
+    if (isset(_infoCmd)) {
         _el.find('.div_infoCmd').append(div);
-        _el.find('.infoCmd:last').find('.bindingAttr').val('');
+        _el.find('.varCmd:last').setValues(_infoCmd, '.ttsVarAttr');
     } else {
         _el.find('.div_infoCmd').append(div);
-        _el.find('.infoCmd:last').find('.bindingAttr').val(_infoCmd);
+        _el.find('.varCmd:last').setValues(_infoCmd, '.ttsVarAttr');
     }
 }
 
@@ -1198,10 +1200,10 @@ function displayBinaryMap(_el, _cmd) {
 
     var span = '<span class="input-group input-group-sm">';
     span += '<span class="input-group-addon" style="width: 100px">Status "0" => </span>';
-    span += '<input value="OFF" class="bindingAttr form-control input-sm" data-l1key="tts" data-l2key="vars" data-l3key='+_cmd+'>';
+    span += '<input value="OFF" class="ttsVarAttr form-control input-sm" data-l1key="options" data-l2key="zero">';
 
     span += '<span class="input-group-addon" style="width: 100px">Status "1" => </span>';
-    span += '<input value="ON" class="bindingAttr form-control input-sm" data-l1key="tts" data-l2key="vars" data-l3key='+_cmd+'>';
+    span += '<input value="ON" class="ttsVarAttr form-control input-sm" data-l1key="options" data-l2key="one">';
     span += '<span>'
 
     _el.append(span);

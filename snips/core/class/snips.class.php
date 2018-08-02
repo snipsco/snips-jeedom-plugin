@@ -211,6 +211,7 @@ class snips extends eqLogic
     function playTTS($_player_cmd, $_message, $_sessionId = null, $_siteId = 'default'){
 
         $messages_to_play = explode('//', $_message);
+
         $message_to_play = $messages_to_play[array_rand ($messages_to_play)];
 
         $cmd = cmd::byString($_player_cmd);
@@ -272,7 +273,7 @@ class snips extends eqLogic
         if (!empty($string_subs)) {
             foreach($string_subs as $key => $sub) {
                 if (isset($vars[$key])) {
-                    $cmd = cmd::byString($vars[$key]);
+                    $cmd = cmd::byString($vars[$key]['cmd']);
                     snips::debug('[TTs] The '.$key.' variable cmd id: ' . $cmd->getId());
                     if (is_object($cmd)) {
                         if ($cmd->getName() == 'intensity_percent' || $cmd->getName() == 'intensity_percentage') {
@@ -577,13 +578,14 @@ class snips extends eqLogic
                         }
                     }
 
-                    $text = snips::generateFeedback($binding['tts']['text'], (array)$binding['tts']['vars'], false);
+                    $text = snips::generateFeedback($binding['ttsMessage'], (array)$binding['ttsVar'], false);
+
                     snips::debug('[Binding Execution] Generated text is ' . $text);
-                    snips::debug('[Binding Execution] Orginal text is ' . $binding['tts']['text']);
+                    snips::debug('[Binding Execution] Orginal text is ' . $binding['ttsMessage']);
 
-                    snips::debug('[Binding Execution] Player is ' . $binding['tts']['player']);
+                    snips::debug('[Binding Execution] Player is ' . $binding['ttsPlayer']);
 
-                    snips::playTTS($binding['tts']['player'], $text, $session_id);
+                    snips::playTTS($binding['ttsPlayer'], $text, $session_id);
                     //snips::sayFeedback($text, $session_id);
                 }
             }else if(count($bindings_with_correct_condition) == 0){
