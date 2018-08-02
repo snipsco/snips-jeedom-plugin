@@ -145,6 +145,15 @@ $("body").delegate(".listInfoCmd", 'click', function () {
     }, function (result) {
         var input = el.closest('.infoCmd').find('.bindingAttr[data-l1key=tts][data-l2key=vars]');
         input.value(result.human);
+
+        console.log('subType is '+ result.cmd.subType);
+        if (result.cmd.subType == 'binary') {
+            el.closest('.varCmd').find('.infoOptions').empty();
+            displayBinaryMap(el.closest('.varCmd').find('.infoOptions'), result.human);
+        } else {
+            el.closest('.varCmd').find('.infoOptions').empty();
+        }
+
     });
 });
 
@@ -725,11 +734,9 @@ function printEqLogic(_eqLogic) {
     $('#div_bindings').empty();
     if (isset(_eqLogic.configuration) && isset(_eqLogic.configuration.bindings)) {
         actionOptions = []
-
         for (var i in _eqLogic.configuration.bindings) {
             addBinding(_eqLogic.configuration.bindings[i], false);
         }
-
         jeedom.cmd.displayActionsOption({
             params: actionOptions,
             async: false,
@@ -742,9 +749,7 @@ function printEqLogic(_eqLogic) {
             success: function (data) {
                 for (var i in data) {
                     $('#' + data[i].id).append(data[i].html.html);
-
                 }
-
                 taAutosize();
             }
         });
@@ -992,7 +997,7 @@ function addAction(_action, _el) {
     }
 
     var div = '<div class="action">';
-    div += '<div class="form-group ">';
+    div += '<div class="form-group">';
 
     div += '<div class="col-sm-6">';
     div += '<div class="input-group">';
@@ -1099,7 +1104,8 @@ function addCondition(_condition, _el) {
 
 function addInfoCmd(_infoCmd, _el) {
 
-    var div = '<div class="input-group input-group-sm infoCmd" style="width: 100%">';
+    var div = '<div class="varCmd" style="width: 100%; margin-bottom: 5px;">';
+    div += '<div class="input-group input-group-sm infoCmd" >';
     div += '<span class="input-group-btn ">';
     div += '<a class="btn btn-default btn-sm" style="width: 100px" data-toggle="tooltip" data-placement="top" title="Drag to change order"><span class="glyphicon glyphicon-sort" aria-hidden="true"></span>' + "&nbsp;&nbsp;&nbsp;" + 'Variable</a></span>'
     div += '<input value="" class="bindingAttr form-control input-sm" data-l1key="tts" data-l2key="vars" >';
@@ -1108,7 +1114,24 @@ function addInfoCmd(_infoCmd, _el) {
     div += '    <i class="fa fa-list-alt"></i>';
     div += '    </button>';
     div += '</span>';
+    div += '</div>';
 
+    div += '<div class="infoOptions">';
+    console.log('current var is :'+ _infoCmd);
+    console.log('current var is :'+ typeof _infoCmd );
+    // if (isset(_infoCmd.options.HT) && isset(_action.options.LT)) {
+
+    //     div += '<span class="input-group input-group-sm">';
+    //     div += '<span class="input-group-addon" style="width: 100px">0% => </span>';
+    //     div += '<input class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="LT">';
+
+    //     div += '<span class="input-group-addon" style="width: 100px">100% => </span>';
+    //     div += '<input class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="HT">';
+    //     div += '<span>'
+
+    // }
+
+    div += '</div>';
     div += '</div>';
 
     if ($.isEmptyObject(_infoCmd)) {
@@ -1170,3 +1193,17 @@ function displayValueMap(_el) {
 
     _el.append(span);
 }
+
+function displayBinaryMap(_el, _cmd) {
+
+    var span = '<span class="input-group input-group-sm">';
+    span += '<span class="input-group-addon" style="width: 100px">Status "0" => </span>';
+    span += '<input value="OFF" class="bindingAttr form-control input-sm" data-l1key="tts" data-l2key="vars" data-l3key='+_cmd+'>';
+
+    span += '<span class="input-group-addon" style="width: 100px">Status "1" => </span>';
+    span += '<input value="ON" class="bindingAttr form-control input-sm" data-l1key="tts" data-l2key="vars" data-l3key='+_cmd+'>';
+    span += '<span>'
+
+    _el.append(span);
+}
+

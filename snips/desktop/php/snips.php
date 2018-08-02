@@ -120,7 +120,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
 
             echo '<div data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 180px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
-            echo '<img src="/plugins/snips/3rdparty/icons/robot.png" height="100" width="100" />';
+            echo '<img src="/plugins/snips/3rdparty/icons/maker_kit.png" height="100" width="100" />';
             echo "<br>";
             echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="label label-primary" style="text-shadow : none;">default :: '.config::byKey('mqttAddr', 'snips', '127.0.0.1').'</span><br><strong> Snips-TTS</strong></span>';
             echo '</div>';

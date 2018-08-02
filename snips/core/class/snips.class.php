@@ -209,12 +209,16 @@ class snips extends eqLogic
     public static
 
     function playTTS($_player_cmd, $_message, $_sessionId = null, $_siteId = 'default'){
+
+        $messages_to_play = explode('//', $_message);
+        $message_to_play = $messages_to_play[array_rand ($messages_to_play)];
+
         $cmd = cmd::byString($_player_cmd);
 
         if (is_object($cmd)) {
             $options = array();
 
-            $options['message'] = $_message;
+            $options['message'] = $message_to_play;
             if (eqLogic::byId($cmd->getEqLogic_id())->getEqType_name() == 'snips') {
                 $options['title'] = $_siteId;
             }else{
@@ -434,6 +438,9 @@ class snips extends eqLogic
         $elogic->setConfiguration('language', $intent['language']);
         $elogic->setObject_id(object::byName('Snips-Intents')->getId());
         $elogic->save();
+
+        snips::debug('[Load Assistant] Assistant loaded, restarting deamon');
+        snips::deamon_start();
     }
 
     public static
@@ -557,29 +564,34 @@ class snips extends eqLogic
                 }
             }
 
-            foreach($bindings_with_correct_condition as $binding) {
-                foreach($binding['action'] as $action) {
-                    $options = $action['options'];
-                    if (true) {
-                        snips::setSlotsCmd($slots_values, $intent_name, $options);
-                        scenarioExpression::createAndExec('action', $action['cmd'], $options);
+            if (count($bindings_with_correct_condition) != 0) {
+                foreach($bindings_with_correct_condition as $binding) {
+                    foreach($binding['action'] as $action) {
+                        $options = $action['options'];
+                        if (true) {
+                            snips::setSlotsCmd($slots_values, $intent_name, $options);
+                            scenarioExpression::createAndExec('action', $action['cmd'], $options);
+                        }
+                        else {
+                            snips::debug('[Binding Execution] Found binding action, but it is not enabled');
+                        }
                     }
-                    else {
-                        snips::debug('[Binding Execution] Found binding action, but it is not enabled');
-                    }
+
+                    $text = snips::generateFeedback($binding['tts']['text'], (array)$binding['tts']['vars'], false);
+                    snips::debug('[Binding Execution] Generated text is ' . $text);
+                    snips::debug('[Binding Execution] Orginal text is ' . $binding['tts']['text']);
+
+                    snips::debug('[Binding Execution] Player is ' . $binding['tts']['player']);
+
+                    snips::playTTS($binding['tts']['player'], $text, $session_id);
+                    //snips::sayFeedback($text, $session_id);
                 }
-
-                $text = snips::generateFeedback($binding['tts']['text'], (array)$binding['tts']['vars'], false);
-                snips::debug('[Binding Execution] Generated text is ' . $text);
-                snips::debug('[Binding Execution] Orginal text is ' . $binding['tts']['text']);
-
-                snips::debug('[Binding Execution] Player is ' . $binding['tts']['player']);
+            }else if(count($bindings_with_correct_condition) == 0){
                 
-                snips::playTTS($binding['tts']['player'], $text, $session_id);
-                //snips::sayFeedback($text, $session_id);
+                $feedback = config::byKey('defaultTTS', 'snips', 'Désolé, je n’ai pas compris');
+                snips::sayFeedback($feedback, $session_id);
             }
         }
-
         sleep(1);
         snips::resetSlotsCmd();
     }

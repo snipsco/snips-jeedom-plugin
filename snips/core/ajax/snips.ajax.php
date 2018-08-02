@@ -8,23 +8,14 @@ try {
     }
 
     if (init('action') == 'reload') {
-
         $res = snips::fetchAssistantJson(init('username') , init('password'));
-        
-        if ($res == 1) {
-            snips::reloadAssistant();
-        }
-
+        if ($res == 1) snips::reloadAssistant();
         ajax::success($res);
     }
 
     if (init('action') == 'tryToFetchDefault') {
         $res = snips::tryToFetchDefault();
-
-        if ($res == 1) {
-            snips::reloadAssistant();
-        }
-        
+        if ($res == 1) snips::reloadAssistant();
         ajax::success($res);
     }
 
@@ -58,7 +49,6 @@ try {
         $text = snips::generateFeedback(init('text') , init('vars') , true);
         snips::debug('[AJAX playFeedback] player cmd: '.init('cmd'));
         snips::playTTS(init('cmd'), $text);
-        //snips::sayFeedback($text, null, init('lang'));
         ajax::success();
     }
 
@@ -84,7 +74,6 @@ try {
     }
 
     throw new Exception(__('No method corresponding to : ', __FILE__) . init('action'));
-    /*     * *********Catch exeption*************** */
 }
 
 catch(Exception $e) {
