@@ -87,8 +87,19 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Optimise the intent select modal // improvement
 
 # Develop Diary
+2, Aug, 2018
+- [ ] Non-linear tts feadback
+
 1, Aug, 2018
 - [x] Support synonyms in condtion 
+```
+Version: 2018-08-01 18:25:37
+
+Add feature: allow to select a non-snips tts command.
+Add feature: support synonyms in conditon.
+
+Improved stability.
+```
 
 31, Jul, 2018
 - [x] Replant dynamic tts function
