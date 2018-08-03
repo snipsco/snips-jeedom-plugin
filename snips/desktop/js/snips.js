@@ -1124,10 +1124,10 @@ function addInfoCmd(_infoCmd, _el) {
     if (isset(_infoCmd.options)) {
 
         div += '<span class="input-group input-group-sm">';
-        div += '<span class="input-group-addon" style="width: 100px">0% => </span>';
+        div += '<span class="input-group-addon" style="width: 100px">Status "0" => </span>';
         div += '<input class="ttsVarAttr form-control input-sm" data-l1key="options" data-l2key="zero">';
 
-        div += '<span class="input-group-addon" style="width: 100px">100% => </span>';
+        div += '<span class="input-group-addon" style="width: 100px">Status "1" => </span>';
         div += '<input class="ttsVarAttr form-control input-sm" data-l1key="options" data-l2key="one">';
         div += '<span>'
 

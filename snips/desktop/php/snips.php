@@ -42,20 +42,23 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
   <div class="eqLogicThumbnailContainer">
 
       <div class="cursor eqLogicAction reload" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="glyphicon glyphicon-import" style="font-size : 6em;color:#5cb85c;"></i>
+        <img src="/plugins/snips/3rdparty/icons/rocket.png" height="85" width="85" />
+        <!-- <i class="glyphicon glyphicon-import" style="font-size : 6em;color:#5cb85c;"></i> -->
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Load Assistant}}</span>
       </div>
 
 
       <div class="cursor eqLogicAction exportConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="glyphicon glyphicon-floppy-save" style="font-size : 6em;color:#5cb85c;"></i>
+        <img src="/plugins/snips/3rdparty/icons/cloud-upload.png" height="85" width="85" />
+        <!-- <i class="glyphicon glyphicon-floppy-save" style="font-size : 6em;color:#5cb85c;"></i> -->
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Export Configration}}</span>
       </div>
 
       <div class="cursor eqLogicAction importConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="glyphicon glyphicon-floppy-open" style="font-size : 6em;color:#5cb85c;"></i>
+        <img src="/plugins/snips/3rdparty/icons/cloud-download.png" height="85" width="85" />
+        <!-- <i class="glyphicon glyphicon-floppy-open" style="font-size : 6em;color:#5cb85c;"></i> -->
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Import Configration}}</span>
       </div>
@@ -63,7 +66,8 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
 
       <div class="cursor eqLogicAction removeAll" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="glyphicon glyphicon-trash" style="font-size : 6em;color:#c9302c;"></i>
+        <img src="/plugins/snips/3rdparty/icons/bin.png" height="85" width="85" />
+        <!-- <i class="glyphicon glyphicon-trash" style="font-size : 6em;color:#c9302c;"></i> -->
         <br>
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Remove Assistant}}</span>
@@ -71,7 +75,8 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
       
       <div class="cursor eqLogicAction resetMqtt" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="glyphicon glyphicon-link" style="font-size : 6em;color:#337ab7;"></i>
+        <img src="/plugins/snips/3rdparty/icons/link.png" height="85" width="85" />
+        <!-- <i class="glyphicon glyphicon-link" style="font-size : 6em;color:#337ab7;"></i> -->
         <br>
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Reset MQTT}}</span>
@@ -97,7 +102,8 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
 
       <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
-        <i class="glyphicon glyphicon-cog" style="font-size : 6em;color:#337ab7;"></i>
+        <img src="/plugins/snips/3rdparty/icons/gear.png" height="85" width="85" />
+        <!-- <i class="glyphicon glyphicon-cog" style="font-size : 6em;color:#337ab7;"></i> -->
         <br>
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Configuration}}</span>
@@ -119,8 +125,8 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
 
-            echo '<div data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 180px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
-            echo '<img src="/plugins/snips/3rdparty/icons/maker_kit.png" height="100" width="100" />';
+            echo '<div data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 160px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
+            echo '<img src="/plugins/snips/3rdparty/icons/speaker.png" height="85" width="85x" />';
             echo "<br>";
             echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="label label-primary" style="text-shadow : none;">default :: '.config::byKey('mqttAddr', 'snips', '127.0.0.1').'</span><br><strong> Snips-TTS</strong></span>';
             echo '</div>';
