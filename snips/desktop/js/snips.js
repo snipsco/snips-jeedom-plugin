@@ -1,5 +1,26 @@
 INTENT = null;
 INTENT_ID = null;
+CMDS = null;
+
+(function (original) {
+  jQuery.fn.clone = function () {
+    var result           = original.apply(this, arguments),
+        my_textareas     = this.find('textarea').add(this.filter('textarea')),
+        result_textareas = result.find('textarea').add(result.filter('textarea')),
+        my_selects       = this.find('select').add(this.filter('select')),
+        result_selects   = result.find('select').add(result.filter('select'));
+ 
+    for (var i = 0, l = my_textareas.length; i < l; ++i) $(result_textareas[i]).val($(my_textareas[i]).val());
+    for (var i = 0, l = my_selects.length;   i < l; ++i) {
+      for (var j = 0, m = my_selects[i].options.length; j < m; ++j) {
+        if (my_selects[i].options[j].selected === true) {
+          result_selects[i].options[j].selected = true;
+        }
+      }
+    }
+    return result;
+  };
+}) (jQuery.fn.clone);
 
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
@@ -26,6 +47,14 @@ $(function () {
 $(document).on('change', '#intentName', function () {
     INTENT = $('#intentName').val();
     INTENT_ID = $('#intentId').val();
+
+    jeedom.eqLogic.getCmd({
+        id: $('#intentId').val(),
+        async: false,
+        success: function (cmds) {
+            CMDS = cmds;
+        }
+    });
 });
 
 $(document).on('change', 'input[name=reaction]', function () {
@@ -145,8 +174,6 @@ $("body").delegate(".listInfoCmd", 'click', function () {
     }, function (result) {
         var input = el.closest('.infoCmd').find('.ttsVarAttr[data-l1key=cmd]');
         input.value(result.human);
-
-        console.log('subType is '+ result.cmd.subType);
         if (result.cmd.subType == 'binary') {
             el.closest('.varCmd').find('.infoOptions').empty();
             displayBinaryMap(el.closest('.varCmd').find('.infoOptions'), result.human);
@@ -237,7 +264,7 @@ $('#div_bindings').off('click', '.bt_duplicateBinding').on('click', '.bt_duplica
             binding.find('.bindingAttr[data-l1key=name]').html(result);
             binding.find('.name').html(result);
             $('#div_bindings').append(binding);
-            $('.collapse').collapse();
+            //$('.collapse').collapse();
         }
     });
 });
@@ -311,21 +338,40 @@ $('.reload').on('click', function () {
     var username = '';
     var psssword = '';
 
-    bootbox.confirm({
-        title: "Attention",
-        message: "Only do this operation when you do not updated snips assistant! Before reload, please export all yoru binding config file!",
+    bootbox.prompt({
+        title: '<i class="fa fa-exclamation-triangle"></i> Attention: Please choose your operation carefully!',
+        inputType: 'select',
+        inputOptions: [
+            {
+                text: 'Choose a reload option...',
+                value: '',
+            },
+            {
+                text: 'Reload assistant without bindings',
+                value: 'mode_1',
+            },
+            {
+                text: 'Reload assistant with current bindings',
+                value: 'mode_2',
+            },
+            {
+                text: 'Delete assistant',
+                value: 'mode_3',
+            }
+        ],
         buttons: {
             confirm: {
-                label: '<i class="fa fa-check"></i> Yes',
+                label: '<i class="fa fa-check"></i> confirm',
                 className: 'btn-success'
             },
             cancel: {
-                label: '<i class="fa fa-times"></i> No',
+                label: '<i class="fa fa-times"></i> cancel',
                 className: 'btn-danger'
             }
         },
         callback: function (result) {
-            if (result) {
+            if (result != 'mode_3') {
+                var mode = result; 
                 var loading = bootbox.dialog({
                     message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Trying to load assistant...</div>',
                     closeButton: false
@@ -335,6 +381,7 @@ $('.reload').on('click', function () {
                         url: "plugins/snips/core/ajax/snips.ajax.php",
                         data: {
                             action: "tryToFetchDefault",
+                            option: mode,
                         },
                         dataType: 'json',
                         global: false,
@@ -381,6 +428,7 @@ $('.reload').on('click', function () {
                                                                 action: "reload",
                                                                 username: username,
                                                                 password: password,
+                                                                option: mode,
                                                             },
                                                             dataType: 'json',
                                                             global: false,
@@ -437,7 +485,57 @@ $('.reload').on('click', function () {
                             }
                         }
                     });
-            }      
+            }else if (result == 'mode_3') {
+                bootbox.confirm({
+                title: "Attention",
+                message: "This operation will delete all the intents and its binding records! Would you continue?",
+                buttons: {
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Yes',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> No',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $('#div_alert').showAlert({
+                            message: 'Removing all the skills',
+                            level: 'danger'
+                        });
+
+                        $.ajax({
+                            type: "POST",
+                            url: "plugins/snips/core/ajax/snips.ajax.php",
+                            data: {
+                                action: "removeAll",
+                            },
+                            dataType: 'json',
+                            global: false,
+                            error: function (request, status, error) {
+                                handleAjaxError(request, status, error);
+                            },
+                            success: function (data) {
+                                if (data.state != 'ok') {
+                                    $('#div_alert').showAlert({
+                                        message: data.result,
+                                        level: 'danger'
+                                    });
+                                    return;
+                                }
+                                $('#div_alert').showAlert({
+                                    message: 'Successfully removed all the skills!',
+                                    level: 'success'
+                                });
+                                location.reload();
+                            }
+                        });
+                    }
+                }
+            });
+            }     
         }
     });
 });
@@ -555,7 +653,8 @@ $('.importConfigration').on('click', function () {
 
 $('.removeAll').on('click', function () {
     bootbox.confirm({
-        message: "ATTENTION: This operation will delete all the intents and its binding records! Would you continue?",
+        title: "Attention",
+        message: "This operation will delete all the intents and its binding records! Would you continue?",
         buttons: {
             confirm: {
                 label: '<i class="fa fa-check"></i> Yes',
@@ -1118,8 +1217,6 @@ function addInfoCmd(_infoCmd, _el) {
     div += '</div>';
 
     div += '<div class="infoOptions">';
-
-    console.log('current var is :'+ _infoCmd.cmd);
 
     if (isset(_infoCmd.options)) {
 

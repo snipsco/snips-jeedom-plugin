@@ -65,13 +65,13 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
 
 
-      <div class="cursor eqLogicAction removeAll" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+     <!--  <div class="cursor eqLogicAction removeAll" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <img src="/plugins/snips/3rdparty/icons/bin.png" height="85" width="85" />
-        <!-- <i class="glyphicon glyphicon-trash" style="font-size : 6em;color:#c9302c;"></i> -->
+        <i class="glyphicon glyphicon-trash" style="font-size : 6em;color:#c9302c;"></i>
         <br>
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Remove Assistant}}</span>
-      </div>
+      </div> -->
 
       
       <div class="cursor eqLogicAction resetMqtt" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
@@ -140,7 +140,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
   <legend><i class="fa fa-bolt"></i> {{Intents}}</legend>
 
   <!--Management of All the Intents (Objects)-->
-  <div class="eqLogicThumbnailContainer">
+  <div class="eqLogicThumbnailContainer" >
 
     <?php
       if (!$eqLogics) {
@@ -149,7 +149,7 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
         foreach ($eqLogics as $eqLogic) {
           if ($eqLogic->getConfiguration('snipsType') == 'Intent') {
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-            echo '<div class="panel panel-success eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
+            echo '<div class="panel panel-success eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
             echo '<div class="panel-heading" style="padding: 5px 15px;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></div>';
             echo '<div class="panel-body" style="padding: 0px;">';
 

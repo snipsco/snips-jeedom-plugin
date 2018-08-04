@@ -677,7 +677,7 @@ class snips extends eqLogic
 
     public static
 
-    function exportConfigration($name)
+    function exportConfigration($name, $output = true)
     {
         $binding_conf = array();
         $eqs = eqLogic::byType('snips');
@@ -708,25 +708,36 @@ class snips extends eqLogic
 
             $aft_bindings = json_decode($json_string);
             snips::debug('[Export Config] vars: ' . $aft_bindings);
-            $binding_conf[$eq->getLogicalId() ] = $aft_bindings;
+            $binding_conf[$eq->getName() ] = $aft_bindings;
         }
 
-        $file = fopen(dirname(__FILE__) . '/../../config_backup/' . $name . '.json', 'w');
-        $res = fwrite($file, json_encode($binding_conf));
-        if ($res) {
-            snips::debug('[Export Config] Success output');
+        if ($output) {
+            $file = fopen(dirname(__FILE__) . '/../../config_backup/' . $name . '.json', 'w');
+            $res = fwrite($file, json_encode($binding_conf));
+            if ($res) {
+                snips::debug('[Export Config] Success output');
+            }
+            else {
+                snips::debug('[Export Config] Faild output');
+            }
+        }else{
+            return json_encode($binding_conf);
         }
-        else {
-            snips::debug('[Export Config] Faild output');
-        }
+        
     }
 
     public static
 
-    function importConfigration($configFileName)
+    function importConfigration($configFileName = null, $configurationJson = null)
     {
-        snips::debug('[Import Config] Asked to import file: ' . $configFileName);
-        $json_string = file_get_contents(dirname(__FILE__) . '/../../config_backup/' . $configFileName);
+        if (isset($configurationJson) && !isset($configFileName)) {
+            snips::debug('[Import Config] Asked to internally reload config file');
+            $json_string = $configurationJson;
+        }else if (!isset($configurationJson) && isset($configFileName)){
+            snips::debug('[Import Config] Asked to import file: ' . $configFileName);
+            $json_string = file_get_contents(dirname(__FILE__) . '/../../config_backup/' . $configFileName);
+        }
+        
         preg_match_all('/("pre":")(#.*?#)(")/', $json_string, $matches);
         $cmd_ids = cmd::humanReadableToCmd($matches[2]);
 
@@ -741,8 +752,8 @@ class snips extends eqLogic
         $data = json_decode($json_string, true);
         $eqs = eqLogic::byType('snips');
         foreach($eqs as $eq) {
-            if ($data[$eq->getLogicalId() ] != '' && isset($data[$eq->getLogicalId() ])) {
-                $eq->setConfiguration('bindings', $data[$eq->getLogicalId() ]);
+            if ($data[$eq->getName() ] != '' && isset($data[$eq->getName() ])) {
+                $eq->setConfiguration('bindings', $data[$eq->getName() ]);
                 $eq->save(true);
             }
         }

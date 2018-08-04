@@ -8,14 +8,37 @@ try {
     }
 
     if (init('action') == 'reload') {
+        
         $res = snips::fetchAssistantJson(init('username') , init('password'));
-        if ($res == 1) snips::reloadAssistant();
+
+        if ($res == 1) {
+            $configJson = snips::exportConfigration(null, false);
+            snips::deleteAssistant();
+            snips::reloadAssistant();
+            if (init('option') == 'mode_2') {
+                snips::debug('[AJAX reload] option :'.init('option'). ' Type is :'.gettype(init('option')));
+                snips::debug('[AJAX reload] configJson :'.$configJson);
+                snips::importConfigration(null, $configJson);
+            }
+        }
         ajax::success($res);
     }
 
     if (init('action') == 'tryToFetchDefault') {
+        
         $res = snips::tryToFetchDefault();
-        if ($res == 1) snips::reloadAssistant();
+
+        if ($res == 1) {
+            $configJson = snips::exportConfigration(null, false);
+            snips::deleteAssistant();
+            snips::reloadAssistant();
+            
+            if (init('option') == 'mode_2') {
+                snips::debug('[AJAX reload] option :'.init('option'). ' Type is :'.gettype(init('option')));
+                snips::debug('[AJAX reload] configJson :'.$configJson);
+                snips::importConfigration(null, $configJson);
+            }
+        }
         ajax::success($res);
     }
 
