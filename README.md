@@ -87,8 +87,12 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Optimise the intent select modal // improvement
 
 # Develop Diary
+3, Aug, 2018
+- [x] Changed functional icons
+
 2, Aug, 2018
-- [ ] Non-linear tts feadback
+- [x] Non-linear tts feadback
+- [x] TTS binary value remapping
 
 1, Aug, 2018
 - [x] Support synonyms in condtion 
