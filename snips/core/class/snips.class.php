@@ -1,6 +1,8 @@
 <?php
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
+require(dirname(__FILE__) . '/../../3rdparty/Toml.php');
+
 //ini_set("display_errors","On");
 //error_reporting(E_ALL);
 
@@ -411,20 +413,44 @@ class snips extends eqLogic
             $elogic->save();  
         }
 
-        $elogic = snips::byLogicalId('Snips-TTS', 'snips');
-        if (!is_object($elogic)) {
-            $elogic = new snips();
-            $elogic->setName('Snips-TTS');
-            $elogic->setLogicalId('Snips-TTS');
-            snips::debug('[Load Assistant] Created TTS entity: Snips-TTS');
-        }
-        $elogic->setEqType_name('snips');
-        $elogic->setIsEnable(1);
-        $elogic->setConfiguration('snipsType', 'TTS');
-        $elogic->setConfiguration('language', $intent['language']);
-        $elogic->setObject_id(object::byName('Snips-Intents')->getId());
-        $elogic->save();
+        $sites = Toml::parseFile(dirname(__FILE__) . '/../../snips.toml')->{'snips-hotword'}->{'audio'};
+        if (count($sites) == 0) {
+            $elogic = snips::byLogicalId('Snips-TTS-default', 'snips');
+            if (!is_object($elogic)) {
+                $elogic = new snips();
+                $elogic->setName('Snips-TTS-ç');
+                $elogic->setLogicalId('Snips-TTS-default');
+                snips::debug('[Load Assistant] Created TTS entity: Snips-TTS-default');
+            }
+            $elogic->setEqType_name('snips');
+            $elogic->setIsEnable(1);
+            $elogic->setConfiguration('snipsType', 'TTS');
+            $elogic->setConfiguration('language', $intent['language']);
+            $elogic->setConfiguration('siteName', 'default');
+            $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+            $elogic->save();
+        }else{
+            foreach ($sites as $key => $site) {
+                $siteName = str_replace('@mqtt', '', $site);
 
+                $elogic = snips::byLogicalId('Snips-TTS-'.$siteName, 'snips');
+                if (!is_object($elogic)) {
+                    $elogic = new snips();
+                    $elogic->setName('Snips-TTS-'.$siteName);
+                    $elogic->setLogicalId('Snips-TTS-'.$siteName);
+                    snips::debug('[Load Assistant] Created TTS entity: Snips-TTS-'.$siteName);
+                }
+                $elogic->setEqType_name('snips');
+                $elogic->setIsEnable(1);
+                $elogic->setConfiguration('snipsType', 'TTS');
+                $elogic->setConfiguration('language', $intent['language']);
+                $elogic->setConfiguration('siteName', $siteName);
+                $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+                $elogic->save();
+            }
+        }
+            
+        
         snips::debug('[Load Assistant] Assistant loaded, restarting deamon');
         snips::deamon_start();
     }
@@ -790,7 +816,8 @@ class snips extends eqLogic
         }
 
         $res = ssh2_scp_recv($connection, '/usr/share/snips/assistant/assistant.json', dirname(__FILE__) . '/../../assistant.json');
-        if ($res) {
+        $res0 = ssh2_scp_recv($connection, '/etc/snips.toml', dirname(__FILE__) . '/../../snips.toml');
+        if ($res && $res0) {
             ssh2_exec($connection, 'exit');
             unset($connection);
             snips::debug('[FetchAssistantJson]Fecth resutlt : Success');
