@@ -35,9 +35,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
       <div class="cursor eqLogicAction reload" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <img src="/plugins/snips/3rdparty/icons/rocket.png" height="85" width="85" />
         <br>
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Load Assistant}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">{{Load Assistant}}</span>
       </div>
-
 
       <div class="cursor eqLogicAction exportConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <img src="/plugins/snips/3rdparty/icons/cloud-upload.png" height="85" width="85" />
@@ -64,8 +63,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Configuration}}</span>
       </div>
-
-
   </div>
 
   <legend><i class="fa fa-bullhorn"></i> {{Snips sites}}</legend>
@@ -91,9 +88,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
   ?>
   </div>
 
-
   <legend><i class="fa fa-bolt"></i> {{Intents}}</legend>
-
   <div class="eqLogicThumbnailContainer" >
 
     <?php
