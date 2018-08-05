@@ -35,24 +35,6 @@ class snips extends eqLogic
 
     public static
 
-    function health()
-    {
-        $return = array();
-        $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-        $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
-        $port = 1883;
-        $server = socket_connect($socket, $addr, $port);
-        $return[] = array(
-            'test' => __('Mosquitto', __FILE__) ,
-            'result' => ($server) ? __('OK', __FILE__) : __('NOK', __FILE__) ,
-            'advice' => ($server) ? '' : __('Indique si Mosquitto est disponible', __FILE__) ,
-            'state' => $server,
-        );
-        return $return;
-    }
-
-    public static
-
     function deamon_info()
     {
         $return = array();

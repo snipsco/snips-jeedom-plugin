@@ -3,17 +3,11 @@ include_file('core', 'authentification', 'php');
 if (!isConnect('admin')) {
 	throw new Exception('{{401 - Accès non autorisé}}');
 }
-
-//Find Plugin
 $plugin = plugin::byId('snips');
-//Send plugin object to js
-sendVarToJS('eqType', $plugin->getId()); //Id: snips
-$eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
+sendVarToJS('eqType', $plugin->getId());
+$eqLogics = eqLogic::byType($plugin->getId());
 ?>
 
-
-
-<!-- Side bar of equipments -->
 <div class="row row-overflow">
     <div class="col-lg-2 col-md-3 col-sm-4">
         <div class="bs-sidebar">
@@ -32,18 +26,14 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
        </div>
    </div>
 
-
-  <!-- Name of Plugin and the section name-->
    <div class="col-lg-10 col-md-9 col-sm-8 eqLogicThumbnailDisplay" style="border-left: solid 1px #EEE; padding-left: 25px;">
     <legend>{{Snips Voice Assistant}}</legend>
   <legend><i class="fa fa-cog"></i>  {{Manage}}</legend>
 
-  <!--Management of plugin-->
   <div class="eqLogicThumbnailContainer">
 
       <div class="cursor eqLogicAction reload" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <img src="/plugins/snips/3rdparty/icons/rocket.png" height="85" width="85" />
-        <!-- <i class="glyphicon glyphicon-import" style="font-size : 6em;color:#5cb85c;"></i> -->
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Load Assistant}}</span>
       </div>
@@ -51,59 +41,25 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
       <div class="cursor eqLogicAction exportConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <img src="/plugins/snips/3rdparty/icons/cloud-upload.png" height="85" width="85" />
-        <!-- <i class="glyphicon glyphicon-floppy-save" style="font-size : 6em;color:#5cb85c;"></i> -->
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Export Configration}}</span>
       </div>
 
       <div class="cursor eqLogicAction importConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <img src="/plugins/snips/3rdparty/icons/cloud-download.png" height="85" width="85" />
-        <!-- <i class="glyphicon glyphicon-floppy-open" style="font-size : 6em;color:#5cb85c;"></i> -->
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Import Configration}}</span>
       </div>
-
-
-
-     <!--  <div class="cursor eqLogicAction removeAll" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <img src="/plugins/snips/3rdparty/icons/bin.png" height="85" width="85" />
-        <i class="glyphicon glyphicon-trash" style="font-size : 6em;color:#c9302c;"></i>
-        <br>
-
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Remove Assistant}}</span>
-      </div> -->
-
       
       <div class="cursor eqLogicAction resetMqtt" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <img src="/plugins/snips/3rdparty/icons/link.png" height="85" width="85" />
-        <!-- <i class="glyphicon glyphicon-link" style="font-size : 6em;color:#337ab7;"></i> -->
         <br>
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Reset MQTT}}</span>
       </div>
 
-
-      <!-- <div class="cursor eqLogicAction resetSlotsCmd" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="fa techno-charging" style="font-size : 6em;color:#337ab7;"></i>
-        <br>
-
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Reset SlotCmd}}</span>
-      </div>
-
-
-
-      <div class="cursor eqLogicAction fetchAssistant" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <i class="fa fa-globe" style="font-size : 6em;color:#337ab7;"></i>
-        <br>
-
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Fetch Assistant Json}}</span>
-      </div> -->
-
-
-
       <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
         <img src="/plugins/snips/3rdparty/icons/gear.png" height="85" width="85" />
-        <!-- <i class="glyphicon glyphicon-cog" style="font-size : 6em;color:#337ab7;"></i> -->
         <br>
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Configuration}}</span>
@@ -114,7 +70,6 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
   <legend><i class="fa fa-bullhorn"></i> {{Snips sites}}</legend>
 
-  <!--Management of All the Intents (Objects)-->
   <div class="eqLogicThumbnailContainer">
     <?php
       if (!$eqLogics) {
@@ -139,7 +94,6 @@ $eqLogics = eqLogic::byType($plugin->getId()); //Type: snips
 
   <legend><i class="fa fa-bolt"></i> {{Intents}}</legend>
 
-  <!--Management of All the Intents (Objects)-->
   <div class="eqLogicThumbnailContainer" >
 
     <?php
