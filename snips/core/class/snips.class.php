@@ -29,6 +29,8 @@ class snips extends eqLogic
             $cron->save();
             snips::debug('[Reset MQTT] Created snips cron: mqttClient');
         }
+
+        snips::deamon_start();
     }
 
     public static

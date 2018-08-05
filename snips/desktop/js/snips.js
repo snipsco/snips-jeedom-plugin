@@ -370,7 +370,7 @@ $('.reload').on('click', function () {
             }
         },
         callback: function (result) {
-            if (result != 'mode_3') {
+            if (result == 'mode_1' || result == 'mode_2') {
                 var mode = result; 
                 var loading = bootbox.dialog({
                     message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Trying to load assistant...</div>',
