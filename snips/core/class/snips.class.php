@@ -133,11 +133,7 @@ class snips extends eqLogic
             foreach($topics as $topic) {
                 $client->subscribe($topic, 0);
             }
-
             $client->loopForever();
-            // while (true) {
-            //     $client->loop();
-            // }
         }
 
         catch(Exception $e) {
@@ -197,23 +193,17 @@ class snips extends eqLogic
     function playTTS($_player_cmd, $_message, $_sessionId = null, $_siteId = 'default'){
 
         $messages_to_play = explode('//', $_message);
-
         $message_to_play = $messages_to_play[array_rand ($messages_to_play)];
-
         $cmd = cmd::byString($_player_cmd);
-
         if (is_object($cmd)) {
             $options = array();
-
             $options['message'] = $message_to_play;
             if (eqLogic::byId($cmd->getEqLogic_id())->getEqType_name() == 'snips') {
                 $options['title'] = $_siteId;
             }else{
                 $options['title'] = '50';
             }
-            
             $options['sessionId'] = $_sessionId;
-
             snips::debug('[playTTS] Player: '.$_player_cmd.' Message: '.$options['message'].' Title: '.$options['title']);
             $cmd->execCmd($options); 
             return;
@@ -283,7 +273,6 @@ class snips extends eqLogic
                 }
                 $speaking_text.= $sub;
             }
-
             return $speaking_text;
         }
         else {
@@ -302,15 +291,6 @@ class snips extends eqLogic
         $client->publish($topic, $payload);
         $client->disconnect();
         snips::debug('\033[1;32;42m[MQTT publish]\033[0m published message: '.$payload);
-        // $client->onConnect(function() use ($client) {
-        //     $client->publish($topic, $payload);
-        //     $client->disconnect();
-        // });
-        //$client->loopForever();
-        // for ($i = 0; $i < 100; $i++) {
-        //     $client->loop(1);
-        // }
-        //$client->disconnect();
         unset($client);
     }
 
@@ -356,11 +336,9 @@ class snips extends eqLogic
                     $slots[] = $slot["name"];
                 }
             }
-
             $intents_slots[$intent["id"]] = $slots;
             unset($slots);
         }
-
         return json_encode($intents_slots);
     }
 
@@ -392,7 +370,6 @@ class snips extends eqLogic
             $obj->setName('Snips-Intents');
             snips::debug('[Load Assistant] Created object: Snips-Intents');
         }
-        
         $obj->setIsVisible(1);
         $obj->setConfiguration('id', $assistant["id"]);
         $obj->setConfiguration('name',$assistant["name"]);
@@ -456,8 +433,6 @@ class snips extends eqLogic
                 $elogic->save();
             }
         }
-            
-        
         snips::debug('[Load Assistant] Assistant loaded, restarting deamon');
         snips::deamon_start();
     }
