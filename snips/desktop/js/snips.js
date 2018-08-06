@@ -156,11 +156,9 @@ $("body").off('click', '.listAction').on('click', '.listAction', function () {
 $("body").off('click', '.listCmdPlayer').on('click', '.listCmdPlayer', function () {
     var el = $(this);
     jeedom.cmd.getSelectModal({
-        cmd: {
-            type: 'action'
-        }
+        cmd: { type: 'action'}
     }, function (result) {
-        var input = el.closest('.binding').find('.input[data-l1key=ttsPlayer]');
+        var input = el.closest('.binding').find('input[data-l1key=ttsPlayer]');
         input.value(result.human);
     });
 });
@@ -1022,7 +1020,7 @@ function addBinding(_binding) {
 
     if (!isset(_binding.ttsPlayer)) {
 
-        _binding.ttsPlayer = '#[Snips-Intents][Snips-TTS][say]#';
+        _binding.ttsPlayer = '#[Snips-Intents][Snips-TTS-default][say]#';
     }
 
     // if (_binding.tts.player == '' || !isset(_binding.tts.player)) {
