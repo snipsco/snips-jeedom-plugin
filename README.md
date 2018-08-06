@@ -82,7 +82,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Light shift function // mandatory
 - [x] Dynamic TTS player selection // mandatory
 - [ ] Multi-intent, 1 slot multiple value // improvement
-- [ ] Find a way to map binary to text // improvement
+- [x] Find a way to map binary to text // improvement
 - [ ] Adapt to dark theme // improvement
 - [ ] Optimise the intent select modal // improvement
 
