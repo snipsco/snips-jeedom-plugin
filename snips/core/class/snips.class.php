@@ -3,8 +3,8 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 require(dirname(__FILE__) . '/../../3rdparty/Toml.php');
 
-//ini_set("display_errors","On");
-//error_reporting(E_ALL);
+// ini_set("display_errors","On");
+// error_reporting(E_ALL);
 
 class snips extends eqLogic
 
@@ -239,7 +239,7 @@ class snips extends eqLogic
             self::publish($topic, json_encode($payload));
         }
         else {
-            $topic = 'hermes/dialogueManager/endSession';
+            $topic = 'hermes/dialogueManager/continueSession';
             $payload = array(
                 'text' => $text,
                 "sessionId" => $session_id
@@ -300,10 +300,17 @@ class snips extends eqLogic
         $client = new Mosquitto\Client();
         $client->connect($addr, $port, 60);
         $client->publish($topic, $payload);
-        for ($i = 0; $i < 100; $i++) {
-            $client->loop(1);
-        }
         $client->disconnect();
+        snips::debug('\033[1;32;42m[MQTT publish]\033[0m published message: '.$payload);
+        // $client->onConnect(function() use ($client) {
+        //     $client->publish($topic, $payload);
+        //     $client->disconnect();
+        // });
+        //$client->loopForever();
+        // for ($i = 0; $i < 100; $i++) {
+        //     $client->loop(1);
+        // }
+        //$client->disconnect();
         unset($client);
     }
 
@@ -418,7 +425,7 @@ class snips extends eqLogic
             $elogic = snips::byLogicalId('Snips-TTS-default', 'snips');
             if (!is_object($elogic)) {
                 $elogic = new snips();
-                $elogic->setName('Snips-TTS-ç');
+                $elogic->setName('Snips-TTS-default');
                 $elogic->setLogicalId('Snips-TTS-default');
                 snips::debug('[Load Assistant] Created TTS entity: Snips-TTS-default');
             }

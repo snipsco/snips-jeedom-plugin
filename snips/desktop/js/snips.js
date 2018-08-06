@@ -539,42 +539,55 @@ $('.reload').on('click', function () {
 });
 
 $('.exportConfigration').on('click', function () {
-    bootbox.prompt("{{Please give a name to this export file}}", function (result) {
-        if (result !== null && result != '') {
-            $.ajax({
-                type: "POST",
-                url: "plugins/snips/core/ajax/snips.ajax.php",
-                data: {
-                    action: "exportConfigration",
-                    name: result,
-                },
-                dataType: 'json',
-                global: false,
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) {
-                    if (data.state != 'ok') {
+    bootbox.prompt({
+        title: '<i class="fa fa-download"></i> Export configuration',
+        inputType: 'text',
+        buttons: {
+            confirm: {
+                label: 'Export',
+                className: 'btn-success'
+            },
+            cancel: {
+                label: 'Cancel',
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {
+            if (result !== null && result != '') {
+                $.ajax({
+                    type: "POST",
+                    url: "plugins/snips/core/ajax/snips.ajax.php",
+                    data: {
+                        action: "exportConfigration",
+                        name: result,
+                    },
+                    dataType: 'json',
+                    global: false,
+                    error: function (request, status, error) {
+                        handleAjaxError(request, status, error);
+                    },
+                    success: function (data) {
+                        if (data.state != 'ok') {
+                            $('#div_alert').showAlert({
+                                message: data.result,
+                                level: 'danger'
+                            });
+                            return;
+                        }
                         $('#div_alert').showAlert({
-                            message: data.result,
-                            level: 'danger'
+                            message: 'Successfully exported!',
+                            level: 'success'
                         });
-                        return;
+                        location.reload();
                     }
-                    $('#div_alert').showAlert({
-                        message: 'Successfully exported!',
-                        level: 'success'
-                    });
-                    location.reload();
-                }
-            });
-        } else if (result = '') {
-            $('#div_alert').showAlert({
-                message: 'Please specify a name!',
-                level: 'warning'
-            });
+                });
+            } else if (result = '') {
+                $('#div_alert').showAlert({
+                    message: 'Please specify a name!',
+                    level: 'warning'
+                });
+            }   
         }
-
     });
 
 });
@@ -606,10 +619,21 @@ $('.importConfigration').on('click', function () {
                 }
 
                 bootbox.prompt({
-                    title: '<a><i class="fa fa-download"></i> Import configuration</a>',
+                    title: '<i class="fa fa-download"></i> Import configuration',
                     inputType: 'select',
                     inputOptions: options,
+                    buttons: {
+                        confirm: {
+                            label: 'Import',
+                            className: 'btn-success'
+                        },
+                        cancel: {
+                            label: 'Cancel',
+                            className: 'btn-danger'
+                        }
+                    },
                     callback: function (result) {
+                        console.log('Result: ' + result);
                         if (result != null && result != '') {
                             $.ajax({
                                 type: "POST",
