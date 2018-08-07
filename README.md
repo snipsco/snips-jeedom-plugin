@@ -87,6 +87,21 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Optimise the intent select modal // improvement
 
 # Develop Diary
+
+7, Aug, 2018
+- [x] Adaption for Jeedom 3.3.3
+- [ ] Multi-dialog feature
+```
+Version: 2018-08-07 12:52:50
+
+Adaption: Jeedom 3.3.3
+Disabled multi-dialog function for the moment
+```
+
+6, Aug, 2018 
+- [x] Fxied 'Snips-Intents-ç' bugs
+- [x] Multi-dialog features: end session by intent
+
 3, Aug, 2018
 - [x] Changed functional icons
 

@@ -1,6 +1,5 @@
 <?php
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
-
 require(dirname(__FILE__) . '/../../3rdparty/Toml.php');
 
 // ini_set("display_errors","On");
@@ -229,7 +228,7 @@ class snips extends eqLogic
             self::publish($topic, json_encode($payload));
         }
         else {
-            $topic = 'hermes/dialogueManager/endSession';
+            $topic = 'hermes/dialogueManager/continueSession';
             $payload = array(
                 'text' => $text,
                 "sessionId" => $session_id
