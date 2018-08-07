@@ -255,8 +255,8 @@ class snips extends eqLogic
                         if ($cmd->getName() == 'intensity_percent' || $cmd->getName() == 'intensity_percentage') {
                             $sub.= $cmd->getConfiguration('orgVal');
                         }else if($cmd->getSubType() == 'binary'){
-                            if($cmd->getValue() == 0) $sub.=$vars[$key]['options']['zero'];
-                            if($cmd->getValue() == 1) $sub.=$vars[$key]['options']['one'];
+                            if($cmd->getCache('value', ' ') == 0) $sub.=$vars[$key]['options']['zero'];
+                            if($cmd->getCache('value', ' ') == 1) $sub.=$vars[$key]['options']['one'];
                         }else {
                             if ($cmd->getValue()) {
                                 $sub.= $cmd->getValue();
