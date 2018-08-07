@@ -364,12 +364,22 @@ class snips extends eqLogic
         $json_string = file_get_contents($assistant_file);
         $assistant = json_decode($json_string, true);
         
-        $obj = object::byName('Snips-Intents');
-        if (!isset($obj) || !is_object($obj)) {
-            $obj = new object();
-            $obj->setName('Snips-Intents');
-            snips::debug('[Load Assistant] Created object: Snips-Intents');
+        if (jeedom::version() == '3.3.3') {
+            $obj = object::byName('Snips-Intents');
+            if (!isset($obj) || !is_object($obj)) {
+                $obj = new jeeObject();
+                $obj->setName('Snips-Intents');
+                snips::debug('[Load Assistant] Created object: Snips-Intents | Jeedom 3.3.3');
+            }
+        }else{
+            $obj = object::byName('Snips-Intents');
+            if (!isset($obj) || !is_object($obj)) {
+                $obj = new object();
+                $obj->setName('Snips-Intents');
+                snips::debug('[Load Assistant] Created object: Snips-Intents | Jeedom 3.2.x');
+            }
         }
+            
         $obj->setIsVisible(1);
         $obj->setConfiguration('id', $assistant["id"]);
         $obj->setConfiguration('name',$assistant["name"]);
