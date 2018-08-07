@@ -290,7 +290,7 @@ class snips extends eqLogic
         $client->connect($addr, $port, 60);
         $client->publish($topic, $payload);
         $client->disconnect();
-        snips::debug('\033[1;32;42m[MQTT publish]\033[0m published message: '.$payload);
+        snips::debug('[MQTT publish] published message: '.$payload);
         unset($client);
     }
 
