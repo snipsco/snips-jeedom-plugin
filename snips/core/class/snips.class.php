@@ -321,7 +321,7 @@ class snips extends eqLogic
 
     function getIntents()
     {
-        $intents_file = dirname(__FILE__) . '/../../assistant.json';
+        $intents_file = dirname(__FILE__) . '/../../config_running/assistant.json';
         $json_string = file_get_contents($intents_file);
         $json_obj = json_decode($json_string, true);
         $intents = $json_obj["intents"];
@@ -360,7 +360,7 @@ class snips extends eqLogic
     function reloadAssistant()
     {   
         snips::debug('[Load Assistant] Assistant is being reloaded!');
-        $assistant_file = dirname(__FILE__) . '/../../assistant.json';
+        $assistant_file = dirname(__FILE__) . '/../../config_running/assistant.json';
         $json_string = file_get_contents($assistant_file);
         $assistant = json_decode($json_string, true);
         
@@ -404,7 +404,7 @@ class snips extends eqLogic
             $elogic->save();  
         }
 
-        $sites = Toml::parseFile(dirname(__FILE__) . '/../../snips.toml')->{'snips-hotword'}->{'audio'};
+        $sites = Toml::parseFile(dirname(__FILE__) . '/../../config_running/snips.toml')->{'snips-hotword'}->{'audio'};
         if (count($sites) == 0) {
             $elogic = snips::byLogicalId('Snips-TTS-default', 'snips');
             if (!is_object($elogic)) {
@@ -804,8 +804,8 @@ class snips extends eqLogic
             return -1;
         }
 
-        $res = ssh2_scp_recv($connection, '/usr/share/snips/assistant/assistant.json', dirname(__FILE__) . '/../../assistant.json');
-        $res0 = ssh2_scp_recv($connection, '/etc/snips.toml', dirname(__FILE__) . '/../../snips.toml');
+        $res = ssh2_scp_recv($connection, '/usr/share/snips/assistant/assistant.json', dirname(__FILE__) . '/../../config_running/assistant.json');
+        $res0 = ssh2_scp_recv($connection, '/etc/snips.toml', dirname(__FILE__) . '/../../config_running/snips.toml');
         if ($res && $res0) {
             ssh2_exec($connection, 'exit');
             unset($connection);
