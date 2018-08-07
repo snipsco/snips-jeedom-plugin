@@ -63,7 +63,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Configuration}}</span>
       </div>
-  </div>
+  </div> 
 
   <legend><i class="fa fa-bullhorn"></i> {{Snips sites}}</legend>
 
