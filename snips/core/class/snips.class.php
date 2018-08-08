@@ -326,17 +326,19 @@ class snips extends eqLogic
         $intents = $json_obj["intents"];
         $intents_slots = array();
         foreach($intents as $intent) {
-            $slots = array();
-            foreach($intent["slots"] as $slot) {
-                if ($slot["required"] == true) {
-                    $slots[] = $slot["name"];
+            if (strpos( strtolower($intent['name']), 'jeedom')) {
+                $slots = array();
+                foreach($intent["slots"] as $slot) {
+                    if ($slot["required"] == true) {
+                        $slots[] = $slot["name"];
+                    }
+                    else {
+                        $slots[] = $slot["name"];
+                    }
                 }
-                else {
-                    $slots[] = $slot["name"];
-                }
+                $intents_slots[$intent["id"]] = $slots;
+                unset($slots);
             }
-            $intents_slots[$intent["id"]] = $slots;
-            unset($slots);
         }
         return json_encode($intents_slots);
     }
@@ -385,22 +387,24 @@ class snips extends eqLogic
         $obj->save();
 
         foreach($assistant['intents'] as $intent) {
-            $elogic = snips::byLogicalId($intent['id'], 'snips');
-            if (!is_object($elogic)) {
-                $elogic = new snips();
-                $elogic->setLogicalId($intent['id']);
-                $elogic->setName($intent['name']);
-                snips::debug('[Load Assistant] Created intent entity: '.$intent['name']);
+            if (strpos( strtolower($intent['name']), 'jeedom')) {
+                $elogic = snips::byLogicalId($intent['id'], 'snips');
+                if (!is_object($elogic)) {
+                    $elogic = new snips();
+                    $elogic->setLogicalId($intent['id']);
+                    $elogic->setName($intent['name']);
+                    snips::debug('[Load Assistant] Created intent entity: '.$intent['name']);
+                }
+                $elogic->setEqType_name('snips');
+                $elogic->setIsEnable(1);
+                $elogic->setConfiguration('snipsType', 'Intent');
+                $elogic->setConfiguration('slots', $intent['slots']);
+                $elogic->setConfiguration('isSnipsConfig', 1);
+                $elogic->setConfiguration('isInteraction', 0);
+                $elogic->setConfiguration('language', $intent['language']);
+                $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+                $elogic->save();
             }
-            $elogic->setEqType_name('snips');
-            $elogic->setIsEnable(1);
-            $elogic->setConfiguration('snipsType', 'Intent');
-            $elogic->setConfiguration('slots', $intent['slots']);
-            $elogic->setConfiguration('isSnipsConfig', 1);
-            $elogic->setConfiguration('isInteraction', 0);
-            $elogic->setConfiguration('language', $intent['language']);
-            $elogic->setObject_id(object::byName('Snips-Intents')->getId());
-            $elogic->save();  
         }
 
         $sites = Toml::parseFile(dirname(__FILE__) . '/../../config_running/snips.toml')->{'snips-hotword'}->{'audio'};
