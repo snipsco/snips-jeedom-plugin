@@ -22,12 +22,12 @@ if (!isConnect()) {
             </div>
         </div>
 
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label class="col-lg-4 control-label" >{{Multi-dialog conversation}}</label>
             <div class="col-lg-4">
                 <input type="checkbox" class="configKey" data-l1key="multiDialog"> {{Enable}}</input>
             </div>
-        </div>
+        </div> -->
 
     </fieldset>
 </form>

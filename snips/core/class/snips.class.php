@@ -228,7 +228,7 @@ class snips extends eqLogic
             self::publish($topic, json_encode($payload));
         }
         else {
-            $topic = 'hermes/dialogueManager/continueSession';
+            $topic = 'hermes/dialogueManager/endSession';
             $payload = array(
                 'text' => $text,
                 "sessionId" => $session_id
