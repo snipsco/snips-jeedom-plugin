@@ -87,6 +87,43 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Optimise the intent select modal // improvement
 
 # Develop Diary
+8, Aug, 2018
+- [x] Support multi-light brightness shift
+```php
+$VARS = array(
+"OPERATION" => "UP", // Use "UP" or "DOWN"
+"LIGHTS" => array(
+
+array(
+    "LIGHT_BRIGHTNESS_VALUE" => "#[Apartment][Mirror Strip Right][Etat Luminosité]#",
+    "LIGHT_BRIGHTNESS_ACTION" => "#[Apartment][Mirror Strip Right][Luminosité]#",
+    "MIN_VALUE" => 0,
+    "MAX_VALUE" => 255, // Max brightness value
+    "STEP_VALUE" => 0.2 // Change in percentage, if 20%, then put 0.2
+),
+array(
+    "LIGHT_BRIGHTNESS_VALUE" => "#[Apartment][Mirror Strip Left][Etat Luminosité]#",
+    "LIGHT_BRIGHTNESS_ACTION" => "#[Apartment][Mirror Strip Left][Luminosité]#",
+    "MIN_VALUE" => 0,
+    "MAX_VALUE" => 255,	// Max brightness value
+    "STEP_VALUE" => 0.2
+),
+
+));
+
+snips::lightBrightnessShift(json_encode($VARS));
+```
+- [x] Support reset info command
+```php
+$VAR = '#[Apartment][Lamp Desk][Online]#';  // command which need to be reseted
+
+$cmd = cmd::byString($VAR);
+snips::debug("[Test] Before reset value: ".$cmd->getCache('value', ''));
+$cmd->setCache('value', '');
+snips::debug("[Test] After reset value: ".$cmd->getCache('value', ''));
+```
+- [x] Support separate Jeedom intents
+
 
 7, Aug, 2018
 - [x] Adaption for Jeedom 3.3.3
