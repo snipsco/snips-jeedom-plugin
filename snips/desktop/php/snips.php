@@ -88,7 +88,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
   ?>
   </div>
 
-  <legend><i class="fa fa-bolt"></i> {{Intents}}</legend>
+  <legend><i class="fa fa-bolt"></i> {{Intents (Response by Jeedom)}}</legend>
   <div class="eqLogicThumbnailContainer" >
 
     <?php
@@ -96,7 +96,48 @@ $eqLogics = eqLogic::byType($plugin->getId());
           echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">Please load assistant</span></center>';
       }else{
         foreach ($eqLogics as $eqLogic) {
-          if ($eqLogic->getConfiguration('snipsType') == 'Intent') {
+          if ($eqLogic->getConfiguration('snipsType') == 'Intent' && $eqLogic->getIsEnable()) {
+            $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
+
+            echo '<div class="panel panel-success eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
+            echo '<div class="panel-heading" style="padding: 5px 15px;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></div>';
+            echo '<div class="panel-body" style="padding: 0px;">';
+
+            echo '<ul class="list-group" style="margin: 0;">';
+
+            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.$eqLogic->getConfiguration('language').'</span>Language</li>';
+
+            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('slots')).'</span>Slots</li>';
+
+            if ($eqLogic->getConfiguration('bindings')) {
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('bindings')).'</span>Bindings</li>';
+            }else{
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #c9302c;">0</span>Bindings</li>';
+            }
+
+            if ($eqLogic->getConfiguration('isSnipsConfig')) {
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">Snips Binding</span>Reaction</li>';
+            }else if($eqLogic->getConfiguration('isInteraction')){
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #f0ad4e;">Interaction</span>Reaction</li>';
+            }else{
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #c9302c;">Not set</span>Reaction</li>';
+            }
+            echo '</ul>';
+            echo '</div></div>';
+          }
+        }
+      }
+    ?>
+  </div>
+
+  <legend><i class="fa fa-bolt"></i> {{Intents (Disabled)}}</legend>
+  <div class="eqLogicThumbnailContainer" >
+    <?php
+      if (!$eqLogics) {
+          echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">Please load assistant</span></center>';
+      }else{
+        foreach ($eqLogics as $eqLogic) {
+          if ($eqLogic->getConfiguration('snipsType') == 'Intent' && !$eqLogic->getIsEnable()) {
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
             echo '<div class="panel panel-success eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
             echo '<div class="panel-heading" style="padding: 5px 15px;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></div>';
@@ -126,8 +167,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
           }
         }
       }
-?>
-</div>
+    ?>
+  </div>
 </div>
 
 <div class="col-lg-10 col-md-9 col-sm-8 eqLogic" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
