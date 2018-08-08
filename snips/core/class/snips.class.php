@@ -841,8 +841,8 @@ class snips extends eqLogic
             if ($_up_down === 'UP') $options['slider'] = $current_val + $change;
             else
             if ($_up_down === 'DOWN') $options['slider'] = $current_val - $change;
-            if ($options['slider'] < $_min) $options['slider'] = $light['MIN_VALUE'];
-            if ($options['slider'] > $_max) $options['slider'] = $light['MAX_VALUE'];
+            if ($options['slider'] < $light['MIN_VALUE']) $options['slider'] = $light['MIN_VALUE'];
+            if ($options['slider'] > $light['MAX_VALUE']) $options['slider'] = $light['MAX_VALUE'];
             $cmdSet = cmd::byString($light['LIGHT_BRIGHTNESS_ACTION']);
             if (is_object($cmdSet)) {
                 $cmdSet->execCmd($options);
