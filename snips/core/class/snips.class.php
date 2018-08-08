@@ -1,6 +1,5 @@
 <?php
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
-
 require(dirname(__FILE__) . '/../../3rdparty/Toml.php');
 
 // ini_set("display_errors","On");
@@ -290,7 +289,7 @@ class snips extends eqLogic
         $client->connect($addr, $port, 60);
         $client->publish($topic, $payload);
         $client->disconnect();
-        snips::debug('\033[1;32;42m[MQTT publish]\033[0m published message: '.$payload);
+        snips::debug('[MQTT publish] published message: '.$payload);
         unset($client);
     }
 
@@ -321,23 +320,25 @@ class snips extends eqLogic
 
     function getIntents()
     {
-        $intents_file = dirname(__FILE__) . '/../../assistant.json';
+        $intents_file = dirname(__FILE__) . '/../../config_running/assistant.json';
         $json_string = file_get_contents($intents_file);
         $json_obj = json_decode($json_string, true);
         $intents = $json_obj["intents"];
         $intents_slots = array();
         foreach($intents as $intent) {
-            $slots = array();
-            foreach($intent["slots"] as $slot) {
-                if ($slot["required"] == true) {
-                    $slots[] = $slot["name"];
+            if (strpos( strtolower($intent['name']), 'jeedom')) {
+                $slots = array();
+                foreach($intent["slots"] as $slot) {
+                    if ($slot["required"] == true) {
+                        $slots[] = $slot["name"];
+                    }
+                    else {
+                        $slots[] = $slot["name"];
+                    }
                 }
-                else {
-                    $slots[] = $slot["name"];
-                }
+                $intents_slots[$intent["id"]] = $slots;
+                unset($slots);
             }
-            $intents_slots[$intent["id"]] = $slots;
-            unset($slots);
         }
         return json_encode($intents_slots);
     }
@@ -360,7 +361,7 @@ class snips extends eqLogic
     function reloadAssistant()
     {   
         snips::debug('[Load Assistant] Assistant is being reloaded!');
-        $assistant_file = dirname(__FILE__) . '/../../assistant.json';
+        $assistant_file = dirname(__FILE__) . '/../../config_running/assistant.json';
         $json_string = file_get_contents($assistant_file);
         $assistant = json_decode($json_string, true);
         
@@ -386,25 +387,27 @@ class snips extends eqLogic
         $obj->save();
 
         foreach($assistant['intents'] as $intent) {
-            $elogic = snips::byLogicalId($intent['id'], 'snips');
-            if (!is_object($elogic)) {
-                $elogic = new snips();
-                $elogic->setLogicalId($intent['id']);
-                $elogic->setName($intent['name']);
-                snips::debug('[Load Assistant] Created intent entity: '.$intent['name']);
+            if (strpos( strtolower($intent['name']), 'jeedom')) {
+                $elogic = snips::byLogicalId($intent['id'], 'snips');
+                if (!is_object($elogic)) {
+                    $elogic = new snips();
+                    $elogic->setLogicalId($intent['id']);
+                    $elogic->setName($intent['name']);
+                    snips::debug('[Load Assistant] Created intent entity: '.$intent['name']);
+                }
+                $elogic->setEqType_name('snips');
+                $elogic->setIsEnable(1);
+                $elogic->setConfiguration('snipsType', 'Intent');
+                $elogic->setConfiguration('slots', $intent['slots']);
+                $elogic->setConfiguration('isSnipsConfig', 1);
+                $elogic->setConfiguration('isInteraction', 0);
+                $elogic->setConfiguration('language', $intent['language']);
+                $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+                $elogic->save();
             }
-            $elogic->setEqType_name('snips');
-            $elogic->setIsEnable(1);
-            $elogic->setConfiguration('snipsType', 'Intent');
-            $elogic->setConfiguration('slots', $intent['slots']);
-            $elogic->setConfiguration('isSnipsConfig', 1);
-            $elogic->setConfiguration('isInteraction', 0);
-            $elogic->setConfiguration('language', $intent['language']);
-            $elogic->setObject_id(object::byName('Snips-Intents')->getId());
-            $elogic->save();  
         }
 
-        $sites = Toml::parseFile(dirname(__FILE__) . '/../../snips.toml')->{'snips-hotword'}->{'audio'};
+        $sites = Toml::parseFile(dirname(__FILE__) . '/../../config_running/snips.toml')->{'snips-hotword'}->{'audio'};
         if (count($sites) == 0) {
             $elogic = snips::byLogicalId('Snips-TTS-default', 'snips');
             if (!is_object($elogic)) {
@@ -804,8 +807,8 @@ class snips extends eqLogic
             return -1;
         }
 
-        $res = ssh2_scp_recv($connection, '/usr/share/snips/assistant/assistant.json', dirname(__FILE__) . '/../../assistant.json');
-        $res0 = ssh2_scp_recv($connection, '/etc/snips.toml', dirname(__FILE__) . '/../../snips.toml');
+        $res = ssh2_scp_recv($connection, '/usr/share/snips/assistant/assistant.json', dirname(__FILE__) . '/../../config_running/assistant.json');
+        $res0 = ssh2_scp_recv($connection, '/etc/snips.toml', dirname(__FILE__) . '/../../config_running/snips.toml');
         if ($res && $res0) {
             ssh2_exec($connection, 'exit');
             unset($connection);
@@ -822,26 +825,32 @@ class snips extends eqLogic
 
     public static 
 
-    function lightBrightnessShift($_cmdStatus, $_cmdAction, $_min, $_max, $_step, $_up_down)
+    function lightBrightnessShift($_jsonLights)
     {
-        $cmd = cmd::byString($_cmdStatus);
-        if (is_object($cmd))
-        if ($cmd->getValue()) $current_val = $cmd->getValue();
-        else $current_val = $cmd->getCache('value', 'NULL');
-        $options = array();
-        if ($_up_down === 'UP') $options['slider'] = $current_val + round(($_max - $_min) * $_step);
-        else
-        if ($_up_down === 'DOWN') $options['slider'] = $current_val - round(($_max - $_min) * $_step);
-        if ($options['slider'] < $_min) $options['slider'] = $_min;
-        if ($options['slider'] > $_max) $options['slider'] = $_max;
-        $cmdSet = cmd::byString($_cmdAction);
-        if (is_object($cmdSet)) {
-            $cmdSet->execCmd($options);
-            snips::debug('[lightBrightnessShift] Shift action: ' . $cmdSet->getHumanName() . ', from -> ' . $options['slider'] . ' to ->' . $current_val);
-        }else{
-            snips::debug('[lightBrightnessShift] Can not find cmd: '. $_cmdAction);
+        $json = json_decode($_jsonLights, true);
+        $lights = $json['LIGHTS'];
+        $_up_down = $json['OPERATION'];
+        foreach ($lights as $light) {
+
+            $cmd = cmd::byString($light['LIGHT_BRIGHTNESS_VALUE']);
+            if (is_object($cmd))
+            if ($cmd->getValue()) $current_val = $cmd->getValue();
+            else $current_val = $cmd->getCache('value', 'NULL');
+            $options = array();
+            $change = round(($light['MAX_VALUE'] - $light['MIN_VALUE']) * $light['STEP_VALUE']);
+            if ($_up_down === 'UP') $options['slider'] = $current_val + $change;
+            else
+            if ($_up_down === 'DOWN') $options['slider'] = $current_val - $change;
+            if ($options['slider'] < $light['MIN_VALUE']) $options['slider'] = $light['MIN_VALUE'];
+            if ($options['slider'] > $light['MAX_VALUE']) $options['slider'] = $light['MAX_VALUE'];
+            $cmdSet = cmd::byString($light['LIGHT_BRIGHTNESS_ACTION']);
+            if (is_object($cmdSet)) {
+                $cmdSet->execCmd($options);
+                snips::debug('[lightBrightnessShift] Shift action: ' . $cmdSet->getHumanName() . ', from -> ' . $options['slider'] . ' to ->' . $current_val);
+            }else{
+                snips::debug('[lightBrightnessShift] Can not find cmd: '. $light['LIGHT_BRIGHTNESS_ACTION']);
+            }
         }
-        
     }
 
     public
