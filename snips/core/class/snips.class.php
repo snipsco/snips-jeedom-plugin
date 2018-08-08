@@ -825,26 +825,32 @@ class snips extends eqLogic
 
     public static 
 
-    function lightBrightnessShift($_cmdStatus, $_cmdAction, $_min, $_max, $_step, $_up_down)
+    function lightBrightnessShift($_jsonLights)
     {
-        $cmd = cmd::byString($_cmdStatus);
-        if (is_object($cmd))
-        if ($cmd->getValue()) $current_val = $cmd->getValue();
-        else $current_val = $cmd->getCache('value', 'NULL');
-        $options = array();
-        if ($_up_down === 'UP') $options['slider'] = $current_val + round(($_max - $_min) * $_step);
-        else
-        if ($_up_down === 'DOWN') $options['slider'] = $current_val - round(($_max - $_min) * $_step);
-        if ($options['slider'] < $_min) $options['slider'] = $_min;
-        if ($options['slider'] > $_max) $options['slider'] = $_max;
-        $cmdSet = cmd::byString($_cmdAction);
-        if (is_object($cmdSet)) {
-            $cmdSet->execCmd($options);
-            snips::debug('[lightBrightnessShift] Shift action: ' . $cmdSet->getHumanName() . ', from -> ' . $options['slider'] . ' to ->' . $current_val);
-        }else{
-            snips::debug('[lightBrightnessShift] Can not find cmd: '. $_cmdAction);
+        $json = json_decode($_jsonLights, true);
+        $lights = $json['LIGHTS'];
+        $_up_down = $json['OPERATION'];
+        foreach ($lights as $light) {
+
+            $cmd = cmd::byString($light['LIGHT_BRIGHTNESS_VALUE']);
+            if (is_object($cmd))
+            if ($cmd->getValue()) $current_val = $cmd->getValue();
+            else $current_val = $cmd->getCache('value', 'NULL');
+            $options = array();
+            $change = round(($light['MAX_VALUE'] - $light['MIN_VALUE']) * $light['STEP_VALUE']);
+            if ($_up_down === 'UP') $options['slider'] = $current_val + $change;
+            else
+            if ($_up_down === 'DOWN') $options['slider'] = $current_val - $change;
+            if ($options['slider'] < $_min) $options['slider'] = $light['MIN_VALUE'];
+            if ($options['slider'] > $_max) $options['slider'] = $light['MAX_VALUE'];
+            $cmdSet = cmd::byString($light['LIGHT_BRIGHTNESS_ACTION']);
+            if (is_object($cmdSet)) {
+                $cmdSet->execCmd($options);
+                snips::debug('[lightBrightnessShift] Shift action: ' . $cmdSet->getHumanName() . ', from -> ' . $options['slider'] . ' to ->' . $current_val);
+            }else{
+                snips::debug('[lightBrightnessShift] Can not find cmd: '. $light['LIGHT_BRIGHTNESS_ACTION']);
+            }
         }
-        
     }
 
     public
