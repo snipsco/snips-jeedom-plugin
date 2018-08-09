@@ -1047,10 +1047,6 @@ function addBinding(_binding) {
         _binding.ttsPlayer = '#[Snips-Intents][Snips-TTS-default][say]#';
     }
 
-    // if (_binding.tts.player == '' || !isset(_binding.tts.player)) {
-    //     _binding.tts.player = '#[Snips-Intents][Snips-TTS][say]#';
-    // }
-
     $('#div_bindings .binding:last').setValues(_binding, '.bindingAttr');
     if (is_array(_binding.condition)) {
         for (var i in _binding.condition) {
