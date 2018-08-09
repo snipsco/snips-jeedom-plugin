@@ -18,7 +18,7 @@ if (!isConnect()) {
         <div class="form-group">
             <label class="col-lg-4 control-label" >{{Default feedback}}</label>
             <div class="col-lg-4">
-                <textarea class="configKey form-control" data-l1key="defaultTTS" placeholder="Sorry I don't understant"></textarea>
+                <textarea class="configKey form-control" data-l1key="defaultTTS" placeholder="Sorry I don't understand"></textarea>
             </div>
         </div>
 

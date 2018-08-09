@@ -178,10 +178,8 @@ $("body").delegate(".listInfoCmd", 'click', function () {
         } else {
             el.closest('.varCmd').find('.infoOptions').empty();
         }
-
     });
 });
-
 
 $("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipementInfo', function () {
     var el = $(this);
