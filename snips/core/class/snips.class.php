@@ -592,9 +592,11 @@ class snips extends eqLogic
                     //snips::sayFeedback($text, $session_id);
                 }
             }else if(count($bindings_with_correct_condition) == 0){
-                
-                $feedback = config::byKey('defaultTTS', 'snips', 'Désolé, je n’ai pas compris');
-                snips::sayFeedback($feedback, $session_id);
+
+                $orgMessage = config::byKey('defaultTTS', 'snips', 'Désolé, je n’ai pas compris');
+
+                $Messages = snips::generateFeedback($orgMessage, null, false);
+                snips::playTTS('#[Snips-Intents][Snips-TTS-'.$site_id.'][say]#', $Messages, $session_id);
             }
         }
         sleep(1);

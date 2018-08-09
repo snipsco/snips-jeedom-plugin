@@ -20,6 +20,7 @@ if (!isConnect()) {
             <div class="col-lg-4">
                 <textarea class="configKey form-control" data-l1key="defaultTTS" placeholder="Sorry I don't understand"></textarea>
             </div>
+            <div class="alert alert-info col-lg-3" role="alert">Use <kbd>//</kbd> to separate different sentences</div>
         </div>
 
         <!-- <div class="form-group">
