@@ -189,7 +189,7 @@ $("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipem
             type: 'info'
         }
     }, function (result) {
-        var input = el.closest('.actionOptions').find('input[data-cmd_id=' + el.data("cmd_id") + '][data-uid=' + el.data("uid") + ']');
+        var input = el.closest('.input-group').find('.expressionAttr[data-cmd_id=' + el.data("cmd_id") + '][data-uid=' + el.data("uid") + ']');
         input.value(result.human);
 
         $.ajax({
