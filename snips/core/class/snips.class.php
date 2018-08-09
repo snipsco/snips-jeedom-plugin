@@ -946,9 +946,10 @@ class snips extends eqLogic
             $ttsCmd->setEqLogic_id($this->getId());
             $ttsCmd->setType('action');
             $ttsCmd->setSubType('message');
-            $ttsCmd->setDisplay('title_disable', 0);
-            $ttsCmd->setDisplay('title_placeholder', 'Site Id');
+            $ttsCmd->setDisplay('title_disable', 1);
+            //$ttsCmd->setDisplay('title_placeholder', 'Site Id');
             $ttsCmd->setDisplay('message_placeholder', 'Message');
+            $ttsCmd->setConfiguration('siteId', $this->getConfiguration('siteName'));
             $ttsCmd->save();
         }   
     }
@@ -988,12 +989,13 @@ class snipsCmd extends cmd
         $eqlogic = $this->getEqLogic();
         switch ($this->getLogicalId()) {        
             case 'say': 
+                $siteId = $this->getConfiguration('siteId');
                 snips::debug('[cmdExecution] cmd: say');
-                if($_options['title'] != '' && isset($_options['title'])){
-                    $siteId = $_options['title'];
-                }else{
-                    $siteId = 'default';
-                }
+                // if($_options['title'] != '' && isset($_options['title'])){
+                //     $siteId = $_options['title'];
+                // }else{
+                //     $siteId = 'default';
+                // }
                 snips::debug('[cmdExecution] siteId: '.$siteId.' asked to say :'.$_options['message']);
                 snips::sayFeedback($_options['message'], $_options['sessionId'], $eqlogic->getConfiguration('language'), $siteId);
                 break;
