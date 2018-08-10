@@ -443,6 +443,18 @@ class snips extends eqLogic
                 $elogic->save();
             }
         }
+
+        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
+        if (!is_object($var)) {
+            $dataStore = new dataStore();
+            $dataStore->setKey('snipsMsgSiteId');
+            snips::debug('[Load Assistant] Created variable snipsMsgSiteId');
+        }
+        //$dataStore->setValue();
+        $dataStore->setType('scenario');
+        $dataStore->setLink_id(-1);
+        $dataStore->save();
+
         snips::debug('[Load Assistant] Assistant loaded, restarting deamon');
         snips::deamon_start();
     }
@@ -467,6 +479,12 @@ class snips extends eqLogic
             snips::debug('[Remove Assistant] Removed intent entity: '.$eq->getName());
             $eq->remove();
         }
+
+        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
+        if (is_object($var)) {
+            snips::debug('[Remove Assistant] Removed variable: '.$var->getKey());
+            $var->remove();
+        }
     }
 
     public static
@@ -479,6 +497,13 @@ class snips extends eqLogic
         $query_input = $payload->{'input'};
         snips::debug('[Binding Execution] Intent:' . $intent_name . ' siteId:' . $site_id . ' sessionId:' . $session_id);
         $slots_values = array();
+
+        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
+        if (is_object($var)) {
+            $var->setValue($site_id);
+            $var->save();
+            snips::debug('[Binding Execution] Set '.$var->getValue().' => snipsMsgSiteId');
+        }
 
         foreach($payload->{'slots'} as $slot) {
             if (is_string($slot->{'value'}->{'value'})) {
@@ -663,6 +688,13 @@ class snips extends eqLogic
                     $cmd->setConfiguration('orgVal', null);
                     $cmd->save();
                 }
+            }
+
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
+            if (is_object($var)) {
+                $var->setValue();
+                $var->save();
+                snips::debug('[resetSlotsCmd] Set '.$var->getValue().' => snipsMsgSiteId');
             }
         }
         else {
