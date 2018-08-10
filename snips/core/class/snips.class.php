@@ -365,12 +365,12 @@ class snips extends eqLogic
         $json_string = file_get_contents($assistant_file);
         $assistant = json_decode($json_string, true);
         
-        if (jeedom::version() == '3.3.3') {
+        if ( version_compare(jeedom::version(), '3.3.3', '>=') ) {
             $obj_field = 'jeeObject';
-            snips::debug('[Load Assistant] Jeedom 3.3.3');
+            snips::debug('[Load Assistant] Jeedom >= 3.3.3');
         }else{
             $obj_field = 'object';
-            snips::debug('[Load Assistant] Jeedom 3.2.x');
+            snips::debug('[Load Assistant] Jeedom <= 3.3.3');
         }
         $obj = object::byName('Snips-Intents');
         if (!isset($obj) || !is_object($obj)) {
