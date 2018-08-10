@@ -358,6 +358,54 @@ class snips extends eqLogic
 
     public static
 
+    function recoverScenarioExpressions(){
+        $json_string = file_get_contents(dirname(__FILE__) . '/../../config_backup/reload_reference.json');
+        $reference = json_decode($json_string, true);
+        $intent_table = $reference['Intents'];
+        $slots_table = $reference['Slots'];
+        $slots_table_curr = snips::getCurrentReferTable();
+
+        $expressions = scenarioExpression::all();
+        foreach ($expressions as $expression) {
+            $old_expression = $expression->getExpression();
+
+            foreach ($slots_table as $string => $id) {
+                if (array_key_exists($string, $slots_table_curr)) {
+
+                    //snips::debug('[recoverScenarioExpressions] Checking Expression: '.$old_expression. 'with id '.'#'.$id.'#');
+
+                    if ( strpos($old_expression, '#'.$id.'#') || strpos($old_expression, '#'.$id.'#')===0 ) {
+                        $new_expression = str_replace('#'.$id.'#', '#'.$string.'#', $old_expression);
+                        snips::debug('[recoverScenarioExpressions] Old command entity: '.$string.' with id: '.$id);
+                        $expression->setExpression($new_expression);
+                        $expression->save();
+                    }  
+                }
+            }
+        }
+    }
+
+    public static 
+
+    function getCurrentReferTable(){
+        $slots_table = array();
+
+        $eqLogics = eqLogic::byType('snips');
+        foreach($eqLogics as $eq) {
+            $intent_table[$eq->getHumanName()] = $eq->getId();
+            $cmds = cmd::byEqLogicId($eq->getId());
+            foreach($cmds as $cmd) {
+                snips::debug('[getCurrentReferTable] Slot cmd: '.$cmd->getName());
+                $slots_table[$cmd->getHumanName()] = $cmd->getId();
+            }
+            snips::debug('[getCurrentReferTable] Intent entity: '.$eq->getName());
+        }
+
+        return $slots_table;
+    }
+
+    public static
+
     function reloadAssistant()
     {   
         snips::debug('[Load Assistant] Assistant is being reloaded!');
@@ -455,6 +503,7 @@ class snips extends eqLogic
         $dataStore->setLink_id(-1);
         $dataStore->save();
 
+        snips::recoverScenarioExpressions();
         snips::debug('[Load Assistant] Assistant loaded, restarting deamon');
         snips::deamon_start();
     }
@@ -463,17 +512,16 @@ class snips extends eqLogic
 
     function deleteAssistant()
     {
-        $obj = object::byName('Snips-Intents');
-        if (is_object($obj)) {
-            $obj->remove();
-            snips::debug('[Remove Assistant] Removed object: Snips-Intents');
-        }
+        $intent_table = array();
+        $slots_table = array();
 
         $eqLogics = eqLogic::byType('snips');
         foreach($eqLogics as $eq) {
-            $cmds = snipsCmd::byEqLogicId($eq->getLogicalId);
+            $intent_table[$eq->getHumanName()] = $eq->getId();
+            $cmds = cmd::byEqLogicId($eq->getId());
             foreach($cmds as $cmd) {
                 snips::debug('[Remove Assistant] Removed slot cmd: '.$cmd->getName());
+                $slots_table[$cmd->getHumanName()] = $cmd->getId();
                 $cmd->remove();
             }
             snips::debug('[Remove Assistant] Removed intent entity: '.$eq->getName());
@@ -485,7 +533,20 @@ class snips extends eqLogic
             snips::debug('[Remove Assistant] Removed variable: '.$var->getKey());
             $var->remove();
         }
-    }
+
+        $obj = object::byName('Snips-Intents');
+        if (is_object($obj)) {
+            $obj->remove();
+            snips::debug('[Remove Assistant] Removed object: Snips-Intents');
+        }
+
+        $reload_reference = array(
+            "Intents" => $intent_table,
+            "Slots" => $slots_table
+        );
+        $file = fopen(dirname(__FILE__) . '/../../config_backup/reload_reference.json', 'w');
+        $res = fwrite($file, json_encode($reload_reference));
+    }   
 
     public static
 
