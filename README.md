@@ -87,6 +87,20 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Optimise the intent select modal // improvement
 
 # Develop Diary
+13, Aug, 2018
+- [ ] Release testing
+- [ ] Adapt tts grammar to Jeedom formation
+
+10, Aug, 2018
+- [x] Improved versions checking (version_compare)
+- [x] Site Id is available to access
+- [x] Repaired scenario lose efficacy (Check previous intent list when load)
+
+9, Aug, 2018
+- [x] Documentation finsied
+- [x] Fixed bug: wrong message command selection
+- [x] TTS site automatic selection
+
 8, Aug, 2018
 - [x] Support multi-light brightness shift
 ```php
