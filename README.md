@@ -93,7 +93,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 
 10, Aug, 2018
 - [x] Improved versions checking (version_compare)
-- [x] Site Id is available to access
+- [x] Site Id is available to access (Variable name: snipsMsgSiteId)
 - [x] Repaired scenario lose efficacy (Check previous intent list when load)
 
 9, Aug, 2018
