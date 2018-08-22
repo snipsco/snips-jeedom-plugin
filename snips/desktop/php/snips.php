@@ -130,12 +130,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
     ?>
   </div>
 
-  <legend><i class="fa fa-bolt"></i> {{Intents (Disabled)}}</legend>
-  <div class="eqLogicThumbnailContainer" >
+  
     <?php
       if (!$eqLogics) {
           echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">Please load assistant</span></center>';
       }else{
+        echo '<legend><i class="fa fa-bolt"></i> {{Intents (Disabled)}}</legend>
+  <div class="eqLogicThumbnailContainer" >';
         foreach ($eqLogics as $eqLogic) {
           if ($eqLogic->getConfiguration('snipsType') == 'Intent' && !$eqLogic->getIsEnable()) {
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
@@ -166,10 +167,10 @@ $eqLogics = eqLogic::byType($plugin->getId());
             echo '</div></div>';
           }
         }
+        echo '</div></div>';
       }
     ?>
-  </div>
-</div>
+
 
 <div class="col-lg-10 col-md-9 col-sm-8 eqLogic" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
   <a class="btn btn-success eqLogicAction pull-right" id="saveAll" data-action="save"><i class="fa fa-check-circle"></i> {{Save}}</a>
