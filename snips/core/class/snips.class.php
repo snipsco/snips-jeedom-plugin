@@ -659,10 +659,9 @@ class snips extends eqLogic
                         $options = $action['options'];
                         if (true) {
                             snips::setSlotsCmd($slots_values, $intent_name, $options);
-                            $returnMsg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
-                            if (is_string($returnMsg) && $returnMsg!='') {
-                                snips::playTTS($binding['ttsPlayer'], $returnMsg);
-                                snips::debug('[Binding Execution] Execution return message: '.$returnMsg);
+                            $execution_return_msg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
+                            if (is_string($execution_return_msg) && $execution_return_msg!='') {
+                                snips::playTTS($binding['ttsPlayer'], $execution_return_msg);
                             }
                         }
                         else {

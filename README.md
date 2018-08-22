@@ -88,6 +88,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Adapt to dark sobre theme
 - [ ] Output bindings should be able to manage
 - [ ] Optimise the intent select modal
+- [ ] Re-arrange debug log output
 
 # Develop Diary
 22, Aug, 2018
