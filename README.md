@@ -351,9 +351,9 @@ if (is_object($cmdSet)) $cmdSet->execCmd($options);
 # Functions name & Variables name
 
 Function(Method) name:
-- Should be composed by one or more English word, which can clearly and simply describe what this function does
-- First word should be lowercase letter
-- Non-first word should start with a capital letter
+- Should be composed by one or more English words, which can clearly and simply describe what this function does
+- The first word should start with a lowercase letter
+- The non-first words should start with a capital letter
 
 Example: 
 
@@ -363,13 +363,13 @@ function lightBrightnessShift($_jsonLights)
 ```
 
 Variable name:
-- Should be composed by one or more English word, which can clearly and simply describe the useage of this variable
-- All the letter should be lower case
-- IfEach word within the name should be separated by a under line sign ('\_')
+- Should be composed by one or more English words, which can clearly and simply describe the usage of this variable
+- All the letters should be lower case
+- Each word within the name should be separated by an underline sign ('\_')
 
 Example: 
 
-This is the variable used to content all the bindings which are ready to be executed (Condition checking passed).
+This is the variable used to contain all the bindings which are ready to be executed (Condition checking passed).
 ```php
 $bindings_with_correct_condition = array();
 ```
