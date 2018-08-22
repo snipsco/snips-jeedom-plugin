@@ -81,10 +81,13 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Import & export // mandatory
 - [x] Light shift function // mandatory
 - [x] Dynamic TTS player selection // mandatory
-- [ ] Multi-intent, 1 slot multiple value // improvement
 - [x] Find a way to map binary to text // improvement
-- [ ] Adapt to dark theme // improvement
-- [ ] Optimise the intent select modal // improvement
+- [ ] Multi-intent, 1 slot multiple value // improvement
+
+# Todo list for the public release 
+- [ ] Adapt to dark sobre theme
+- [ ] Output bindings should be able to manage
+- [ ] Optimise the intent select modal
 
 # Develop Diary
 22, Aug, 2018
