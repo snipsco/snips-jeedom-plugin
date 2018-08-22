@@ -660,7 +660,9 @@ class snips extends eqLogic
                         $options = $action['options'];
                         if (true) {
                             snips::setSlotsCmd($slots_values, $intent_name, $options);
-                            scenarioExpression::createAndExec('action', $action['cmd'], $options);
+                            $returnMsg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
+
+                            snips::debug('[Binding Execution] Execution return message: '.$returnMsg);
                         }
                         else {
                             snips::debug('[Binding Execution] Found binding action, but it is not enabled');
