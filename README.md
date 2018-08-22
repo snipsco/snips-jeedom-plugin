@@ -359,10 +359,10 @@ Example:
 
 This is the function used to shift light brightness.
 ```php
-function lightBrightnessShift($_jsonLights) 
+function lightBrightnessShift($_json_lights) {}
 ```
 
-### Variable name:
+### Local variable name:
 - Should be composed by one or more English words, which can clearly and simply describe the usage of this variable
 - All the letters should be lower case
 - Each word within the name should be separated by an underline sign ('\_')
@@ -374,3 +374,13 @@ This is the variable used to contain all the bindings which are ready to be exec
 $bindings_with_correct_condition = array();
 ```
 
+### Global variable name:
+- Should follow the same naming wat with local variables
+- All the words should be capital 
+
+### Parameter name:
+- Should follow the same naming wat with local variables
+- Should start with a underline sign ('\_')
+```php
+function lightBrightnessShift($_json_lights) {}
+```
