@@ -87,9 +87,17 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Optimise the intent select modal // improvement
 
 # Develop Diary
+22, Aug, 2018
+- [x] Add support for 'Scenario Return'
+- [x] Code clean for public release
+
+21, Aug, 2018
+- [x] Documentation for using bindings in scenario(from jeedom user)
+- [x] Functional test
+
 13, Aug, 2018
-- [ ] Release testing
-- [ ] Adapt tts grammar to Jeedom formation
+- [x] Release testing
+- [x] Adapt tts grammar to Jeedom formation
 
 10, Aug, 2018
 - [x] Improved versions checking (version_compare)
