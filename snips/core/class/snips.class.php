@@ -209,8 +209,7 @@ class snips extends eqLogic
         }else{
             snips::debug('[playTTS] Can not find player cmd: '.$_player_cmd);
             return;
-        }
-            
+        }     
     }
 
     public static
@@ -661,8 +660,10 @@ class snips extends eqLogic
                         if (true) {
                             snips::setSlotsCmd($slots_values, $intent_name, $options);
                             $returnMsg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
-
-                            snips::debug('[Binding Execution] Execution return message: '.$returnMsg);
+                            if (is_string($returnMsg) && $returnMsg!='') {
+                                snips::playTTS($binding['ttsPlayer'], $returnMsg);
+                                snips::debug('[Binding Execution] Execution return message: '.$returnMsg);
+                            }
                         }
                         else {
                             snips::debug('[Binding Execution] Found binding action, but it is not enabled');
