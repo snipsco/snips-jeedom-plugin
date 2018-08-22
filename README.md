@@ -381,6 +381,9 @@ $bindings_with_correct_condition = array();
 ### Parameter name:
 - Should follow the same naming wat with local variables
 - Should start with a underline sign ('\_')
+
+Example:
+
 ```php
 function lightBrightnessShift($_json_lights) {}
 ```
