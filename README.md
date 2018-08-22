@@ -350,7 +350,7 @@ if (is_object($cmdSet)) $cmdSet->execCmd($options);
 
 # Functions name & Variables name
 
-Function(Method) name:
+### Function(Method) name:
 - Should be composed by one or more English words, which can clearly and simply describe what this function does
 - The first word should start with a lowercase letter
 - The non-first words should start with a capital letter
@@ -362,7 +362,7 @@ This is the function used to shift light brightness.
 function lightBrightnessShift($_jsonLights) 
 ```
 
-Variable name:
+### Variable name:
 - Should be composed by one or more English words, which can clearly and simply describe the usage of this variable
 - All the letters should be lower case
 - Each word within the name should be separated by an underline sign ('\_')
