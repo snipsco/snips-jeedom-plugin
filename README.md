@@ -348,4 +348,29 @@ if (is_object($cmdSet)) $cmdSet->execCmd($options);
 31, May, 2018
 - [x] Learn how to use configuration patameters.
 
+# Functions name & Variables name
+
+Function(Method) name:
+- Should be composed by one or more English word, which can clearly and simply describe what this function does
+- First word should be lowercase letter
+- Non-first word should start with a capital letter
+
+Example: 
+
+This is the function used to shift light brightness.
+```php
+function lightBrightnessShift($_jsonLights) 
+```
+
+Variable name:
+- Should be composed by one or more English word, which can clearly and simply describe the useage of this variable
+- All the letter should be lower case
+- IfEach word within the name should be separated by a under line sign ('\_')
+
+Example: 
+
+This is the variable used to content all the bindings which are ready to be executed (Condition checking passed).
+```php
+$bindings_with_correct_condition = array();
+```
 
