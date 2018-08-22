@@ -93,6 +93,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 # Develop Diary
 22, Aug, 2018
 - [x] Add support for 'Scenario Return'
+- [x] Adapted to 'Dark Sobre' theme
 - [x] Code clean for public release
 
 21, Aug, 2018
