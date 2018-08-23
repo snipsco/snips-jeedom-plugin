@@ -244,11 +244,11 @@ class snips extends eqLogic
     {
         $topic = 'hermes/dialogueManager/startSession';
         $payload = array(
-            'siteId' => $_site_id,
-            'init' => array('type' => 'action',
-                            'text' => $_question_msg,
-                            'canBeEnqueued' => 'true',
-                            'intentFilter' => array($_ans_intent)
+            "siteId" => $_site_id,
+            "init" => array("type" => "action",
+                            "text" => $_question_msg,
+                            "canBeEnqueued" => true,
+                            "intentFilter" => array($_ans_intent)
                             )
         );
         snips::debug('[startRequest] asked question: '.$_question_msg);
@@ -265,7 +265,7 @@ class snips extends eqLogic
         $client->connect($addr, $port, 60);
         $client->publish($_topic, $_payload);
         $client->disconnect();
-        snips::debug('[MQTT publish] published message: '.$payload);
+        snips::debug('[MQTT publish] published message: '.$_payload.' to topic: '.$_topic);
         unset($client);
     }
 
@@ -1077,8 +1077,10 @@ class snips extends eqLogic
                 $ask_cmd->setLogicalId('ask');
             }
             $ask_cmd->setEqLogic_id($this->getId());
-            $ask_cmd->setType('info');
-            $ask_cmd->setSubType('string');
+            $ask_cmd->setType('action');
+            $ask_cmd->setSubType('message');
+            $ask_cmd->setDisplay('title_placeholder', 'expected intent');
+            $ask_cmd->setDisplay('message_placeholder', 'Question');
             $ask_cmd->setConfiguration('siteId', $this->getConfiguration('siteName'));
             $ask_cmd->save();
         }   
@@ -1125,13 +1127,15 @@ class snipsCmd extends cmd
                 snips::sayFeedback($_options['message'], $_options['sessionId'], $eqlogic->getConfiguration('language'), $site_id);
                 break;
             case 'ask':
+                snips::debug('[cmdExecution] cmd: ask');
                 $site_id = $this->getConfiguration('siteId');
 
-                preg_match_all("/(\[.*?\])/", $_options['answer'], $match_intent);
+                preg_match_all("/(\[.*?\])/", $_options['answer'][0], $match_intent);
                 $_ans_intent = str_replace('[', '', $match_intent[0][0]);
                 $_ans_intent = str_replace(']', '', $_ans_intent);
                 
                 snips::startRequest($_ans_intent, $_options['message'], $site_id);
+                break;
         }
     }
 }
