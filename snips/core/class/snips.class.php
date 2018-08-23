@@ -189,25 +189,27 @@ class snips extends eqLogic
 
     public static
 
-    function playTTS($_player_cmd, $_message, $_sessionId = null, $_siteId = 'default'){
+    function playTTS($_playerCmd, $_message, $_sessionId = null, $_siteId = 'default'){
 
-        $messages_to_play = explode('//', $_message);
-        $message_to_play = $messages_to_play[array_rand ($messages_to_play)];
-        $cmd = cmd::byString($_player_cmd);
+        //$messages_to_play = explode('//', $_message);
+        $messagesToPlay = interactDef::generateTextVariant($_message);
+
+        $messageToPlay = $messagesToPlay[array_rand ($messagesToPlay)];
+        $cmd = cmd::byString($_playerCmd);
         if (is_object($cmd)) {
             $options = array();
-            $options['message'] = $message_to_play;
+            $options['message'] = $messageToPlay;
             if (eqLogic::byId($cmd->getEqLogic_id())->getEqType_name() == 'snips') {
                 $options['title'] = $_siteId;
             }else{
                 $options['title'] = '50';
             }
             $options['sessionId'] = $_sessionId;
-            snips::debug('[playTTS] Player: '.$_player_cmd.' Message: '.$options['message'].' Title: '.$options['title']);
+            snips::debug('[playTTS] Player: '.$_playerCmd.' Message: '.$options['message'].' Title: '.$options['title']);
             $cmd->execCmd($options); 
             return;
         }else{
-            snips::debug('[playTTS] Can not find player cmd: '.$_player_cmd);
+            snips::debug('[playTTS] Can not find player cmd: '.$_playerCmd);
             return;
         }     
     }
