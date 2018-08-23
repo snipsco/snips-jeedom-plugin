@@ -215,14 +215,14 @@ class snips extends eqLogic
 
     public static
 
-    function sayFeedback($text, $session_id = null, $lang = 'en_GB', $siteId = 'default')
+    function sayFeedback($_text, $_session_id = null, $_lang = 'en_GB', $_site_id = 'default')
     {
-        if ($session_id == null) {
+        if ($_session_id == null) {
             $topic = 'hermes/tts/say';
             $payload = array(
-                'text' => str_replace('{#}', 'Value', $text) ,
-                "siteId" => $siteId,
-                "lang" => $lang
+                'text' => str_replace('{#}', 'Value', $_text) ,
+                "siteId" => $_site_id,
+                "lang" => $_lang
             );
             snips::debug('[MQTT] Publish: '.$text);
             self::publish($topic, json_encode($payload));
@@ -230,10 +230,10 @@ class snips extends eqLogic
         else {
             $topic = 'hermes/dialogueManager/endSession';
             $payload = array(
-                'text' => $text,
-                "sessionId" => $session_id
+                'text' => $_text,
+                "sessionId" => $_session_id
             );
-            snips::debug('[MQTT] Publish: '.$text);
+            snips::debug('[MQTT] Publish: '.$_text);
             self::publish($topic, json_encode($payload));
         }
     }
