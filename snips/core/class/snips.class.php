@@ -240,6 +240,20 @@ class snips extends eqLogic
 
     public static
 
+    function publish($topic, $payload)
+    {   
+        $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
+        $port = 1883;
+        $client = new Mosquitto\Client();
+        $client->connect($addr, $port, 60);
+        $client->publish($topic, $payload);
+        $client->disconnect();
+        snips::debug('[MQTT publish] published message: '.$payload);
+        unset($client);
+    }
+
+    public static
+
     function generateFeedback($org_text, $vars, $test_play = false)
     {
         snips::debug('[TTs] Generating feedback text');
@@ -277,20 +291,6 @@ class snips extends eqLogic
         else {
             return $org_text;
         }
-    }
-
-    public static
-
-    function publish($topic, $payload)
-    {   
-        $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
-        $port = 1883;
-        $client = new Mosquitto\Client();
-        $client->connect($addr, $port, 60);
-        $client->publish($topic, $payload);
-        $client->disconnect();
-        snips::debug('[MQTT publish] published message: '.$payload);
-        unset($client);
     }
 
     public static
