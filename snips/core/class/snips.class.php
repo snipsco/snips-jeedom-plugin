@@ -240,6 +240,23 @@ class snips extends eqLogic
 
     public static
 
+    function startRequest($_ans_intent, $_question_msg, $_site_id = 'default')
+    {
+        $topic = 'hermes/dialogueManager/startSession';
+        $payload = array(
+            'siteId' => $_site_id,
+            'init' => array('type' => 'action',
+                            'text' => $_question_msg,
+                            'canBeEnqueued' => 'true',
+                            'intentFilter' => array($_ans_intent)
+                            )
+        );
+        snips::debug('[startRequest] asked question: '.$_question_msg);
+        self::publish($topic, json_encode($payload));
+    }
+
+    public static
+
     function publish($_topic, $_payload)
     {   
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
