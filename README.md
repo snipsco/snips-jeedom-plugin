@@ -64,13 +64,13 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Configurable MQTT client
 - [x] Receive all the intents and its slots from the bus
 - [x] Load all the intents automaticly
-- [ ] Find out all the available devices automaticly
 - [x] All the intents shell be managed by its objects(Do not have to configure by user)
 - [x] Make the slots information useful
 - [x] Working separately with Snips site
 - [x] Download 'assistant.json' file remotely from snips site (Via ssh)
 - [x] Managing conditions
 - [x] Dynamic TTS contents
+- [ ] Find out all the available devices automaticly
 
 # Todo list for the beta release
 - [x] Create the snips-intent object automaticly when load assistant // mandatory
@@ -85,12 +85,18 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Multi-intent, 1 slot multiple value // improvement
 
 # Todo list for the public release 
-- [ ] Adapt to dark sobre theme
-- [ ] Output bindings should be able to manage
+- [x] Adapt to dark sobre theme
+- [ ] Output bindings should be able to manage (Able to delete)
 - [ ] Optimise the intent select modal
 - [ ] Re-arrange debug log output
+- [ ] Clean code rules apply to all the previous code
 
 # Develop Diary
+23, Aug, 2018
+- [ ] Make a release
+- [ ] Investigate the 'ask' feature
+- [ ] Add a global dynamic tts command (Or option to enable)
+
 22, Aug, 2018
 - [x] Add support for 'Scenario Return'
 - [x] Adapted to 'Dark Sobre' theme
