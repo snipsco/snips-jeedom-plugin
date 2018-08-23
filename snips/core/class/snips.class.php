@@ -1037,38 +1037,50 @@ class snips extends eqLogic
         if($this->getConfiguration('snipsType') == 'Intent'){
             $slots = $this->getConfiguration('slots');
             foreach($slots as $slot) {
-                $slotCmd = $this->getCmd(null, $slot['name']);
-                if (!is_object($slotCmd)) {
-                    snips::debug('[PostSave] Created slot cmd: ' . $slot['name']);
-                    $slotCmd = new snipsCmd();
+                $slot_cmd = $this->getCmd(null, $slot['name']);
+                if (!is_object($slot_cmd)) {
+                    snips::debug('[postSave] Created slot cmd: ' . $slot['name']);
+                    $slot_cmd = new snipsCmd();
                 }
-                $slotCmd->setName($slot['name']);
-                $slotCmd->setEqLogic_id($this->getId());
-                $slotCmd->setLogicalId($slot['name']);
-                $slotCmd->setType('info');
-                $slotCmd->setSubType('string');
-                $slotCmd->setConfiguration('id', $slot['id']);
-                $slotCmd->setConfiguration('entityId', $slot['entityId']);
-                $slotCmd->setConfiguration('missingQuestion', $slot['missingQuestion']);
-                $slotCmd->setConfiguration('required', $slot['required']);
-                $slotCmd->save();
+                $slot_cmd->setName($slot['name']);
+                $slot_cmd->setEqLogic_id($this->getId());
+                $slot_cmd->setLogicalId($slot['name']);
+                $slot_cmd->setType('info');
+                $slot_cmd->setSubType('string');
+                $slot_cmd->setConfiguration('id', $slot['id']);
+                $slot_cmd->setConfiguration('entityId', $slot['entityId']);
+                $slot_cmd->setConfiguration('missingQuestion', $slot['missingQuestion']);
+                $slot_cmd->setConfiguration('required', $slot['required']);
+                $slot_cmd->save();
             }
         }else if($this->getConfiguration('snipsType') == 'TTS'){
-            $ttsCmd = $this->getCmd(null, 'say');
-            if (!is_object($ttsCmd)) {
-                snips::debug('[PostSave] Created tts cmd: say');
-                $ttsCmd = new snipsCmd();
-                $ttsCmd->setName('say');
-                $ttsCmd->setLogicalId('say');
+            $tts_cmd = $this->getCmd(null, 'say');
+            if (!is_object($tts_cmd)) {
+                snips::debug('[postSave] Created tts cmd: say');
+                $tts_cmd = new snipsCmd();
+                $tts_cmd->setName('say');
+                $tts_cmd->setLogicalId('say');
             }
-            $ttsCmd->setEqLogic_id($this->getId());
-            $ttsCmd->setType('action');
-            $ttsCmd->setSubType('message');
-            $ttsCmd->setDisplay('title_disable', 1);
-            //$ttsCmd->setDisplay('title_placeholder', 'Site Id');
-            $ttsCmd->setDisplay('message_placeholder', 'Message');
-            $ttsCmd->setConfiguration('siteId', $this->getConfiguration('siteName'));
-            $ttsCmd->save();
+            $tts_cmd->setEqLogic_id($this->getId());
+            $tts_cmd->setType('action');
+            $tts_cmd->setSubType('message');
+            $tts_cmd->setDisplay('title_disable', 1);
+            $tts_cmd->setDisplay('message_placeholder', 'Message');
+            $tts_cmd->setConfiguration('siteId', $this->getConfiguration('siteName'));
+            $tts_cmd->save();
+
+            $ask_cmd = $this->getCmd(null, 'ask');
+            if (!is_object($ask_cmd)) {
+                snips::debug('[postSave] Created ask cmd: ask');
+                $ask_cmd = new snipsCmd();
+                $ask_cmd->setName('ask');
+                $ask_cmd->setLogicalId('ask');
+            }
+            $ask_cmd->setEqLogic_id($this->getId());
+            $ask_cmd->setType('info');
+            //$ask_cmd->setSubType('string');
+            $ask_cmd->setConfiguration('siteId', $this->getConfiguration('siteName'));
+            $ask_cmd->save();
         }   
     }
 
@@ -1109,11 +1121,6 @@ class snipsCmd extends cmd
             case 'say': 
                 $siteId = $this->getConfiguration('siteId');
                 snips::debug('[cmdExecution] cmd: say');
-                // if($_options['title'] != '' && isset($_options['title'])){
-                //     $siteId = $_options['title'];
-                // }else{
-                //     $siteId = 'default';
-                // }
                 snips::debug('[cmdExecution] siteId: '.$siteId.' asked to say :'.$_options['message']);
                 snips::sayFeedback($_options['message'], $_options['sessionId'], $eqlogic->getConfiguration('language'), $siteId);
                 break;
