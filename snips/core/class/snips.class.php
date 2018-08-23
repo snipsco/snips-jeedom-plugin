@@ -1119,11 +1119,19 @@ class snipsCmd extends cmd
         $eqlogic = $this->getEqLogic();
         switch ($this->getLogicalId()) {        
             case 'say': 
-                $siteId = $this->getConfiguration('siteId');
+                $site_id = $this->getConfiguration('siteId');
                 snips::debug('[cmdExecution] cmd: say');
-                snips::debug('[cmdExecution] siteId: '.$siteId.' asked to say :'.$_options['message']);
-                snips::sayFeedback($_options['message'], $_options['sessionId'], $eqlogic->getConfiguration('language'), $siteId);
+                snips::debug('[cmdExecution] siteId: '.$site_id.' asked to say :'.$_options['message']);
+                snips::sayFeedback($_options['message'], $_options['sessionId'], $eqlogic->getConfiguration('language'), $site_id);
                 break;
+            case 'ask':
+                $site_id = $this->getConfiguration('siteId');
+
+                preg_match_all("/(\[.*?\])/", $_options['answer'], $match_intent);
+                $_ans_intent = str_replace('[', '', $match_intent[0][0]);
+                $_ans_intent = str_replace(']', '', $_ans_intent);
+                
+                snips::startRequest($_ans_intent, $_options['message'], $site_id);
         }
     }
 }
