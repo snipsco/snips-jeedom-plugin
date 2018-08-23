@@ -1078,7 +1078,7 @@ class snips extends eqLogic
             }
             $ask_cmd->setEqLogic_id($this->getId());
             $ask_cmd->setType('info');
-            //$ask_cmd->setSubType('string');
+            $ask_cmd->setSubType('string');
             $ask_cmd->setConfiguration('siteId', $this->getConfiguration('siteName'));
             $ask_cmd->save();
         }   
