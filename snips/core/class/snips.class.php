@@ -189,27 +189,26 @@ class snips extends eqLogic
 
     public static
 
-    function playTTS($_playerCmd, $_message, $_sessionId = null, $_siteId = 'default'){
+    function playTTS($_player_cmd, $_message, $_session_id = null, $_site_id = 'default'){
 
         //$messages_to_play = explode('//', $_message);
         $messagesToPlay = interactDef::generateTextVariant($_message);
-
         $messageToPlay = $messagesToPlay[array_rand ($messagesToPlay)];
-        $cmd = cmd::byString($_playerCmd);
+        $cmd = cmd::byString($_player_cmd);
         if (is_object($cmd)) {
             $options = array();
             $options['message'] = $messageToPlay;
             if (eqLogic::byId($cmd->getEqLogic_id())->getEqType_name() == 'snips') {
-                $options['title'] = $_siteId;
+                $options['title'] = $_site_id;
             }else{
                 $options['title'] = '50';
             }
-            $options['sessionId'] = $_sessionId;
-            snips::debug('[playTTS] Player: '.$_playerCmd.' Message: '.$options['message'].' Title: '.$options['title']);
+            $options['sessionId'] = $_session_id;
+            snips::debug('[playTTS] Player: '.$_player_cmd.' Message: '.$options['message'].' Title: '.$options['title']);
             $cmd->execCmd($options); 
             return;
         }else{
-            snips::debug('[playTTS] Can not find player cmd: '.$_playerCmd);
+            snips::debug('[playTTS] Can not find player cmd: '.$_player_cmd);
             return;
         }     
     }
@@ -659,15 +658,15 @@ class snips extends eqLogic
                 foreach($bindings_with_correct_condition as $binding) {
                     foreach($binding['action'] as $action) {
                         $options = $action['options'];
-                        if (true) {
-                            snips::setSlotsCmd($slots_values, $intent_name, $options);
-                            $execution_return_msg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
-                            if (is_string($execution_return_msg) && $execution_return_msg!='') {
+
+                        snips::setSlotsCmd($slots_values, $intent_name, $options);
+                        $execution_return_msg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
+                        if (is_string($execution_return_msg) && $execution_return_msg!='') {
+                            if (config::byKey('dynamicSnipsTTS', 'snips', 0) && cmd::byString($binding['ttsPlayer'])->getConfiguration('snipsType') == 'TTS') {
+                                snips::playTTS('#[Snips-Intents][Snips-TTS-'.$site_id.'][say]#', $execution_return_msg);
+                            }else{
                                 snips::playTTS($binding['ttsPlayer'], $execution_return_msg);
                             }
-                        }
-                        else {
-                            snips::debug('[Binding Execution] Found binding action, but it is not enabled');
                         }
                     }
 
@@ -678,8 +677,13 @@ class snips extends eqLogic
 
                     snips::debug('[Binding Execution] Player is ' . $binding['ttsPlayer']);
 
-                    snips::playTTS($binding['ttsPlayer'], $text, $session_id);
-                    //snips::sayFeedback($text, $session_id);
+                    $tts_player_cmd = cmd::byString($binding['ttsPlayer']);
+
+                    if (config::byKey('dynamicSnipsTTS', 'snips', 0) && $tts_player_cmd->getConfiguration('snipsType') == 'TTS') {
+                        snips::playTTS('#[Snips-Intents][Snips-TTS-'.$site_id.'][say]#', $text, $session_id);
+                    }else{
+                        snips::playTTS($binding['ttsPlayer'], $text, $session_id);
+                    }
                 }
             }else if(count($bindings_with_correct_condition) == 0){
 
