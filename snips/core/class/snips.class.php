@@ -716,12 +716,12 @@ class snips extends eqLogic
 
     public static
 
-    function setSlotsCmd($slots_values, $intent, $_options = null)
+    function setSlotsCmd($_slots_values, $_intent, $_options = null)
     {
         snips::debug('[Slot Set] Set slots cmd values');
-        $eq = eqLogic::byLogicalId($intent, 'snips');
+        $eq = eqLogic::byLogicalId($_intent, 'snips');
         if (is_object($eq)) {
-            foreach($slots_values as $slot => $value) {
+            foreach($_slots_values as $slot => $value) {
                 snips::debug('[Slot Set] Slots name is :' . $slot);
                 $cmd = $eq->getCmd(null, $slot);
                 if (is_object($cmd)) {
@@ -734,14 +734,13 @@ class snips extends eqLogic
                             snips::debug('[Slot Set] Slots is percentage, value after convert:' . $value);
                         }
                     }
-
                     $eq->checkAndUpdateCmd($cmd, $value);
                     $cmd->setValue($value);
                     $cmd->save();
                 }  
             }
         }else{
-            snips::debug('[Slot Set] Did not find entiry:' . $intent);
+            snips::debug('[Slot Set] Did not find entiry:' . $_intent);
         }
     }
 
@@ -1119,7 +1118,7 @@ class snipsCmd extends cmd
     function execute($_options = array()) 
     {
         $eqlogic = $this->getEqLogic();
-        switch ($this->getLogicalId()) {        
+        switch ($this->getLogicalId()) {
             case 'say': 
                 $site_id = $this->getConfiguration('siteId');
                 snips::debug('[cmdExecution] cmd: say');
@@ -1129,7 +1128,6 @@ class snipsCmd extends cmd
             case 'ask':
                 snips::debug('[cmdExecution] cmd: ask');
                 $site_id = $this->getConfiguration('siteId');
-
                 preg_match_all("/(\[.*?\])/", $_options['answer'][0], $match_intent);
                 $_ans_intent = str_replace('[', '', $match_intent[0][0]);
                 $_ans_intent = str_replace(']', '', $_ans_intent);
