@@ -134,8 +134,19 @@ $("body").off('click', '.listCmdAction').on('click', '.listCmdAction', function 
     }, function (result) {
         var input = el.closest('.action').find('.expressionAttr[data-l1key=cmd]');
         input.value(result.human);
-
+        el.closest('.action').find('.slotsOptions').empty();
         jeedom.cmd.displayActionOption(input.value(), '', function (html) {
+            var res = html.indexOf('expressionAttr[data-l1key=options][data-l2key=slider]');
+            if (res > 0) {
+                html = html.replace(
+                    'jeedom.cmd.getSelectModal',
+                    'var el = $(this);jeedom.cmd.getSelectModal');
+
+                html = html.replace(
+                    '.atCaret(\'insert\', result.human);', 
+                    '.atCaret(\'insert\', result.human);$.ajax({type:"POST",url:"plugins/snips/core/ajax/snips.ajax.php",data:{action:"getSnipsType",cmd:result.cmd.id,},dataType:"json",global:false,error:function(request,status,error){handleAjaxError(request,status,error)},success:function(data){if(data.result=="snips/percentage"){el.closest(".action").find(".slotsOptions").empty();displayValueMap(el.closest(".action").find(".slotsOptions"))}else{el.closest(".action").find(".slotsOptions").empty()}}});'
+                    );
+            }
             input.closest('.action').find('.actionOptions').html(html);
         });
     });
@@ -146,7 +157,7 @@ $("body").off('click', '.listAction').on('click', '.listAction', function () {
     jeedom.getSelectActionModal({}, function (result) {
         var input = el.closest('.action').find('.expressionAttr[data-l1key=cmd]');
         input.value(result.human);
-
+        el.closest('.action').find('.slotsOptions').empty();
         jeedom.cmd.displayActionOption(input.value(), '', function (html) {
             input.closest('.action').find('.actionOptions').html(html);
         });
@@ -181,41 +192,41 @@ $("body").delegate(".listInfoCmd", 'click', function () {
     });
 });
 
-$("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipementInfo', function () {
-    var el = $(this);
+// $("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipementInfo', function () {
+//     var el = $(this);
 
-    jeedom.cmd.getSelectModal({
-        cmd: {
-            type: 'info'
-        }
-    }, function (result) {
-        var input = el.closest('.input-group').find('.expressionAttr[data-cmd_id=' + el.data("cmd_id") + '][data-uid=' + el.data("uid") + ']');
-        input.value(result.human);
+//     jeedom.cmd.getSelectModal({
+//         cmd: {
+//             type: 'info'
+//         }
+//     }, function (result) {
+//         var input = el.closest('.input-group').find('.expressionAttr[data-uid=' + el.data("uid") + ']');
+//         input.value(result.human);
 
-        $.ajax({
-            type: "POST",
-            url: "plugins/snips/core/ajax/snips.ajax.php",
-            data: {
-                action: "getSnipsType",
-                cmd: result.cmd.id,
-            },
-            dataType: 'json',
-            global: false,
-            error: function (request, status, error) {
-                handleAjaxError(request, status, error);
-            },
-            success: function (data) {
+//         $.ajax({
+//             type: "POST",
+//             url: "plugins/snips/core/ajax/snips.ajax.php",
+//             data: {
+//                 action: "getSnipsType",
+//                 cmd: result.cmd.id,
+//             },
+//             dataType: 'json',
+//             global: false,
+//             error: function (request, status, error) {
+//                 handleAjaxError(request, status, error);
+//             },
+//             success: function (data) {
 
-                if (data.result == 'snips/percentage') {
-                    el.closest('.action').find('.slotsOptions').empty();
-                    displayValueMap(el.closest('.action').find('.slotsOptions'));
-                } else {
-                    el.closest('.action').find('.slotsOptions').empty();
-                }
-            }
-        });
-    });
-});
+//                 if (data.result == 'snips/percentage') {
+//                     el.closest('.action').find('.slotsOptions').empty();
+//                     displayValueMap(el.closest('.action').find('.slotsOptions'));
+//                 } else {
+//                     el.closest('.action').find('.slotsOptions').empty();
+//                 }
+//             }
+//         });
+//     });
+// });
 
 
 $("body").off('click', '.bt_removeAction').on('click', '.bt_removeAction', function () {
