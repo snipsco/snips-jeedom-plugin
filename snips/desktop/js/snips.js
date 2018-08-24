@@ -136,8 +136,8 @@ $("body").off('click', '.listCmdAction').on('click', '.listCmdAction', function 
         input.value(result.human);
         el.closest('.action').find('.slotsOptions').empty();
         jeedom.cmd.displayActionOption(input.value(), '', function (html) {
-            var res = html.indexOf('expressionAttr[data-l1key=options][data-l2key=slider]');
-            if (res > 0) {
+            var is_slider = html.indexOf('expressionAttr[data-l1key=options][data-l2key=slider]');
+            if (is_slider > 0) {
                 html = html.replace(
                     'jeedom.cmd.getSelectModal',
                     'var el = $(this);jeedom.cmd.getSelectModal');
