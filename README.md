@@ -91,6 +91,9 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Re-arrange debug log output
 - [ ] Clean code rules apply to all the previous code
 
+# Bugs
+- [ ] listEquipmentInfo button does not work very well. Need to double check (Found 23, Aug)
+
 # Develop Diary
 23, Aug, 2018
 - [ ] Make a release
