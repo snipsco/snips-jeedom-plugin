@@ -762,10 +762,10 @@ class snips extends eqLogic
 
     public static
 
-    function resetSlotsCmd($slots_values = false, $intent = false)
+    function resetSlotsCmd($_slots_values = false, $_intent = false)
     {
         snips::debug('[Slot Reset] Reset all the slots');
-        if ($slots_values == false && $intent == false) {
+        if ($_slots_values == false && $_intent == false) {
             $eqs = eqLogic::byType('snips');
             foreach($eqs as $eq) {
                 $cmds = $eq->getCmd();
@@ -785,8 +785,8 @@ class snips extends eqLogic
             }
         }
         else {
-            $eq = eqLogic::byLogicalId($intent, 'snips');
-            foreach($slots_values as $slot => $value) {
+            $eq = eqLogic::byLogicalId($_intent, 'snips');
+            foreach($_slots_values as $slot => $value) {
                 $cmd = $eq->getCmd(null, $slot);
                 $cmd->setCache('value');
                 $cmd->setValue(null);
@@ -798,7 +798,7 @@ class snips extends eqLogic
 
     public static
 
-    function exportConfigration($name, $output = true)
+    function exportConfigration($_name, $_output = true)
     {
         $binding_conf = array();
         $eqs = eqLogic::byType('snips');
@@ -832,8 +832,8 @@ class snips extends eqLogic
             $binding_conf[$eq->getName() ] = $aft_bindings;
         }
 
-        if ($output) {
-            $file = fopen(dirname(__FILE__) . '/../../config_backup/' . $name . '.json', 'w');
+        if ($_output) {
+            $file = fopen(dirname(__FILE__) . '/../../config_backup/' . $_name . '.json', 'w');
             $res = fwrite($file, json_encode($binding_conf));
             if ($res) {
                 snips::debug('[Export Config] Success output');
