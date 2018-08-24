@@ -189,41 +189,40 @@ class snips extends eqLogic
 
     public static
 
-    function playTTS($_playerCmd, $_message, $_sessionId = null, $_siteId = 'default'){
+    function playTTS($_player_cmd, $_message, $_session_id = null, $_site_id = 'default'){
 
         //$messages_to_play = explode('//', $_message);
         $messagesToPlay = interactDef::generateTextVariant($_message);
-
         $messageToPlay = $messagesToPlay[array_rand ($messagesToPlay)];
-        $cmd = cmd::byString($_playerCmd);
+        $cmd = cmd::byString($_player_cmd);
         if (is_object($cmd)) {
             $options = array();
             $options['message'] = $messageToPlay;
             if (eqLogic::byId($cmd->getEqLogic_id())->getEqType_name() == 'snips') {
-                $options['title'] = $_siteId;
+                $options['title'] = $_site_id;
             }else{
                 $options['title'] = '50';
             }
-            $options['sessionId'] = $_sessionId;
-            snips::debug('[playTTS] Player: '.$_playerCmd.' Message: '.$options['message'].' Title: '.$options['title']);
+            $options['sessionId'] = $_session_id;
+            snips::debug('[playTTS] Player: '.$_player_cmd.' Message: '.$options['message'].' Title: '.$options['title']);
             $cmd->execCmd($options); 
             return;
         }else{
-            snips::debug('[playTTS] Can not find player cmd: '.$_playerCmd);
+            snips::debug('[playTTS] Can not find player cmd: '.$_player_cmd);
             return;
         }     
     }
 
     public static
 
-    function sayFeedback($text, $session_id = null, $lang = 'en_GB', $siteId = 'default')
+    function sayFeedback($_text, $_session_id = null, $_lang = 'en_GB', $_site_id = 'default')
     {
-        if ($session_id == null) {
+        if ($_session_id == null) {
             $topic = 'hermes/tts/say';
             $payload = array(
-                'text' => str_replace('{#}', 'Value', $text) ,
-                "siteId" => $siteId,
-                "lang" => $lang
+                'text' => str_replace('{#}', 'Value', $_text) ,
+                "siteId" => $_site_id,
+                "lang" => $_lang
             );
             snips::debug('[MQTT] Publish: '.$text);
             self::publish($topic, json_encode($payload));
@@ -231,12 +230,43 @@ class snips extends eqLogic
         else {
             $topic = 'hermes/dialogueManager/endSession';
             $payload = array(
-                'text' => $text,
-                "sessionId" => $session_id
+                'text' => $_text,
+                "sessionId" => $_session_id
             );
-            snips::debug('[MQTT] Publish: '.$text);
+            snips::debug('[MQTT] Publish: '.$_text);
             self::publish($topic, json_encode($payload));
         }
+    }
+
+    public static
+
+    function startRequest($_ans_intent, $_question_msg, $_site_id = 'default')
+    {
+        $topic = 'hermes/dialogueManager/startSession';
+        $payload = array(
+            "siteId" => $_site_id,
+            "init" => array("type" => "action",
+                            "text" => $_question_msg,
+                            "canBeEnqueued" => true,
+                            "intentFilter" => array($_ans_intent)
+                            )
+        );
+        snips::debug('[startRequest] asked question: '.$_question_msg);
+        self::publish($topic, json_encode($payload));
+    }
+
+    public static
+
+    function publish($_topic, $_payload)
+    {   
+        $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
+        $port = 1883;
+        $client = new Mosquitto\Client();
+        $client->connect($addr, $port, 60);
+        $client->publish($_topic, $_payload);
+        $client->disconnect();
+        snips::debug('[MQTT publish] published message: '.$_payload.' to topic: '.$_topic);
+        unset($client);
     }
 
     public static
@@ -278,20 +308,6 @@ class snips extends eqLogic
         else {
             return $org_text;
         }
-    }
-
-    public static
-
-    function publish($topic, $payload)
-    {   
-        $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
-        $port = 1883;
-        $client = new Mosquitto\Client();
-        $client->connect($addr, $port, 60);
-        $client->publish($topic, $payload);
-        $client->disconnect();
-        snips::debug('[MQTT publish] published message: '.$payload);
-        unset($client);
     }
 
     public static
@@ -659,15 +675,15 @@ class snips extends eqLogic
                 foreach($bindings_with_correct_condition as $binding) {
                     foreach($binding['action'] as $action) {
                         $options = $action['options'];
-                        if (true) {
-                            snips::setSlotsCmd($slots_values, $intent_name, $options);
-                            $execution_return_msg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
-                            if (is_string($execution_return_msg) && $execution_return_msg!='') {
+
+                        snips::setSlotsCmd($slots_values, $intent_name, $options);
+                        $execution_return_msg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
+                        if (is_string($execution_return_msg) && $execution_return_msg!='') {
+                            if (config::byKey('dynamicSnipsTTS', 'snips', 0) && cmd::byString($binding['ttsPlayer'])->getConfiguration('snipsType') == 'TTS') {
+                                snips::playTTS('#[Snips-Intents][Snips-TTS-'.$site_id.'][say]#', $execution_return_msg);
+                            }else{
                                 snips::playTTS($binding['ttsPlayer'], $execution_return_msg);
                             }
-                        }
-                        else {
-                            snips::debug('[Binding Execution] Found binding action, but it is not enabled');
                         }
                     }
 
@@ -678,8 +694,13 @@ class snips extends eqLogic
 
                     snips::debug('[Binding Execution] Player is ' . $binding['ttsPlayer']);
 
-                    snips::playTTS($binding['ttsPlayer'], $text, $session_id);
-                    //snips::sayFeedback($text, $session_id);
+                    $tts_player_cmd = cmd::byString($binding['ttsPlayer']);
+
+                    if (config::byKey('dynamicSnipsTTS', 'snips', 0) && $tts_player_cmd->getConfiguration('snipsType') == 'TTS') {
+                        snips::playTTS('#[Snips-Intents][Snips-TTS-'.$site_id.'][say]#', $text, $session_id);
+                    }else{
+                        snips::playTTS($binding['ttsPlayer'], $text, $session_id);
+                    }
                 }
             }else if(count($bindings_with_correct_condition) == 0){
 
@@ -695,12 +716,12 @@ class snips extends eqLogic
 
     public static
 
-    function setSlotsCmd($slots_values, $intent, $_options = null)
+    function setSlotsCmd($_slots_values, $_intent, $_options = null)
     {
         snips::debug('[Slot Set] Set slots cmd values');
-        $eq = eqLogic::byLogicalId($intent, 'snips');
+        $eq = eqLogic::byLogicalId($_intent, 'snips');
         if (is_object($eq)) {
-            foreach($slots_values as $slot => $value) {
+            foreach($_slots_values as $slot => $value) {
                 snips::debug('[Slot Set] Slots name is :' . $slot);
                 $cmd = $eq->getCmd(null, $slot);
                 if (is_object($cmd)) {
@@ -713,14 +734,13 @@ class snips extends eqLogic
                             snips::debug('[Slot Set] Slots is percentage, value after convert:' . $value);
                         }
                     }
-
                     $eq->checkAndUpdateCmd($cmd, $value);
                     $cmd->setValue($value);
                     $cmd->save();
                 }  
             }
         }else{
-            snips::debug('[Slot Set] Did not find entiry:' . $intent);
+            snips::debug('[Slot Set] Did not find entiry:' . $_intent);
         }
     }
 
@@ -742,10 +762,10 @@ class snips extends eqLogic
 
     public static
 
-    function resetSlotsCmd($slots_values = false, $intent = false)
+    function resetSlotsCmd($_slots_values = false, $_intent = false)
     {
         snips::debug('[Slot Reset] Reset all the slots');
-        if ($slots_values == false && $intent == false) {
+        if ($_slots_values == false && $_intent == false) {
             $eqs = eqLogic::byType('snips');
             foreach($eqs as $eq) {
                 $cmds = $eq->getCmd();
@@ -765,8 +785,8 @@ class snips extends eqLogic
             }
         }
         else {
-            $eq = eqLogic::byLogicalId($intent, 'snips');
-            foreach($slots_values as $slot => $value) {
+            $eq = eqLogic::byLogicalId($_intent, 'snips');
+            foreach($_slots_values as $slot => $value) {
                 $cmd = $eq->getCmd(null, $slot);
                 $cmd->setCache('value');
                 $cmd->setValue(null);
@@ -778,7 +798,7 @@ class snips extends eqLogic
 
     public static
 
-    function exportConfigration($name, $output = true)
+    function exportConfigration($_name, $_output = true)
     {
         $binding_conf = array();
         $eqs = eqLogic::byType('snips');
@@ -812,8 +832,8 @@ class snips extends eqLogic
             $binding_conf[$eq->getName() ] = $aft_bindings;
         }
 
-        if ($output) {
-            $file = fopen(dirname(__FILE__) . '/../../config_backup/' . $name . '.json', 'w');
+        if ($_output) {
+            $file = fopen(dirname(__FILE__) . '/../../config_backup/' . $_name . '.json', 'w');
             $res = fwrite($file, json_encode($binding_conf));
             if ($res) {
                 snips::debug('[Export Config] Success output');
@@ -1016,38 +1036,52 @@ class snips extends eqLogic
         if($this->getConfiguration('snipsType') == 'Intent'){
             $slots = $this->getConfiguration('slots');
             foreach($slots as $slot) {
-                $slotCmd = $this->getCmd(null, $slot['name']);
-                if (!is_object($slotCmd)) {
-                    snips::debug('[PostSave] Created slot cmd: ' . $slot['name']);
-                    $slotCmd = new snipsCmd();
+                $slot_cmd = $this->getCmd(null, $slot['name']);
+                if (!is_object($slot_cmd)) {
+                    snips::debug('[postSave] Created slot cmd: ' . $slot['name']);
+                    $slot_cmd = new snipsCmd();
                 }
-                $slotCmd->setName($slot['name']);
-                $slotCmd->setEqLogic_id($this->getId());
-                $slotCmd->setLogicalId($slot['name']);
-                $slotCmd->setType('info');
-                $slotCmd->setSubType('string');
-                $slotCmd->setConfiguration('id', $slot['id']);
-                $slotCmd->setConfiguration('entityId', $slot['entityId']);
-                $slotCmd->setConfiguration('missingQuestion', $slot['missingQuestion']);
-                $slotCmd->setConfiguration('required', $slot['required']);
-                $slotCmd->save();
+                $slot_cmd->setName($slot['name']);
+                $slot_cmd->setEqLogic_id($this->getId());
+                $slot_cmd->setLogicalId($slot['name']);
+                $slot_cmd->setType('info');
+                $slot_cmd->setSubType('string');
+                $slot_cmd->setConfiguration('id', $slot['id']);
+                $slot_cmd->setConfiguration('entityId', $slot['entityId']);
+                $slot_cmd->setConfiguration('missingQuestion', $slot['missingQuestion']);
+                $slot_cmd->setConfiguration('required', $slot['required']);
+                $slot_cmd->save();
             }
         }else if($this->getConfiguration('snipsType') == 'TTS'){
-            $ttsCmd = $this->getCmd(null, 'say');
-            if (!is_object($ttsCmd)) {
-                snips::debug('[PostSave] Created tts cmd: say');
-                $ttsCmd = new snipsCmd();
-                $ttsCmd->setName('say');
-                $ttsCmd->setLogicalId('say');
+            $tts_cmd = $this->getCmd(null, 'say');
+            if (!is_object($tts_cmd)) {
+                snips::debug('[postSave] Created tts cmd: say');
+                $tts_cmd = new snipsCmd();
+                $tts_cmd->setName('say');
+                $tts_cmd->setLogicalId('say');
             }
-            $ttsCmd->setEqLogic_id($this->getId());
-            $ttsCmd->setType('action');
-            $ttsCmd->setSubType('message');
-            $ttsCmd->setDisplay('title_disable', 1);
-            //$ttsCmd->setDisplay('title_placeholder', 'Site Id');
-            $ttsCmd->setDisplay('message_placeholder', 'Message');
-            $ttsCmd->setConfiguration('siteId', $this->getConfiguration('siteName'));
-            $ttsCmd->save();
+            $tts_cmd->setEqLogic_id($this->getId());
+            $tts_cmd->setType('action');
+            $tts_cmd->setSubType('message');
+            $tts_cmd->setDisplay('title_disable', 1);
+            $tts_cmd->setDisplay('message_placeholder', 'Message');
+            $tts_cmd->setConfiguration('siteId', $this->getConfiguration('siteName'));
+            $tts_cmd->save();
+
+            $ask_cmd = $this->getCmd(null, 'ask');
+            if (!is_object($ask_cmd)) {
+                snips::debug('[postSave] Created ask cmd: ask');
+                $ask_cmd = new snipsCmd();
+                $ask_cmd->setName('ask');
+                $ask_cmd->setLogicalId('ask');
+            }
+            $ask_cmd->setEqLogic_id($this->getId());
+            $ask_cmd->setType('action');
+            $ask_cmd->setSubType('message');
+            $ask_cmd->setDisplay('title_placeholder', 'expected intent');
+            $ask_cmd->setDisplay('message_placeholder', 'Question');
+            $ask_cmd->setConfiguration('siteId', $this->getConfiguration('siteName'));
+            $ask_cmd->save();
         }   
     }
 
@@ -1084,17 +1118,21 @@ class snipsCmd extends cmd
     function execute($_options = array()) 
     {
         $eqlogic = $this->getEqLogic();
-        switch ($this->getLogicalId()) {        
+        switch ($this->getLogicalId()) {
             case 'say': 
-                $siteId = $this->getConfiguration('siteId');
+                $site_id = $this->getConfiguration('siteId');
                 snips::debug('[cmdExecution] cmd: say');
-                // if($_options['title'] != '' && isset($_options['title'])){
-                //     $siteId = $_options['title'];
-                // }else{
-                //     $siteId = 'default';
-                // }
-                snips::debug('[cmdExecution] siteId: '.$siteId.' asked to say :'.$_options['message']);
-                snips::sayFeedback($_options['message'], $_options['sessionId'], $eqlogic->getConfiguration('language'), $siteId);
+                snips::debug('[cmdExecution] siteId: '.$site_id.' asked to say :'.$_options['message']);
+                snips::sayFeedback($_options['message'], $_options['sessionId'], $eqlogic->getConfiguration('language'), $site_id);
+                break;
+            case 'ask':
+                snips::debug('[cmdExecution] cmd: ask');
+                $site_id = $this->getConfiguration('siteId');
+                preg_match_all("/(\[.*?\])/", $_options['answer'][0], $match_intent);
+                $_ans_intent = str_replace('[', '', $match_intent[0][0]);
+                $_ans_intent = str_replace(']', '', $_ans_intent);
+                
+                snips::startRequest($_ans_intent, $_options['message'], $site_id);
                 break;
         }
     }

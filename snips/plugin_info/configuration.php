@@ -20,7 +20,15 @@ if (!isConnect()) {
             <div class="col-lg-4">
                 <textarea class="configKey form-control" data-l1key="defaultTTS" placeholder="Sorry I don't understand"></textarea>
             </div>
-            <div class="alert alert-info col-lg-3" role="alert">Use <kbd>//</kbd> to separate different sentences</div>
+            <div class="alert alert-info col-lg-3" role="alert">Use <kbd>[A|B|C]</kbd> formate to make dynamic sentences</div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-lg-4 control-label" >{{Dynamic Snips TTS}}</label>
+            <div class="col-lg-4">
+                <input type="checkbox" class="configKey" data-l1key="dynamicSnipsTTS"> {{Enable}}</input>
+            </div>
+            <div class="alert alert-info col-lg-3" role="alert"> {{When select a snips tts command in binding configuration with this option checked, the reply tts will be played on the site which received the command.}}</div>
         </div>
 
         <!-- <div class="form-group">

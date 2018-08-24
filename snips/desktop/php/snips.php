@@ -140,9 +140,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
         foreach ($eqLogics as $eqLogic) {
           if ($eqLogic->getConfiguration('snipsType') == 'Intent' && !$eqLogic->getIsEnable()) {
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-            echo '<div class="panel panel-success eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
-            echo '<div class="panel-heading" style="padding: 5px 15px;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></div>';
-            echo '<div class="panel-body" style="padding: 0px;">';
+            echo '<span class="panel panel-success eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
+            echo '<li class="panel-heading" style="padding: 5px 15px;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></li>';
+            echo '<li class="panel-body" style="padding: 0px;">';
 
             echo '<ul class="list-group" style="margin: 0;">';
 
@@ -164,7 +164,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #c9302c;">Not set</span>Reaction</li>';
             }
             echo '</ul>';
-            echo '</div></div>';
+            echo '</li></span>';
           }
         }
         echo '</div></div>';
