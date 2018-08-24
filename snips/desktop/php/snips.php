@@ -167,6 +167,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
             echo '</li></span>';
           }
         }
+        echo '</div></div>';
       }
     ?>
 
