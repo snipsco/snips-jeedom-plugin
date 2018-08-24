@@ -100,6 +100,17 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Last beta release
 - [x] Clean code 
 
+```
+Version: 2018-08-24 18:16:52
+
+New feature: support 'ask' command
+New feature: automatic snips tts reply (Find the detail in the configuration page of the plugin)
+Change: adapt jeedom grammar for tts message (use [] to contain the list and use | to separate)
+Fixed bug: listEquipmentCmd button fills value to wrong input box for command options
+Improvement: adapt to [dart sobre] black theme
+Improvement: support tts play for 'scenario_return'
+```
+
 23, Aug, 2018
 - [x] Support the 'ask' feature
 - [x] Add a global dynamic tts command (Or option to enable)
