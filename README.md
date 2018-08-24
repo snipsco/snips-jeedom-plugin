@@ -92,13 +92,17 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Clean code rules apply to all the previous code
 
 # Bugs
-- [ ] listEquipmentInfo button does not work very well. Need to double check (Found 23, Aug)
+- [x] listEquipmentInfo button does not work very well. Need to double check (Found 23, Aug)
 
 # Develop Diary
+24, Aug, 2018
+- [x] Troubleshooting with 'listEquipment' issue
+- [x] Last beta release
+- [x] Clean code 
+
 23, Aug, 2018
-- [ ] Make a release
-- [ ] Investigate the 'ask' feature
-- [ ] Add a global dynamic tts command (Or option to enable)
+- [x] Support the 'ask' feature
+- [x] Add a global dynamic tts command (Or option to enable)
 
 22, Aug, 2018
 - [x] Add support for 'Scenario Return'
