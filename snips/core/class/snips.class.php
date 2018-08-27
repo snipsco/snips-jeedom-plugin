@@ -860,14 +860,14 @@ class snips extends eqLogic
 
     public static
 
-    function importConfigration($configFileName = null, $configurationJson = null)
+    function importConfigration($_configFileName = null, $_configurationJson = null)
     {
-        if (isset($configurationJson) && !isset($configFileName)) {
+        if (isset($_configurationJson) && !isset($_configFileName)) {
             snips::debug('[Import Config] Asked to internally reload config file');
-            $json_string = $configurationJson;
-        }else if (!isset($configurationJson) && isset($configFileName)){
-            snips::debug('[Import Config] Asked to import file: ' . $configFileName);
-            $json_string = file_get_contents(dirname(__FILE__) . '/../../config_backup/' . $configFileName);
+            $json_string = $_configurationJson;
+        }else if (!isset($_configurationJson) && isset($_configFileName)){
+            snips::debug('[Import Config] Asked to import file: ' . $_configFileName);
+            $json_string = file_get_contents(dirname(__FILE__) . '/../../config_backup/' . $_configFileName);
         }
         
         preg_match_all('/("pre":")(#.*?#)(")/', $json_string, $matches);
