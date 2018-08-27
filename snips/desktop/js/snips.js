@@ -192,43 +192,6 @@ $("body").delegate(".listInfoCmd", 'click', function () {
     });
 });
 
-// $("#div_bindings").off('click', '.listEquipementInfo').on('click', '.listEquipementInfo', function () {
-//     var el = $(this);
-
-//     jeedom.cmd.getSelectModal({
-//         cmd: {
-//             type: 'info'
-//         }
-//     }, function (result) {
-//         var input = el.closest('.input-group').find('.expressionAttr[data-uid=' + el.data("uid") + ']');
-//         input.value(result.human);
-
-//         $.ajax({
-//             type: "POST",
-//             url: "plugins/snips/core/ajax/snips.ajax.php",
-//             data: {
-//                 action: "getSnipsType",
-//                 cmd: result.cmd.id,
-//             },
-//             dataType: 'json',
-//             global: false,
-//             error: function (request, status, error) {
-//                 handleAjaxError(request, status, error);
-//             },
-//             success: function (data) {
-
-//                 if (data.result == 'snips/percentage') {
-//                     el.closest('.action').find('.slotsOptions').empty();
-//                     displayValueMap(el.closest('.action').find('.slotsOptions'));
-//                 } else {
-//                     el.closest('.action').find('.slotsOptions').empty();
-//                 }
-//             }
-//         });
-//     });
-// });
-
-
 $("body").off('click', '.bt_removeAction').on('click', '.bt_removeAction', function () {
     var type = $(this).attr('data-type');
     $(this).closest('.' + type).remove();
@@ -346,33 +309,33 @@ $('.reload').on('click', function () {
     var psssword = '';
 
     bootbox.prompt({
-        title: '<i class="fa fa-exclamation-triangle"></i> Attention: Please choose your operation carefully!',
+        title: '<i class="fa fa-exclamation-triangle"></i> {{Attention: Please choose your operation carefully!}}',
         inputType: 'select',
         inputOptions: [
             {
-                text: 'Choose a reload option...',
+                text: '{{Choose a reload option...}}',
                 value: '',
             },
             {
-                text: 'Reload assistant without bindings',
+                text: '{{Reload assistant without bindings}}',
                 value: 'mode_1',
             },
             {
-                text: 'Reload assistant with current bindings',
+                text: '{{Reload assistant with current bindings}}',
                 value: 'mode_2',
             },
             {
-                text: 'Delete assistant',
+                text: '{{Delete assistant}}',
                 value: 'mode_3',
             }
         ],
         buttons: {
             confirm: {
-                label: '<i class="fa fa-check"></i> confirm',
+                label: '<i class="fa fa-check"></i> {{confirm}}',
                 className: 'btn-success'
             },
             cancel: {
-                label: '<i class="fa fa-times"></i> cancel',
+                label: '<i class="fa fa-times"></i> {{cancel}}',
                 className: 'btn-danger'
             }
         },
@@ -380,7 +343,7 @@ $('.reload').on('click', function () {
             if (result == 'mode_1' || result == 'mode_2') {
                 var mode = result; 
                 var loading = bootbox.dialog({
-                    message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Trying to load assistant...</div>',
+                    message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> {{Trying to load assistant...}}</div>',
                     closeButton: false
                 });
                 $.ajax({
@@ -400,8 +363,8 @@ $('.reload').on('click', function () {
                             var title = '';
                             loading.modal('hide');
                             if (data.result == 1) {
-                                title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> Successed</a>';
-                                msg = 'Assistant loaded!';
+                                title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> {{Successed}}</a>';
+                                msg = '{{Assistant loaded!}}';
 
                                 bootbox.alert({
                                     title: title,
@@ -413,19 +376,19 @@ $('.reload').on('click', function () {
                                 });
                             } else if(data.result == 0 || data.result == -1 || data.result == -2){
                                 bootbox.prompt({
-                                    title: "SSH username: ",
+                                    title: "{{SSH username: }}",
                                     inputType: 'text',
                                     callback: function (result) {
                                         if (result) {
                                             username = result;
                                             bootbox.prompt({
-                                                title: "SSH password: ",
+                                                title: "{{SSH password: }}",
                                                 inputType: 'password',
                                                 callback: function (result) {
                                                     if (result) {
                                                         password = result;
                                                         var loading2 = bootbox.dialog({
-                                                            message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading assistant from remote site...</div>',
+                                                            message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> {{Loading assistant from remote site...}}</div>',
                                                             closeButton: false
                                                         });
                                                         $.ajax({
@@ -447,22 +410,22 @@ $('.reload').on('click', function () {
                                                                 var title = '';
                                                                 loading2.modal('hide');
                                                                 if (data.result == 1) {
-                                                                    title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> Successed</a>';
+                                                                    title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> {{Successed}} </a>';
                                                                     msg = 'Assistant loaded!';
                                                                 } else
                                                                 if (data.result == 0) {
-                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}} </a>';
                                                                     msg = 'Can not fetch assistant!';
                                                                 } else
                                                                 if (data.result == -1) {
-                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}} </a>';
                                                                     msg = 'Wrong username/ password!';
                                                                 } else
                                                                 if (data.result == -2) {
-                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
-                                                                    msg = 'Connection error. Please go -> [plugin] -> [snips] -> [configuration]. Check if you set a correct [Snips site IP address]!';
+                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}} </a>';
+                                                                    msg = '{{Connection error. Please go -> [plugin] -> [snips] -> [configuration]. Check if you set a correct [Snips site IP address]!}}';
                                                                 } else {
-                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>';
+                                                                    title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}}</a>';
                                                                     msg = data.result;
                                                                 }
 
@@ -485,7 +448,7 @@ $('.reload').on('click', function () {
 
                             }else{
                                 bootbox.alert({
-                                    title: '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>',
+                                    title: '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}}</a>',
                                     message: data.result,
                                     closeButton: false
                                 });
@@ -495,21 +458,21 @@ $('.reload').on('click', function () {
             }else if (result == 'mode_3') {
                 bootbox.confirm({
                 title: "Attention",
-                message: "This operation will delete all the intents and its binding records! Would you continue?",
+                message: "{{This operation will delete all the intents and its binding records! Would you continue?}}",
                 buttons: {
                     confirm: {
-                        label: '<i class="fa fa-check"></i> Yes',
+                        label: '<i class="fa fa-check"></i> {{Yes}}',
                         className: 'btn-success'
                     },
                     cancel: {
-                        label: '<i class="fa fa-times"></i> No',
+                        label: '<i class="fa fa-times"></i> {{No}}',
                         className: 'btn-danger'
                     }
                 },
                 callback: function (result) {
                     if (result) {
                         $('#div_alert').showAlert({
-                            message: 'Removing all the skills',
+                            message: '{{Removing all the skills}}',
                             level: 'danger'
                         });
 
@@ -533,7 +496,7 @@ $('.reload').on('click', function () {
                                     return;
                                 }
                                 $('#div_alert').showAlert({
-                                    message: 'Successfully removed all the skills!',
+                                    message: '{{Successfully removed all the skills!}}',
                                     level: 'success'
                                 });
                                 location.reload();
@@ -549,15 +512,15 @@ $('.reload').on('click', function () {
 
 $('.exportConfigration').on('click', function () {
     bootbox.prompt({
-        title: '<i class="fa fa-download"></i> Export configuration',
+        title: '<i class="fa fa-download"></i> {{Export configuration}}',
         inputType: 'text',
         buttons: {
             confirm: {
-                label: 'Export',
+                label: '{{Export}}',
                 className: 'btn-success'
             },
             cancel: {
-                label: 'Cancel',
+                label: '{{Cancel}}',
                 className: 'btn-danger'
             }
         },
@@ -584,7 +547,7 @@ $('.exportConfigration').on('click', function () {
                             return;
                         }
                         $('#div_alert').showAlert({
-                            message: 'Successfully exported!',
+                            message: '{{Successfully exported!}}',
                             level: 'success'
                         });
                         location.reload();
@@ -592,7 +555,7 @@ $('.exportConfigration').on('click', function () {
                 });
             } else if (result = '') {
                 $('#div_alert').showAlert({
-                    message: 'Please specify a name!',
+                    message: '{{Please specify a name!}}',
                     level: 'warning'
                 });
             }   
@@ -616,7 +579,7 @@ $('.importConfigration').on('click', function () {
         success: function (data) {
             if (isset(data.result) && data.result != null && data.result != '') {
                 var options = [{
-                    text: 'Choose a configuration file...',
+                    text: '{{Choose a configuration file...}}',
                     value: '',
                 }];
 
@@ -628,16 +591,16 @@ $('.importConfigration').on('click', function () {
                 }
 
                 bootbox.prompt({
-                    title: '<i class="fa fa-download"></i> Import configuration',
+                    title: '<i class="fa fa-download"></i> {{Import configuration}}',
                     inputType: 'select',
                     inputOptions: options,
                     buttons: {
                         confirm: {
-                            label: 'Import',
+                            label: '{{Import}}',
                             className: 'btn-success'
                         },
                         cancel: {
-                            label: 'Cancel',
+                            label: '{{Cancel}}',
                             className: 'btn-danger'
                         }
                     },
@@ -658,8 +621,8 @@ $('.importConfigration').on('click', function () {
                                 },
                                 success: function (data) {
                                     bootbox.alert({
-                                        title: '<a style="color:#5cb85c;"><i class="fa fa-check"></i> Successed</a>',
-                                        message: 'Configuration file [' + result + '] has been imported!',
+                                        title: '<a style="color:#5cb85c;"><i class="fa fa-check"></i> {{Successed}}</a>',
+                                        message: '{{Configuration file}} [' + result + '] {{has been imported!}}',
                                         callback: function (result) {
                                             location.reload();
                                         },
@@ -672,8 +635,8 @@ $('.importConfigration').on('click', function () {
                 });
             } else {
                 bootbox.alert({
-                    title: '<a style="color:#d9534f;"><i class="fa fa-times"></i> Failed</a>',
-                    message: 'Can not find any configuration file !',
+                    title: '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}}</a>',
+                    message: '{{Can not find any configuration file!}}',
                     closeButton: false
                 });
             }
@@ -682,67 +645,63 @@ $('.importConfigration').on('click', function () {
 });
 
 
-$('.removeAll').on('click', function () {
-    bootbox.confirm({
-        title: "Attention",
-        message: "This operation will delete all the intents and its binding records! Would you continue?",
-        buttons: {
-            confirm: {
-                label: '<i class="fa fa-check"></i> Yes',
-                className: 'btn-success'
-            },
-            cancel: {
-                label: '<i class="fa fa-times"></i> No',
-                className: 'btn-danger'
-            }
-        },
-        callback: function (result) {
-            if (result) {
-                $('#div_alert').showAlert({
-                    message: 'Removing all the skills',
-                    level: 'danger'
-                });
+// $('.removeAll').on('click', function () {
+//     bootbox.confirm({
+//         title: "Attention",
+//         message: "This operation will delete all the intents and its binding records! Would you continue?",
+//         buttons: {
+//             confirm: {
+//                 label: '<i class="fa fa-check"></i> Yes',
+//                 className: 'btn-success'
+//             },
+//             cancel: {
+//                 label: '<i class="fa fa-times"></i> No',
+//                 className: 'btn-danger'
+//             }
+//         },
+//         callback: function (result) {
+//             if (result) {
+//                 $('#div_alert').showAlert({
+//                     message: 'Removing all the skills',
+//                     level: 'danger'
+//                 });
 
-                $.ajax({
-                    type: "POST",
-                    url: "plugins/snips/core/ajax/snips.ajax.php",
-                    data: {
-                        action: "removeAll",
-                    },
-                    dataType: 'json',
-                    global: false,
-                    error: function (request, status, error) {
-                        handleAjaxError(request, status, error);
-                    },
-                    success: function (data) {
-                        if (data.state != 'ok') {
-                            $('#div_alert').showAlert({
-                                message: data.result,
-                                level: 'danger'
-                            });
-                            return;
-                        }
-                        $('#div_alert').showAlert({
-                            message: 'Successfully removed all the skills!',
-                            level: 'success'
-                        });
-                        location.reload();
-                    }
-                });
-            }
-        }
-    });
-});
+//                 $.ajax({
+//                     type: "POST",
+//                     url: "plugins/snips/core/ajax/snips.ajax.php",
+//                     data: {
+//                         action: "removeAll",
+//                     },
+//                     dataType: 'json',
+//                     global: false,
+//                     error: function (request, status, error) {
+//                         handleAjaxError(request, status, error);
+//                     },
+//                     success: function (data) {
+//                         if (data.state != 'ok') {
+//                             $('#div_alert').showAlert({
+//                                 message: data.result,
+//                                 level: 'danger'
+//                             });
+//                             return;
+//                         }
+//                         $('#div_alert').showAlert({
+//                             message: 'Successfully removed all the skills!',
+//                             level: 'success'
+//                         });
+//                         location.reload();
+//                     }
+//                 });
+//             }
+//         }
+//     });
+// });
 
 $("#div_bindings").delegate(".playFeedback", 'click', function () {
 
     var org_text = $(this).closest('.binding').find('.feedbackSpeech').val();
     var vars = [];
 
-    // $(this).closest('.binding').find('.varCmd').find('.ttsVarAttr').each(function () {
-    //     vars.push($(this).val());
-    //     
-    // });
     vars = $(this).closest('.binding').find('.varCmd').getValues('.ttsVarAttr');
 
     var language = $('span[data-l1key=configuration][data-l2key=language]').text();
@@ -929,21 +888,21 @@ function addBinding(_binding) {
     div += '<span class="pull-right">';
 
     if (isset(_binding.action)) {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #337ab7;">' + _binding.action.length + ' actions</span>';
+        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #337ab7;">' + _binding.action.length + ' {{actions}}</span>';
     } else {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #f0ad4e;">No action</span>';
+        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #f0ad4e;">{{No action}}</span>';
     }
 
     if (isset(_binding.nsr_slots)) {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #337ab7;">' + _binding.nsr_slots.length + ' slots</span>';
+        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #337ab7;">' + _binding.nsr_slots.length + ' {{slots}}</span>';
     } else {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #f0ad4e;">No slot</span>';
+        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #f0ad4e;">{{No slot}}</span>';
     }
 
     if (_binding.enable == 1) {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5cb85c;">Enabled</span>';
+        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5cb85c;">{{Enabled}}</span>';
     } else {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #d9534f;">Disabled</span>';
+        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #d9534f;">{{Disabled}}</span>';
     }
 
     div += '<span class="btn-group" role="group">';
@@ -997,7 +956,7 @@ function addBinding(_binding) {
     div += '<hr/>';
 
     div += '<div class="section-title"><strong>{{Condition(s)}}</strong>';
-    div += '<a class="btn btn-xs btn-success bt_addCondition" style="margin-left: 15px;" data-toggle="tooltip" data-placement="top" title="Multiple conditions will be in \'AND\' relation"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
+    div += '<a class="btn btn-xs btn-success bt_addCondition" style="margin-left: 15px;" data-toggle="tooltip" data-placement="top" title="{{Multiple conditions will be in \'AND\' relation}}"><i class="fa fa-plus-circle"></i> {{Add Condition}}</a>';
     div += '</div>';
     div += '<div class="div_condition"></div>';
 
@@ -1005,7 +964,7 @@ function addBinding(_binding) {
 
     div += '<div class="section-title"><strong>{{Action(s)}}</strong>';
     div += '<a class="btn btn-success btn-xs bt_addAction" style="margin-left: 15px;" ' +
-        'data-toggle="tooltip" data-placement="top" title="Multiple actions will be executed in order from top to down"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
+        'data-toggle="tooltip" data-placement="top" title="{{Multiple actions will be executed in order from top to down}}"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
 
 
     div += '</div>';
@@ -1022,7 +981,7 @@ function addBinding(_binding) {
     div += '<div class="col-sm-6">';
 
     div += '<div class="input-group input-group-sm">';
-    div += '<span class="input-group-addon" id="basic-addon1" style="width: 100px">Player</span>';
+    div += '<span class="input-group-addon" id="basic-addon1" style="width: 100px"> {{Player}} </span>';
     div += '<input class="bindingAttr form-control input-sm cmdAction" data-l1key="ttsPlayer"/>';
     div += '<span class="input-group-btn">';
     //div += '<a class="btn btn-default btn-sm listAction" data-type="action" ><i class="fa fa-tasks"></i></a>';
@@ -1035,7 +994,7 @@ function addBinding(_binding) {
         'data-l1key="ttsMessage" rows="2"' +
         'style="resize: none; overflow: hidden; word-wrap: break-word; height: 30px; font-size:12px;"' +
         'placeholder="Speech text" data-toggle="tooltip" ' +
-        'data-placement="bottom" title="Use \'{#}\' to add dynamic variable, then setup variables follwing the same order">';
+        'data-placement="bottom" title="{{Use \'{#}\' to add dynamic variable, then setup variables follwing the same order}}">';
     div += '</textarea>';
     div += '</div>';
 
@@ -1300,7 +1259,7 @@ function displaySlots(_selectSlotsId) {
             }
             var select = $('#' + _selectSlotsId);
             select.empty();
-            var selectCmd = '<option value="-1">Select a Slot &#8681;</option>';
+            var selectCmd = '<option value="-1">{{Select a Slot &#8681;}}</option>';
             selectCmd += result;
             select.append(selectCmd);
         }
