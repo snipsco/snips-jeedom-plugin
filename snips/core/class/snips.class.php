@@ -918,7 +918,7 @@ class snips extends eqLogic
 
     public static
 
-    function fetchAssistantJson($usrename, $password)
+    function fetchAssistantJson($_usrename, $_password)
     {   
         $ip_addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         snips::debug('[FetchAssistantJson]Connection : Trying to connect to: '.$ip_addr);
@@ -928,7 +928,7 @@ class snips extends eqLogic
             return -2;
         }
 
-        $resp = ssh2_auth_password($connection, $usrename, $password);
+        $resp = ssh2_auth_password($connection, $_usrename, $_password);
         if ($resp) {
             snips::debug('[FetchAssistantJson]Verification: Success');
         }
