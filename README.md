@@ -60,7 +60,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 
 (Use `sam devices` command to see the IP address of snips site)
 
-# Features
+# Planned Features
 - [x] Configurable MQTT client
 - [x] Receive all the intents and its slots from the bus
 - [x] Load all the intents automaticly
@@ -70,9 +70,8 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Download 'assistant.json' file remotely from snips site (Via ssh)
 - [x] Managing conditions
 - [x] Dynamic TTS contents
-- [ ] Find out all the available devices automaticly
 
-# Todo list for the beta release
+# Todo list for the <beta> release
 - [x] Create the snips-intent object automaticly when load assistant // mandatory
 - [x] 0 to 100 value max 99 (for all lights and so on) // mandatory
 - [x] Find a way to reset slot value for scenario uses // mandatory
@@ -82,20 +81,21 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Light shift function // mandatory
 - [x] Dynamic TTS player selection // mandatory
 - [x] Find a way to map binary to text // improvement
-- [ ] Multi-intent, 1 slot multiple value // improvement
 
-# Todo list for the public release 
+# Todo list for the <public> release 
 - [x] Adapt to dark sobre theme
 - [ ] Output bindings should be able to manage (Able to delete)
 - [ ] Optimise the intent select modal
 - [ ] Re-arrange debug log output
 - [ ] Clean code rules apply to all the previous code
 
-# Bugs
-- [x] listEquipmentInfo button does not work very well. Need to double check (Found 23, Aug)
+# Founded Bugs
+- [ ] losing tts command in scenario after reload (27 Aug)
+- [x] listEquipmentInfo button does not work very well. Need to double check (23 Aug)
 
 # Develop Diary
 27, Aug, 2018
+- [ ] Fix the bug: losing tts command in scenario after reload 
 - [ ] Documentation for new features
 - [ ] Documentation picture for scenario usecase
 
@@ -145,6 +145,7 @@ Improvement: support tts play for 'scenario_return'
 8, Aug, 2018
 - [x] Support multi-light brightness shift
 ```php
+// User configuration 
 $VARS = array(
 "OPERATION" => "UP", // Use "UP" or "DOWN"
 "LIGHTS" => array(
@@ -152,20 +153,20 @@ $VARS = array(
 array(
     "LIGHT_BRIGHTNESS_VALUE" => "#[Apartment][Mirror Strip Right][Etat Luminosité]#",
     "LIGHT_BRIGHTNESS_ACTION" => "#[Apartment][Mirror Strip Right][Luminosité]#",
-    "MIN_VALUE" => 0,
+    "MIN_VALUE" => 0,   // Min brightness value
     "MAX_VALUE" => 255, // Max brightness value
     "STEP_VALUE" => 0.2 // Change in percentage, if 20%, then put 0.2
 ),
 array(
     "LIGHT_BRIGHTNESS_VALUE" => "#[Apartment][Mirror Strip Left][Etat Luminosité]#",
     "LIGHT_BRIGHTNESS_ACTION" => "#[Apartment][Mirror Strip Left][Luminosité]#",
-    "MIN_VALUE" => 0,
+    "MIN_VALUE" => 0,   // Min brightness value
     "MAX_VALUE" => 255,	// Max brightness value
-    "STEP_VALUE" => 0.2
+    "STEP_VALUE" => 0.2 // Change in percentage, if 20%, then put 0.2
 ),
 
 ));
-
+// Execution (Do not change)
 snips::lightBrightnessShift(json_encode($VARS));
 ```
 - [x] Support reset info command
