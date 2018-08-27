@@ -271,22 +271,22 @@ class snips extends eqLogic
 
     public static
 
-    function generateFeedback($org_text, $vars, $test_play = false)
+    function generateFeedback($_org_text, $_vars)
     {
         snips::debug('[TTs] Generating feedback text');
-        $string_subs = explode('{#}', $org_text);
+        $string_subs = explode('{#}', $_org_text);
         $speaking_text = '';
         if (!empty($string_subs)) {
             foreach($string_subs as $key => $sub) {
-                if (isset($vars[$key])) {
-                    $cmd = cmd::byString($vars[$key]['cmd']);
+                if (isset($_vars[$key])) {
+                    $cmd = cmd::byString($_vars[$key]['cmd']);
                     snips::debug('[TTs] The '.$key.' variable cmd id: ' . $cmd->getId());
                     if (is_object($cmd)) {
                         if ($cmd->getName() == 'intensity_percent' || $cmd->getName() == 'intensity_percentage') {
                             $sub.= $cmd->getConfiguration('orgVal');
                         }else if($cmd->getSubType() == 'binary'){
-                            if($cmd->getCache('value', ' ') == 0) $sub .= $vars[$key]['options']['zero'];
-                            if($cmd->getCache('value', ' ') == 1) $sub .= $vars[$key]['options']['one'];
+                            if($cmd->getCache('value', ' ') == 0) $sub .= $_vars[$key]['options']['zero'];
+                            if($cmd->getCache('value', ' ') == 1) $sub .= $_vars[$key]['options']['one'];
                         }else {
                             if ($cmd->getValue()) {
                                 $sub.= $cmd->getValue();
