@@ -95,6 +95,10 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] listEquipmentInfo button does not work very well. Need to double check (Found 23, Aug)
 
 # Develop Diary
+27, Aug, 2018
+- [ ] Documentation for new features
+- [ ] Documentation picture for scenario usecase
+
 24, Aug, 2018
 - [x] Troubleshooting with 'listEquipment' issue
 - [x] Last beta release
@@ -110,9 +114,6 @@ Fixed bug: listEquipmentCmd button fills value to wrong input box for command op
 Improvement: adapt to [dart sobre] black theme
 Improvement: support tts play for 'scenario_return'
 ```
-27, Aug, 2018
-- [ ] Documentation for new features
-- [ ] Documentation picture for scenario usecase
 
 23, Aug, 2018
 - [x] Support the 'ask' feature
