@@ -578,12 +578,12 @@ class snips extends eqLogic
 
     public static
 
-    function findAndDoAction($payload)
+    function findAndDoAction($_payload)
     {
-        $intent_name = $payload->{'intent'}->{'intentName'};
-        $site_id = $payload->{'siteId'};
-        $session_id = $payload->{'sessionId'};
-        $query_input = $payload->{'input'};
+        $intent_name = $_payload->{'intent'}->{'intentName'};
+        $site_id = $_payload->{'siteId'};
+        $session_id = $_payload->{'sessionId'};
+        $query_input = $_payload->{'input'};
         snips::debug('[Binding Execution] Intent:' . $intent_name . ' siteId:' . $site_id . ' sessionId:' . $session_id);
         $slots_values = array();
 
@@ -594,7 +594,7 @@ class snips extends eqLogic
             snips::debug('[Binding Execution] Set '.$var->getValue().' => snipsMsgSiteId');
         }
 
-        foreach($payload->{'slots'} as $slot) {
+        foreach($_payload->{'slots'} as $slot) {
             if (is_string($slot->{'value'}->{'value'})) {
                 $slots_values[$slot->{'slotName'}] = strtolower(str_replace(' ', '', $slot->{'value'}->{'value'}));
             }
