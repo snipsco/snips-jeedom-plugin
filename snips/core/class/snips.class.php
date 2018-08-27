@@ -382,23 +382,38 @@ class snips extends eqLogic
         $slots_table = $reference['Slots'];
         $slots_table_curr = snips::getCurrentReferTable();
 
+        snips::debug('[recoverScenarioExpressions] slots_table_curr'.json_encode($slots_table_curr));
+
         $expressions = scenarioExpression::all();
         foreach ($expressions as $expression) {
-            $old_expression = $expression->getExpression();
+            $old_expression_content = $expression->getExpression();
+            $old_expression_option = $expression->getOptions();
+            foreach ($slots_table as $slots_string => $id) {
 
-            foreach ($slots_table as $string => $id) {
-                if (array_key_exists($string, $slots_table_curr)) {
+                if (array_key_exists($slots_string, $slots_table_curr)) { // If the old intent is in the new assistant 
 
-                    //snips::debug('[recoverScenarioExpressions] Checking Expression: '.$old_expression. 'with id '.'#'.$id.'#');
-
-                    if ( strpos($old_expression, '#'.$id.'#') || strpos($old_expression, '#'.$id.'#')===0 ) {
-                        $new_expression = str_replace('#'.$id.'#', '#'.$string.'#', $old_expression);
-                        snips::debug('[recoverScenarioExpressions] Old command entity: '.$string.' with id: '.$id);
+                    if ( strpos($old_expression_content, '#'.$id.'#') || strpos($old_expression_content, '#'.$id.'#') === 0 ) {
+                        $new_expression = str_replace('#'.$id.'#', '#'.$slots_string.'#', $old_expression_content);
+                        snips::debug('[recoverScenarioExpressions] Old command entity: '.$slots_string.' with id: '.$id);
                         $expression->setExpression($new_expression);
-                        $expression->save();
-                    }  
+                        
+                    }
                 }
             }
+            foreach ($old_expression_option as $option_name => $value) {
+                //snips::debug('[recoverScenarioExpressions] option name: '.$option_name.' with value: '.$value);
+
+                preg_match_all("/#([0-9]*)#/", $value, $match);
+                if (count($match[0]) == 1) {
+                    if ( in_array($match[1][0], $slots_table) ) {
+                        $slot_cmd_string = array_search($match[1][0], $slots_table);
+                        $expression->setOptions($option_name, '#'.$slot_cmd_string.'#');
+                        snips::debug('[recoverScenarioExpressions] found option: '.$option_name. ' change to '.$slot_cmd_string);
+                    }
+                }
+                    
+            }
+            $expression->save();
         }
     }
 
