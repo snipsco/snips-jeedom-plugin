@@ -1,7 +1,7 @@
 <?php
 include_file('core', 'authentification', 'php');
 if (!isConnect('admin')) {
-	throw new Exception('{{401 - Accès non autorisé}}');
+	throw new Exception('{{401 - Unauthorized}}');
 }
 $plugin = plugin::byId('snips');
 sendVarToJS('eqType', $plugin->getId());
@@ -13,7 +13,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
         <div class="bs-sidebar">
             <ul id="ul_eqLogic" class="nav nav-list bs-sidenav">
                 
-                <li class="filter" style="margin-bottom: 5px;"><input class="filter form-control input-sm" placeholder="{{Rechercher}}" style="width: 100%"/></li>
+                <li class="filter" style="margin-bottom: 5px;"><input class="filter form-control input-sm" placeholder="{{Search}}" style="width: 100%"/></li>
                   <?php
                   foreach ($eqLogics as $eqLogic) {
                       if ($eqLogic->getConfiguration('snipsType') == 'Intent') {

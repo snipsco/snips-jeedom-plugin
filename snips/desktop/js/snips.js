@@ -1193,7 +1193,7 @@ function addInfoCmd(_infoCmd, _el) {
     var div = '<div class="varCmd" style="width: 100%; margin-bottom: 5px;">';
     div += '<div class="input-group input-group-sm infoCmd" >';
     div += '<span class="input-group-btn ">';
-    div += '<a class="btn btn-default btn-sm" style="width: 100px" data-toggle="tooltip" data-placement="top" title="Drag to change order"><span class="glyphicon glyphicon-sort" aria-hidden="true"></span>' + "&nbsp;&nbsp;&nbsp;" + 'Variable</a></span>'
+    div += '<a class="btn btn-default btn-sm" style="width: 100px" data-toggle="tooltip" data-placement="top" title=" {{Drag to change order}}"><span class="glyphicon glyphicon-sort" aria-hidden="true"></span>' + "&nbsp;&nbsp;&nbsp;" + '{{Variable}}</a></span>'
     div += '<input value="" class="ttsVarAttr form-control input-sm" data-l1key="cmd" >';
     div += '<span class="input-group-btn">';
     div += '    <button class="btn btn-default listInfoCmd" type="button" title="{{Select a value}}">';

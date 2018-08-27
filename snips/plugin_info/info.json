@@ -10,6 +10,6 @@
 	"hasOwnDeamon" : 1,
 	"changelog" : "https://github.com/snipsco/Snips-Jeedom-Plugin-Issues",
 	"documentation" : "https://snips.gitbook.io/documentation/home-automation-platforms/jeedom",
-	"language" : "en",
+	"language" : ["fr_FR","en_US"],
 	"compatibility" : ["miniplus","smart","rpi","docker","diy","mobile"]
 }
