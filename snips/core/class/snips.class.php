@@ -174,16 +174,16 @@ class snips extends eqLogic
 
     public static
 
-    function message($message)
+    function message($_message)
     {
         $topics = snips::getTopics();
         $intents_slots = snips::getIntents();
         snips::debug('[MQTT] Received message.');
-        if (in_array($message->topic, $topics) == false) {
+        if (in_array($_message->topic, $topics) == false) {
             return;
         }
         else {
-            snips::findAndDoAction(json_decode($message->payload));
+            snips::findAndDoAction(json_decode($_message->payload));
         }
     }
 
@@ -396,13 +396,10 @@ class snips extends eqLogic
                         $new_expression = str_replace('#'.$id.'#', '#'.$slots_string.'#', $old_expression_content);
                         snips::debug('[recoverScenarioExpressions] Old command entity: '.$slots_string.' with id: '.$id);
                         $expression->setExpression($new_expression);
-                        
                     }
                 }
             }
             foreach ($old_expression_option as $option_name => $value) {
-                //snips::debug('[recoverScenarioExpressions] option name: '.$option_name.' with value: '.$value);
-
                 preg_match_all("/#([0-9]*)#/", $value, $match);
                 if (count($match[0]) == 1) {
                     if ( in_array($match[1][0], $slots_table) ) {
@@ -411,7 +408,6 @@ class snips extends eqLogic
                         snips::debug('[recoverScenarioExpressions] found option: '.$option_name. ' change to '.$slot_cmd_string);
                     }
                 }
-                    
             }
             $expression->save();
         }
