@@ -312,25 +312,25 @@ class snips extends eqLogic
 
     public static
 
-    function parseSessionId($message)
+    function parseSessionId($_message)
     {
-        $data = json_decode($message);
+        $data = json_decode($_message);
         return $data['sessionId'];
     }
 
     public static
 
-    function parseSlots($message)
+    function parseSlots($_message)
     {
-        $data = json_decode($message);
+        $data = json_decode($_message);
         return $data["slots"];
     }
 
     public static
 
-    function debug($info)
+    function debug($_info)
     {
-        log::add("snips", 'debug', $info);
+        log::add("snips", 'debug', $_info);
     }
 
     public static
