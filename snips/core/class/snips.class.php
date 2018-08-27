@@ -192,12 +192,12 @@ class snips extends eqLogic
     function playTTS($_player_cmd, $_message, $_session_id = null, $_site_id = 'default'){
 
         //$messages_to_play = explode('//', $_message);
-        $messagesToPlay = interactDef::generateTextVariant($_message);
-        $messageToPlay = $messagesToPlay[array_rand ($messagesToPlay)];
+        $messages_to_play = interactDef::generateTextVariant($_message);
+        $message_to_play = $messages_to_play[array_rand ($messages_to_play)];
         $cmd = cmd::byString($_player_cmd);
         if (is_object($cmd)) {
             $options = array();
-            $options['message'] = $messageToPlay;
+            $options['message'] = $message_to_play;
             if (eqLogic::byId($cmd->getEqLogic_id())->getEqType_name() == 'snips') {
                 $options['title'] = $_site_id;
             }else{
