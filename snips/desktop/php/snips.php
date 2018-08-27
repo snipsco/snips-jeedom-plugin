@@ -33,35 +33,35 @@ $eqLogics = eqLogic::byType($plugin->getId());
   <div class="eqLogicThumbnailContainer">
 
       <div class="cursor eqLogicAction reload" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <img src="/plugins/snips/3rdparty/icons/rocket.png" height="85" width="85" />
+        <img src="/plugins/snips/3rdparty/icons/rocket.png" height="95px" width="95px" />
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">{{Load Assistant}}</span>
       </div>
 
       <div class="cursor eqLogicAction exportConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <img src="/plugins/snips/3rdparty/icons/cloud-upload.png" height="85" width="85" />
+        <img src="/plugins/snips/3rdparty/icons/cloud-upload.png" height="95px" width="95px" />
         <br>
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Export Binding}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">{{Export Binding}}</span>
       </div>
 
       <div class="cursor eqLogicAction importConfigration" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <img src="/plugins/snips/3rdparty/icons/cloud-download.png" height="85" width="85" />
+        <img src="/plugins/snips/3rdparty/icons/cloud-download.png" height="95px" width="95px" />
         <br>
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Import Binding}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">{{Import Binding}}</span>
       </div>
       
       <div class="cursor eqLogicAction resetMqtt" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-        <img src="/plugins/snips/3rdparty/icons/link.png" height="85" width="85" />
+        <img src="/plugins/snips/3rdparty/icons/link.png" height="95px" width="95px" />
         <br>
 
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Reset MQTT}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">{{Reset MQTT}}</span>
       </div>
 
       <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
-        <img src="/plugins/snips/3rdparty/icons/gear.png" height="85" width="85" />
+        <img src="/plugins/snips/3rdparty/icons/gear.png" height="95px" width="95px" />
         <br>
 
-        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Configuration}}</span>
+        <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">{{Configuration}}</span>
       </div>
   </div> 
 
@@ -141,7 +141,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
           if ($eqLogic->getConfiguration('snipsType') == 'Intent' && !$eqLogic->getIsEnable()) {
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
             echo '<span class="panel panel-success eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
-            echo '<li class="panel-heading" style="padding: 5px 15px;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></li>';
+            echo '<li class="panel-heading" style="padding: 5px 15px;list-style:none;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></li>';
             echo '<li class="panel-body" style="padding: 0px;">';
 
             echo '<ul class="list-group" style="margin: 0;">';
