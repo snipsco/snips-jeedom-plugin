@@ -110,6 +110,9 @@ Fixed bug: listEquipmentCmd button fills value to wrong input box for command op
 Improvement: adapt to [dart sobre] black theme
 Improvement: support tts play for 'scenario_return'
 ```
+27, Aug, 2018
+- [ ] Documentation for new features
+- [ ] Documentation picture for scenario usecase
 
 23, Aug, 2018
 - [x] Support the 'ask' feature
