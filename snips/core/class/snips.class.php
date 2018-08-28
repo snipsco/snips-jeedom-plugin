@@ -688,6 +688,17 @@ class snips extends eqLogic
                         $options = $action['options'];
 
                         snips::setSlotsCmd($slots_values, $intent_name, $options);
+                        if ($action['cmd'] == 'scenario') {
+                            snips::debug('[Binding Execution] tag value is :'.$options['tags']);
+
+                            $options['tags'] .= ' plugin=snips'.' identifier=snips::'.$intent_name.' intent='.substr($intent_name,strpos($intent_name,':')+1).' siteId='.$site_id.' query="'.$query_input.'"';
+
+                            foreach ($slots_values as $slots_name => $value) {
+                                $options['tags'] .= ' '.$slots_name.'='.$value;
+                            }
+                            snips::debug('[Binding Execution] tag aft value is :'.$options['tags']);
+                        }
+
                         $execution_return_msg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
                         if (is_string($execution_return_msg) && $execution_return_msg!='') {
                             if (config::byKey('dynamicSnipsTTS', 'snips', 0) && cmd::byString($binding['ttsPlayer'])->getConfiguration('snipsType') == 'TTS') {
