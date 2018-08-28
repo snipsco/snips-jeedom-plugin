@@ -35,12 +35,12 @@ $(function () {
         $(this).closest('label').addClass('active');
         $(this).closest('label').removeClass('btn-success');
         $(this).closest('label').addClass('btn-danger');
-        $(this).closest('label').find('span').text('× Disable');
+        $(this).closest('label').find('span').text('{{× Disable}}');
     } else {
         $(this).closest('label').removeClass('active');
         $(this).closest('label').removeClass('btn-danger');
         $(this).closest('label').addClass('btn-success');
-        $(this).closest('label').find('span').text('Enable');
+        $(this).closest('label').find('span').text('{{Enable}}');
     }
 })
 

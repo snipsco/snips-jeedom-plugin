@@ -172,7 +172,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                       <label class="btn btn-success btn-sm">
-                        <input type="checkbox" class="eqLogicAttr" id="isEnable" data-l1key="isEnable"><span>Enable</span>
+                        <input type="checkbox" class="eqLogicAttr" id="isEnable" data-l1key="isEnable" style="display: none;"><span>{{Enable}}</span>
                       </label>
                     </div>
                 </div>

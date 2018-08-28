@@ -27,7 +27,8 @@
             "Status": "Statut",
             "JeeDom Interaction": "JeeDom Interaction",
             "Action Binding": "Action Binding",
-            "Attach a new binding": "Ajouter une nouvelle liaison"
+            "Attach a new binding": "Ajouter une nouvelle liaison",
+            "Enable": "Activer"
       },
       "plugins\/snips\/desktop\/js\/snips.js":{
             "Please give a name": "Veuillez donner un nom",
@@ -91,7 +92,9 @@
             "Drag to change order":"Faites glisser pour changer l'ordre",
             "Variable":"Variable",
             "Select a value": "Sélectionner une valeur",
-            "Select a Slot &#8681;": "Sélectionner un slot &#8681;"
+            "Select a Slot &#8681;": "Sélectionner un slot &#8681;",
+            "× Disable": "× Désactivé",
+            "Enable": "Activer"
       },
       "plugins\/snips\/plugin_info\/configuration.php":{
             "IP address of the master snips site": "Adresse IP du périphérique maître",
