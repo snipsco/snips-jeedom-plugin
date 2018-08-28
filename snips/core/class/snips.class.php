@@ -376,7 +376,7 @@ class snips extends eqLogic
     public static
 
     function recoverScenarioExpressions(){
-        $json_string = file_get_contents(dirname(__FILE__) . '/../../config_backup/reload_running.json');
+        $json_string = file_get_contents(dirname(__FILE__) . '/../../config_running/reload_reference.json');
         $reference = json_decode($json_string, true);
         $intent_table = $reference['Intents'];
         $slots_table = $reference['Slots'];
@@ -572,7 +572,7 @@ class snips extends eqLogic
             "Intents" => $intent_table,
             "Slots" => $slots_table
         );
-        $file = fopen(dirname(__FILE__) . '/../../config_backup/reload_running.json', 'w');
+        $file = fopen(dirname(__FILE__) . '/../../config_running/reload_reference.json', 'w');
         $res = fwrite($file, json_encode($reload_reference));
     }   
 
