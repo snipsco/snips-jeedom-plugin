@@ -78,9 +78,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
 
             echo '<div data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 160px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
-            echo '<img src="/plugins/snips/3rdparty/icons/speaker.png" height="85" width="85x" />';
+            echo '<img src="/plugins/snips/3rdparty/icons/speaker.png" height="95px" width="95px" />';
             echo "<br>";
-            echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="label label-primary" style="text-shadow : none;">'.$eqLogic->getConfiguration('siteName').' :: '.config::byKey('mqttAddr', 'snips', '127.0.0.1').'</span><br><strong> Snips-TTS</strong></span>';
+            echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="label label-success" style="text-shadow : none;">'.$eqLogic->getConfiguration('siteName').' :: '.config::byKey('mqttAddr', 'snips', '127.0.0.1').'</span><br></span>';
             echo '</div>';
           }
         }
