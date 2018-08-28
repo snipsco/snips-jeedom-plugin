@@ -90,14 +90,21 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Clean code rules apply to all the previous code
 
 # Founded Bugs
-- [ ] losing tts command in scenario after reload (27 Aug)
+- [x] losing tts command in scenario after reload (27 Aug)
 - [x] listEquipmentInfo button does not work very well. Need to double check (23 Aug)
 
 # Develop Diary
-27, Aug, 2018
-- [ ] Fix the bug: losing tts command in scenario after reload 
+29, Aug, 2018
 - [ ] Documentation for new features
 - [ ] Documentation picture for scenario usecase
+
+28, Aug, 2018
+- [x] Finished French translation
+- [x] Add feature: pass some necessary tags when snips launch a scenario
+
+27, Aug, 2018
+- [x] Fix the bug: losing tts command in scenario after reload 
+- [x] Start to implement multi-language system
 
 24, Aug, 2018
 - [x] Troubleshooting with 'listEquipment' issue
