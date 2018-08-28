@@ -9,7 +9,7 @@
             "Import Binding": "Importer Liaison",
             "Reset MQTT": "Reset MQTT",
             "Configuration": "Configuration",
-            "Snips Devices": "Dispositifs Snips",
+            "Snips Devices": "Équipement Snips",
             "Please load assistant": "Veuillez charger l'assistant",
             "Intents (Response by Jeedom)": "Intents (Résponse par Jeedom)",
             "Language": "Langue",
@@ -87,6 +87,9 @@
             "test play": "test play",
             "Use \\'{#}\\' to add dynamic variable, then setup variables follwing the same order":"Utiliser \\'{#}\\' pour ajouter un variable dynamic, puis donner le valeur suivant le même ordre",
             "Select an action": "Sélectionner une action",
+            "ONLY IF":"ONLY IF",
+            "Drag to change order":"Faites glisser pour changer l'ordre",
+            "Variable":"Variable",
             "Select a value": "Sélectionner une valeur",
             "Select a Slot &#8681;": "Sélectionner un slot &#8681;"
       },

@@ -1158,7 +1158,7 @@ function addCondition(_condition, _el) {
     div += '<a class="btn btn-default bt_removeCondition btn-sm" data-type="condition"><i class="fa fa-minus-circle"></i></a>';
     div += '</span>';
 
-    div += '<span class="input-group-addon" style="width: 100px" >ONLY IF</span>';
+    div += '<span class="input-group-addon" style="width: 100px" >{{ONLY IF}}</span>';
 
     var selectSlotsId = uniqId();
 
