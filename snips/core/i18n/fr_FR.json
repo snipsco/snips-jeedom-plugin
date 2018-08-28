@@ -30,7 +30,7 @@
             "Attach a new binding": "Ajouter une nouvelle liaison"
       },
       "plugins\/snips\/desktop\/js\/snips.js":{
-            "Please give a name": "",
+            "Please give a name": "Veuillez donner un nom",
             "New name?": "Nouveau nom?",
             "Please give a name to this new binding": "Veuillez donner un nom à cette nouvelle liaison",
             "Attention: Please choose your operation carefully!": "Attention: choisissez votre opération avec soin!",

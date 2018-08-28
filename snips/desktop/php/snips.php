@@ -98,7 +98,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
         foreach ($eqLogics as $eqLogic) {
           if ($eqLogic->getConfiguration('snipsType') == 'Intent') {
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-
             echo '<span class="panel panel-success eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
             echo '<li class="panel-heading" style="padding: 5px 15px;list-style:none;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></li>';
             echo '<li class="panel-body" style="padding: 0px;list-style:none;">';
@@ -191,8 +190,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
                   </div>
                 </div>
 
-
-
                 <label class="col-sm-1 control-label">{{Language}}</label>
                 <div class="col-sm-1">
                   <span class="label label-primary eqLogicAttr" data-l1key="configuration" data-l2key="language"style="margin-left: 10px;font-size: 0.9em;"></span>
@@ -203,7 +200,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
         <div class="panel-heading btn btn-default" id="bt_addNewBinding" style="width: 100%; border: 1.5px dashed #ddd; box-shadow: 0 1px 1px rgba(0,0,0,.05); background-color:#fff;"><i class="fa fa-plus-circle"></i> {{Attach a new binding}}</div>
 
-        <div id="div_bindings" style="padding-top: 10px;"></div>
+        <div id="div_bindings" style="padding-top: 10px;">
+          
+        </div>
 </fieldset>
 </form>
 </div>
