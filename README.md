@@ -94,9 +94,12 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] listEquipmentInfo button does not work very well. Need to double check (23 Aug)
 
 # Develop Diary
+30, Aug, 2018
+- [ ] Change 'identifier' value to snips::intent_id::binding_name
+
 29, Aug, 2018
-- [ ] Documentation for new features
-- [ ] Documentation picture for scenario usecase
+- [x] Documentation for new features
+- [x] Documentation picture for scenario usecase
 - [x] Release 
 ```
 Version: 2018-08-29 12:21:31
