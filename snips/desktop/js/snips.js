@@ -72,12 +72,12 @@ $(document).on('change', '#isEnable', function () {
         $(this).closest('label').addClass('active');
         $(this).closest('label').removeClass('btn-success');
         $(this).closest('label').addClass('btn-danger');
-        $(this).closest('label').find('span').text('× Disable');
+        $(this).closest('label').find('span').text('{{× Disable}}');
     } else {
         $(this).closest('label').removeClass('active');
         $(this).closest('label').removeClass('btn-danger');
         $(this).closest('label').addClass('btn-success');
-        $(this).closest('label').find('span').text('Enable');
+        $(this).closest('label').find('span').text('{{Enable}}');
     }
 });
 
@@ -260,11 +260,11 @@ $("#div_bindings").delegate(".isActivated", 'change', function () {
     if (el.is(":checked")) {
         btn.removeClass('btn-success');
         btn.addClass('btn-danger');
-        btn.text('× Disable');
+        btn.text('{{× Disable}}');
     } else {
         btn.removeClass('btn-danger');
         btn.addClass('btn-success');
-        btn.text('Enable');
+        btn.text('{{Enable}}');
     }
 });
 

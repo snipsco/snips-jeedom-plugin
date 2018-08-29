@@ -30,7 +30,7 @@
       "Attach a new binding":"Attach a new binding"
    },
    "plugins\/snips\/desktop\/js\/snips.js":{
-      "\u00d7 Disable":"\u00d7 Disable",
+      "× Disable":"× Disable",
       "Enable":"Enable",
       "Please give a name":"Please give a name",
       "New name?":"New name?",
