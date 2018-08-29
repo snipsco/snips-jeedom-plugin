@@ -28,7 +28,7 @@ if (!isConnect()) {
             <div class="col-lg-4">
                 <input type="checkbox" class="configKey" data-l1key="dynamicSnipsTTS"> {{Enable}}</input>
             </div>
-            <div class="alert alert-info col-lg-3" role="alert"> {{When select a snips tts command in binding configuration with this option checked, the reply tts will be played on the site which received the command.}}</div>
+            <div class="alert alert-info col-lg-3" role="alert"> {{When select a snips tts command in binding configuration with this option checked, the reply tts will be played on the device which received the command.}}</div>
         </div>
 
         <!-- <div class="form-group">

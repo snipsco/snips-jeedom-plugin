@@ -310,11 +310,11 @@ $('.reload').on('click', function () {
     var psssword = '';
 
     bootbox.prompt({
-        title: '<i class="fa fa-exclamation-triangle"></i> {{Attention: Please choose your operation carefully!}}',
+        title: '<i class="fa fa-exclamation-triangle"></i> {{Beware: Please choose your operation carefully!}}',
         inputType: 'select',
         inputOptions: [
             {
-                text: '{{Choose a reload option...}}',
+                text: '{{Choose a loading option...}}',
                 value: '',
             },
             {
@@ -364,7 +364,7 @@ $('.reload').on('click', function () {
                             var title = '';
                             loading.modal('hide');
                             if (data.result == 1) {
-                                title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> {{Successed}}</a>';
+                                title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> {{Success}}</a>';
                                 msg = '{{Assistant loaded!}}';
 
                                 bootbox.alert({
@@ -389,7 +389,7 @@ $('.reload').on('click', function () {
                                                     if (result) {
                                                         password = result;
                                                         var loading2 = bootbox.dialog({
-                                                            message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> {{Loading assistant from remote site...}}</div>',
+                                                            message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> {{Loading assistant from device...}}</div>',
                                                             closeButton: false
                                                         });
                                                         $.ajax({
@@ -424,7 +424,7 @@ $('.reload').on('click', function () {
                                                                 } else
                                                                 if (data.result == -2) {
                                                                     title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}} </a>';
-                                                                    msg = '{{Connection error. Please go -> [plugin] -> [snips] -> [configuration]. Check if you set a correct [Snips site IP address]!}}';
+                                                                    msg = '{{Connection error. Please go to -> [plugin] -> [snips] -> [configuration]. Check if you set a correct [Master Snips devices IP address]!}}';
                                                                 } else {
                                                                     title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}}</a>';
                                                                     msg = data.result;
@@ -473,7 +473,7 @@ $('.reload').on('click', function () {
                 callback: function (result) {
                     if (result) {
                         $('#div_alert').showAlert({
-                            message: '{{Removing all the skills}}',
+                            message: '{{Removing all intents}}',
                             level: 'danger'
                         });
 
@@ -965,7 +965,7 @@ function addBinding(_binding) {
 
     div += '<div class="section-title"><strong>{{Action(s)}}</strong>';
     div += '<a class="btn btn-success btn-xs bt_addAction" style="margin-left: 15px;" ' +
-        'data-toggle="tooltip" data-placement="top" title="{{Multiple actions will be executed in order from top to down}}"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
+        'data-toggle="tooltip" data-placement="top" title="{{Multiple actions will be executed from top to down}}"><i class="fa fa-plus-circle"></i> {{Add Action}}</a>';
 
 
     div += '</div>';
