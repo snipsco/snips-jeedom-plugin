@@ -97,6 +97,15 @@ Then you need to set the correct IP address on the plugin configuration page.
 29, Aug, 2018
 - [ ] Documentation for new features
 - [ ] Documentation picture for scenario usecase
+- [x] Release 
+```
+Version: 2018-08-29 12:21:31
+
+Improvement: support french interface translation
+Improvement: pass all necessary infos as tags when snips plugin trigger an scenario
+Change: removed [Reset MQTT] option
+Fix: losing request command in scenario ask command
+```
 
 28, Aug, 2018
 - [x] Finished French translation
