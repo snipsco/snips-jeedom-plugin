@@ -995,7 +995,7 @@ function addBinding(_binding) {
         'data-l1key="ttsMessage" rows="2"' +
         'style="resize: none; overflow: hidden; word-wrap: break-word; height: 30px; font-size:12px;"' +
         'placeholder="Speech text" data-toggle="tooltip" ' +
-        'data-placement="bottom" title="{{Use \'{#}\' to add dynamic variable, then setup variables follwing the same order}}">';
+        'data-placement="bottom" title="{{Use \'{#}\' to add dynamic variable, then setup variables following the same order}}">';
     div += '</textarea>';
     div += '</div>';
 

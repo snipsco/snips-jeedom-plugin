@@ -9,7 +9,7 @@ if (!isConnect()) {
 <form class="form-horizontal">
     <fieldset>
         <div class="form-group">
-            <label class="col-lg-4 control-label" >{{IP address of the master snips site}}</label>
+            <label class="col-lg-4 control-label" >{{IP address of the master snips device}}</label>
             <div class="col-lg-4">
                 <input class="configKey form-control" data-l1key="mqttAddr" placeholder="127.0.0.1"/>
             </div>
@@ -28,7 +28,7 @@ if (!isConnect()) {
             <div class="col-lg-4">
                 <input type="checkbox" class="configKey" data-l1key="dynamicSnipsTTS"> {{Enable}}</input>
             </div>
-            <div class="alert alert-info col-lg-3" role="alert"> {{When select a snips tts command in binding configuration with this option checked, the reply tts will be played on the device which received the command.}}</div>
+            <div class="alert alert-info col-lg-3" role="alert"> {{When selecting a snips tts command in binding configuration with this option checked, the reply tts will be played on the device which received the command.}}</div>
         </div>
 
         <!-- <div class="form-group">

@@ -77,7 +77,7 @@
             "Status": "Statut",
             "Disable": "Désactiver",
             "Condition(s)": "Condition(s)",
-            "Multiple conditions will be in \\'AND\\' relation":"Plusieurs conditions seront en \\'AND\\' relation",
+            "Multiple conditions will be in 'AND' relation":"Plusieurs conditions seront en 'AND' relation",
             "Add Condition": "Ajouter une condition",
             "Action(s)": "Action(s)",
             "Multiple actions will be executed from top to down": "Plusieurs actions seront exécutées de haut en bas",
@@ -86,7 +86,7 @@
             "Test Play": "Tester le TTS",
             "Player": "Lecteur",
             "test play": "Tester le TTS",
-            "Use \\'{#}\\' to add dynamic variable, then setup variables following the same order":"Utiliser \\'{#}\\' pour ajouter une variable dynamique, puis suiver le même ordre lorsque vous écrivez votre phrase",
+            "Use '{#}' to add dynamic variable, then setup variables following the same order":"Utiliser '{#}' pour ajouter une variable dynamique, puis suiver le même ordre lorsque vous écrivez votre phrase",
             "Select an action": "Sélectionner une action",
             "ONLY IF":"ONLY IF",
             "Drag to change order":"Faites glisser pour changer l'ordre",
@@ -97,7 +97,7 @@
             "Enable": "Activer"
       },
       "plugins\/snips\/plugin_info\/configuration.php":{
-            "IP address of the master snips site": "Adresse IP du périphérique maître",
+            "IP address of the master snips device": "Adresse IP du périphérique snips maître",
             "Default feedback": "Retour par défaut",
             "Use <kbd>[A|B|C]<\/kbd> formate to make dynamic sentences": "Utiliser le format: <kbd>[A|B|C]<\/kbd> pour faire des phrases dynamiques",
             "Dynamic Snips TTS": "Dynamique TTS Snips",
