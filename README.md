@@ -95,8 +95,9 @@ Then you need to set the correct IP address on the plugin configuration page.
 
 # Develop Diary
 30, Aug, 2018
-- [ ] Change 'identifier' value to snips::intent_id::binding_name
-- [ ] Change the ask documentation part
+- [x] Change 'identifier' value to snips::intent_id::binding_name
+- [x] Change the ask documentation part
+- [ ] Separate snips device reload and assistant reload
 
 29, Aug, 2018
 - [x] Documentation for new features
