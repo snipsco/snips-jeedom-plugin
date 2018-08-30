@@ -483,42 +483,7 @@ class snips extends eqLogic
             }
         }
 
-        $sites = Toml::parseFile(dirname(__FILE__) . '/../../config_running/snips.toml')->{'snips-hotword'}->{'audio'};
-        if (count($sites) == 0) {
-            $elogic = snips::byLogicalId('Snips-TTS-default', 'snips');
-            if (!is_object($elogic)) {
-                $elogic = new snips();
-                $elogic->setName('Snips-TTS-default');
-                $elogic->setLogicalId('Snips-TTS-default');
-                snips::debug('[Load Assistant] Created TTS entity: Snips-TTS-default');
-            }
-            $elogic->setEqType_name('snips');
-            $elogic->setIsEnable(1);
-            $elogic->setConfiguration('snipsType', 'TTS');
-            $elogic->setConfiguration('language', $intent['language']);
-            $elogic->setConfiguration('siteName', 'default');
-            $elogic->setObject_id(object::byName('Snips-Intents')->getId());
-            $elogic->save();
-        }else{
-            foreach ($sites as $key => $site) {
-                $siteName = str_replace('@mqtt', '', $site);
-
-                $elogic = snips::byLogicalId('Snips-TTS-'.$siteName, 'snips');
-                if (!is_object($elogic)) {
-                    $elogic = new snips();
-                    $elogic->setName('Snips-TTS-'.$siteName);
-                    $elogic->setLogicalId('Snips-TTS-'.$siteName);
-                    snips::debug('[Load Assistant] Created TTS entity: Snips-TTS-'.$siteName);
-                }
-                $elogic->setEqType_name('snips');
-                $elogic->setIsEnable(1);
-                $elogic->setConfiguration('snipsType', 'TTS');
-                $elogic->setConfiguration('language', $intent['language']);
-                $elogic->setConfiguration('siteName', $siteName);
-                $elogic->setObject_id(object::byName('Snips-Intents')->getId());
-                $elogic->save();
-            }
-        }
+        snips::reloadSnipsDevices();
 
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
         if (!is_object($var)) {
@@ -534,6 +499,47 @@ class snips extends eqLogic
         snips::recoverScenarioExpressions();
         snips::debug('[Load Assistant] Assistant loaded, restarting deamon');
         snips::deamon_start();
+    }
+
+    public static
+
+    function reloadSnipsDevices(){
+        $devices = Toml::parseFile(dirname(__FILE__) . '/../../config_running/snips.toml')->{'snips-hotword'}->{'audio'};
+        if (count($devices) == 0) {
+            $elogic = snips::byLogicalId('Snips-TTS-default', 'snips');
+            if (!is_object($elogic)) {
+                $elogic = new snips();
+                $elogic->setName('Snips-TTS-default');
+                $elogic->setLogicalId('Snips-TTS-default');
+                snips::debug('[reloadSnipsDevices] Created TTS entity: Snips-TTS-default');
+            }
+            $elogic->setEqType_name('snips');
+            $elogic->setIsEnable(1);
+            $elogic->setConfiguration('snipsType', 'TTS');
+            $elogic->setConfiguration('language', $intent['language']);
+            $elogic->setConfiguration('siteName', 'default');
+            $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+            $elogic->save();
+        }else{
+            foreach ($devices as $key => $device) {
+                $siteName = str_replace('@mqtt', '', $device);
+
+                $elogic = snips::byLogicalId('Snips-TTS-'.$siteName, 'snips');
+                if (!is_object($elogic)) {
+                    $elogic = new snips();
+                    $elogic->setName('Snips-TTS-'.$siteName);
+                    $elogic->setLogicalId('Snips-TTS-'.$siteName);
+                    snips::debug('[reloadSnipsDevices] Created TTS entity: Snips-TTS-'.$siteName);
+                }
+                $elogic->setEqType_name('snips');
+                $elogic->setIsEnable(1);
+                $elogic->setConfiguration('snipsType', 'TTS');
+                $elogic->setConfiguration('language', $intent['language']);
+                $elogic->setConfiguration('siteName', $siteName);
+                $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+                $elogic->save();
+            }
+        }
     }
 
     public static
