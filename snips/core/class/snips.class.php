@@ -691,7 +691,7 @@ class snips extends eqLogic
                         if ($action['cmd'] == 'scenario') {
                             snips::debug('[Binding Execution] tag value is :'.$options['tags']);
 
-                            $options['tags'] .= ' plugin=snips'.' identifier=snips::'.$intent_name.' intent='.substr($intent_name,strpos($intent_name,':')+1).' siteId='.$site_id.' query="'.$query_input.'"';
+                            $options['tags'] .= ' plugin=snips'.' identifier=snips::'.$intent_name.'::'.$binding['name'].'  intent='.substr($intent_name,strpos($intent_name,':')+1).' siteId='.$site_id.' query="'.$query_input.'"';
 
                             foreach ($slots_values as $slots_name => $value) {
                                 $options['tags'] .= ' '.$slots_name.'='.$value;
