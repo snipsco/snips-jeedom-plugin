@@ -68,6 +68,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
   <legend><i class="fa fa-bullhorn"></i> {{Snips Devices}}</legend>
 
   <div class="eqLogicThumbnailContainer">
+
     <?php
       if (!$eqLogics) {
           echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">{{Please load assistant}}</span></center>';
@@ -80,7 +81,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
             echo '<div data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 160px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
             echo '<img src="/plugins/snips/3rdparty/icons/speaker.png" height="95px" width="95px" />';
             echo "<br>";
-            echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="label label-success" style="text-shadow : none;">'.$eqLogic->getConfiguration('siteName').' :: '.config::byKey('mqttAddr', 'snips', '127.0.0.1').'</span><br></span>';
+            echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="label label-success" style="text-shadow : none;">'.$eqLogic->getConfiguration('siteName').'</span><br></span>';
             echo '</div>';
           }
         }
