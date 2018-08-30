@@ -411,16 +411,16 @@ $('.reload').on('click', function () {
                                                                 var title = '';
                                                                 loading2.modal('hide');
                                                                 if (data.result == 1) {
-                                                                    title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> {{Successed}} </a>';
-                                                                    msg = 'Assistant loaded!';
+                                                                    title = '<a style="color:#5cb85c;"><i class="fa fa-check"></i> {{Success}} </a>';
+                                                                    msg = '{{Assistant loaded!}}';
                                                                 } else
                                                                 if (data.result == 0) {
                                                                     title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}} </a>';
-                                                                    msg = 'Can not fetch assistant!';
+                                                                    msg = '{{Can not fetch assistant!}}';
                                                                 } else
                                                                 if (data.result == -1) {
                                                                     title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}} </a>';
-                                                                    msg = 'Wrong username/ password!';
+                                                                    msg = '{{Wrong username/ password!}}';
                                                                 } else
                                                                 if (data.result == -2) {
                                                                     title = '<a style="color:#d9534f;"><i class="fa fa-times"></i> {{Failed}} </a>';

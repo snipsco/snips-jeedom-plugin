@@ -94,7 +94,9 @@
             "Select a value": "Sélectionner une valeur",
             "Select a Slot &#8681;": "Sélectionner un slot &#8681;",
             "× Disable": "× Désactivé",
-            "Enable": "Activer"
+            "Enable": "Activer",
+            "Can not fetch assistant!": "Ne peut pas rechager assistant",
+            "Wrong username/ password!": "Nom d'utilisateur ou mot de passe incorrect!"
       },
       "plugins\/snips\/plugin_info\/configuration.php":{
             "IP address of the master snips device": "Adresse IP du périphérique snips maître",
