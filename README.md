@@ -87,7 +87,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [ ] Output bindings should be able to manage (Able to delete)
 - [ ] Optimise the intent select modal
 - [ ] Re-arrange debug log output
-- [ ] Clean code rules apply to all the previous code
+- [x] Clean code rules apply to all the previous code
 
 # Founded Bugs
 - [x] losing tts command in scenario after reload (27 Aug)

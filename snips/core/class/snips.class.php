@@ -483,7 +483,7 @@ class snips extends eqLogic
             }
         }
 
-        snips::reloadSnipsDevices();
+        snips::reloadSnipsDevices($intent['language']);
 
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
         if (!is_object($var)) {
@@ -503,7 +503,7 @@ class snips extends eqLogic
 
     public static
 
-    function reloadSnipsDevices(){
+    function reloadSnipsDevices($_lang = 'en_GB'){
         $devices = Toml::parseFile(dirname(__FILE__) . '/../../config_running/snips.toml')->{'snips-hotword'}->{'audio'};
         if (count($devices) == 0) {
             $elogic = snips::byLogicalId('Snips-TTS-default', 'snips');
@@ -516,7 +516,7 @@ class snips extends eqLogic
             $elogic->setEqType_name('snips');
             $elogic->setIsEnable(1);
             $elogic->setConfiguration('snipsType', 'TTS');
-            $elogic->setConfiguration('language', $intent['language']);
+            $elogic->setConfiguration('language', $_lang);
             $elogic->setConfiguration('siteName', 'default');
             $elogic->setObject_id(object::byName('Snips-Intents')->getId());
             $elogic->save();
@@ -534,7 +534,7 @@ class snips extends eqLogic
                 $elogic->setEqType_name('snips');
                 $elogic->setIsEnable(1);
                 $elogic->setConfiguration('snipsType', 'TTS');
-                $elogic->setConfiguration('language', $intent['language']);
+                $elogic->setConfiguration('language', $_lang);
                 $elogic->setConfiguration('siteName', $siteName);
                 $elogic->setObject_id(object::byName('Snips-Intents')->getId());
                 $elogic->save();
