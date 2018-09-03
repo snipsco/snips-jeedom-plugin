@@ -100,6 +100,11 @@ try {
         $res = config::byKey('masterSite', 'snips', 'default');
         ajax::success($res);
     }
+
+    if (init('action') == 'findSnipsDevice') {
+        snips::findDevice(init('siteId'));
+        ajax::success();
+    }
     
 
     throw new Exception(__('No method corresponding to : ', __FILE__) . init('action'));

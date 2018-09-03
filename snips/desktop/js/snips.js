@@ -100,6 +100,29 @@ $(document).on('change', '#isEnable', function () {
     }
 });
 
+$(document).on('click', '.testSite', function () {
+    var site = $(this).data('site');
+    $.ajax({
+        type: "POST",
+        url: "plugins/snips/core/ajax/snips.ajax.php",
+        data: {
+            action: "findSnipsDevice",
+            siteId: site
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) {
+            $('#div_alert').showAlert({
+                message: '{{Test sound is sent!}}',
+                level: 'success'
+            });
+        }
+    });
+});
+
 $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function () {
 
     if ($(this).find("option:selected").text() == 'Snips-Intents') {

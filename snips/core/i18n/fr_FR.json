@@ -96,7 +96,8 @@
             "× Disable": "× Désactivé",
             "Enable": "Activer",
             "Can not fetch assistant!": "Ne peut pas rechager assistant",
-            "Wrong username/ password!": "Nom d'utilisateur ou mot de passe incorrect!"
+            "Wrong username/ password!": "Nom d'utilisateur ou mot de passe incorrect!",
+            "Test sound is sent!": "Test du son est envoyé!"
       },
       "plugins\/snips\/plugin_info\/configuration.php":{
             "IP address of the master snips device": "Adresse IP du périphérique snips maître",

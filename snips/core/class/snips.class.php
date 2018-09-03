@@ -1030,6 +1030,19 @@ class snips extends eqLogic
         }
     }
 
+    public static
+
+    function findDevice($_site_id){
+        $lang = translate::getLanguage();
+        if ($lang == 'fr_FR') {
+            $msg = 'Dispositif '.$_site_id.' est ici!';
+        }else if ($lang == 'en_US') {
+            $msg = 'Device '.$_site_id.' is here!';
+        } 
+        snips::debug('[findDevice] Test device: '.$_site_id);
+        snips::sayFeedback($msg, $_session_id = null, $lang, $_site_id);
+    }
+
     public
 
     function preInsert()

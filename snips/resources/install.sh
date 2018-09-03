@@ -8,21 +8,21 @@ apt-get -y install lsb-release php-pear
 archi=`lscpu | grep Architecture | awk '{ print $2 }'`
 
 if [ "$archi" == "x86_64" ]; then
-if [ `lsb_release -i -s` == "Debian" ]; then
-  wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
-  apt-key add mosquitto-repo.gpg.key
-  cd /etc/apt/sources.list.d/
-  if [ `lsb_release -c -s` == "jessie" ]; then
-    wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
-    rm /etc/apt/sources.list.d/mosquitto-jessie.list
-    cp -r mosquitto-jessie.list /etc/apt/sources.list.d/mosquitto-jessie.list
+  if [ `lsb_release -i -s` == "Debian" ]; then
+    wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
+    apt-key add mosquitto-repo.gpg.key
+    cd /etc/apt/sources.list.d/
+    if [ `lsb_release -c -s` == "jessie" ]; then
+      wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
+      rm /etc/apt/sources.list.d/mosquitto-jessie.list
+      cp -r mosquitto-jessie.list /etc/apt/sources.list.d/mosquitto-jessie.list
+    fi
+    if [ `lsb_release -c -s` == "stretch" ]; then
+      wget http://repo.mosquitto.org/debian/mosquitto-stretch.list
+      rm /etc/apt/sources.list.d/mosquitto-stretch.list
+      cp -r mosquitto-stretch.list /etc/apt/sources.list.d/mosquitto-stretch.list
+    fi
   fi
-  if [ `lsb_release -c -s` == "stretch" ]; then
-    wget http://repo.mosquitto.org/debian/mosquitto-stretch.list
-    rm /etc/apt/sources.list.d/mosquitto-stretch.list
-    cp -r mosquitto-stretch.list /etc/apt/sources.list.d/mosquitto-stretch.list
-  fi
-fi
 fi
 echo 10 > /tmp/SNIPS_dep
 
