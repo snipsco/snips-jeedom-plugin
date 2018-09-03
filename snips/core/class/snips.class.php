@@ -712,17 +712,11 @@ class snips extends eqLogic
                             $tags['#siteId#'] = $site_id;
                             $tags['#query#'] = $query_input;
 
-                            //$options['tags'] .= ' plugin=snips'.' identifier=snips::'.$intent_name.'::'.$binding['name'].'  intent='.substr($intent_name,strpos($intent_name,':')+1).' siteId='.$site_id.' query="'.$query_input.'"';
-
-                            // foreach ($slots_values_org as $slots_name => $value) {
-                            //     $options['tags'] .= ' '.$slots_name.'='.$value;
-                            // }
-
                             foreach ($slots_values_org as $slots_name => $value) {
                                 $tags['#'.$slots_name.'#'] = $value;
                             }
                             $options['tags'] = $tags;
-                            
+
                             snips::debug('[Binding Execution] tag aft value is :'.$options['tags']);
                         }
 
