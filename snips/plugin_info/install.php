@@ -30,6 +30,13 @@ function snips_install() {
         $cron->setTimeout('1440');
         $cron->save();
     }
+    
+    $lang = translate::getLanguage();
+    if ($lang == 'fr_FR') {
+        config::save('defaultTTS', 'Désolé, je ne trouve pas les actions!', 'snips');
+    }else if ($lang == 'en_US') {
+        config::save('defaultTTS', 'Sorry, I cant find any actions!', 'snips');
+    } 
 }
 
 function snips_update() {
