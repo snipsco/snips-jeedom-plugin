@@ -1,7 +1,7 @@
 INTENT = null;
 INTENT_ID = null;
 CMDS = null;
-
+MASTER_DEVICES = null;
 (function (original) {
   jQuery.fn.clone = function () {
     var result           = original.apply(this, arguments),
@@ -55,6 +55,25 @@ $(document).on('change', '#intentName', function () {
             CMDS = cmds;
         }
     });
+
+    $.ajax({
+        type: "POST",
+        url: "plugins/snips/core/ajax/snips.ajax.php",
+        data: {
+            action: "getMasterDevices",
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) {
+            MASTER_DEVICES = data.result; 
+            console.log('Master:'+MASTER_DEVICES);
+        }
+    });
+
+    
 });
 
 $(document).on('change', 'input[name=reaction]', function () {
@@ -1013,7 +1032,7 @@ function addBinding(_binding) {
 
     if (!isset(_binding.ttsPlayer)) {
 
-        _binding.ttsPlayer = '#[Snips-Intents][Snips-TTS-default][say]#';
+        _binding.ttsPlayer = '#[Snips-Intents][Snips-TTS-'+MASTER_DEVICES+'][say]#';
     }
 
     $('#div_bindings .binding:last').setValues(_binding, '.bindingAttr');

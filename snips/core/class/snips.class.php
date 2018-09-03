@@ -505,6 +505,21 @@ class snips extends eqLogic
 
     function reloadSnipsDevices($_lang = 'en_GB'){
         $devices = Toml::parseFile(dirname(__FILE__) . '/../../config_running/snips.toml')->{'snips-hotword'}->{'audio'};
+
+        $master = Toml::parseFile(dirname(__FILE__) . '/../../config_running/snips.toml')->{'snips-audio-server'}->{'bind'};
+        snips::debug('[reloadSnipsDevices]########## Type is:'.gettype($master));
+        snips::debug('[reloadSnipsDevices]########## Value is:'.$master);
+        if (isset($master)) {
+            $master = substr($master,0,strpos($master, '@'));
+            snips::debug('[reloadSnipsDevices]########## Not default:'.$master);
+        }else{
+            $master = 'default';
+            snips::debug('[reloadSnipsDevices]########## Default:'.$master);
+        }
+        $res = config::save('masterSite', $master, 'snips');
+
+        snips::debug('[reloadSnipsDevices]########## Saved with result:'.$res);
+
         if (count($devices) == 0) {
             $elogic = snips::byLogicalId('Snips-TTS-default', 'snips');
             if (!is_object($elogic)) {
