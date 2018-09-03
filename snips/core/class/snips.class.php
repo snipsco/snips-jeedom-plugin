@@ -592,6 +592,7 @@ class snips extends eqLogic
         $query_input = $_payload->{'input'};
         snips::debug('[Binding Execution] Intent:' . $intent_name . ' siteId:' . $site_id . ' sessionId:' . $session_id);
         $slots_values = array();
+        $slots_values_org = array();
 
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
         if (is_object($var)) {
@@ -603,9 +604,11 @@ class snips extends eqLogic
         foreach($_payload->{'slots'} as $slot) {
             if (is_string($slot->{'value'}->{'value'})) {
                 $slots_values[$slot->{'slotName'}] = strtolower(str_replace(' ', '', $slot->{'value'}->{'value'}));
+                $slots_values_org[$slot->{'slotName'}] = $slot->{'value'}->{'value'};
             }
             else {
                 $slots_values[$slot->{'slotName'}] = $slot->{'value'}->{'value'};
+                $slots_values_org[$slot->{'slotName'}] = $slot->{'value'}->{'value'};
             }
         }
 
@@ -696,12 +699,30 @@ class snips extends eqLogic
                         snips::setSlotsCmd($slots_values, $intent_name, $options);
                         if ($action['cmd'] == 'scenario') {
                             snips::debug('[Binding Execution] tag value is :'.$options['tags']);
+                            $tags = array();
+                            $args = arg2array($options['tags']);
 
-                            $options['tags'] .= ' plugin=snips'.' identifier=snips::'.$intent_name.'::'.$binding['name'].'  intent='.substr($intent_name,strpos($intent_name,':')+1).' siteId='.$site_id.' query="'.$query_input.'"';
-
-                            foreach ($slots_values as $slots_name => $value) {
-                                $options['tags'] .= ' '.$slots_name.'='.$value;
+                            foreach ($args as $key => $value) {
+                                $tags['#' . trim(trim($key), '#') . '#'] = $value;
                             }
+
+                            $tags['#plugin#'] = 'snips';
+                            $tags['#identifier#'] = 'snips::'.$intent_name.'::'.$binding['name'];
+                            $tags['#intent#'] = substr($intent_name,strpos($intent_name,':')+1);
+                            $tags['#siteId#'] = $site_id;
+                            $tags['#query#'] = $query_input;
+
+                            //$options['tags'] .= ' plugin=snips'.' identifier=snips::'.$intent_name.'::'.$binding['name'].'  intent='.substr($intent_name,strpos($intent_name,':')+1).' siteId='.$site_id.' query="'.$query_input.'"';
+
+                            // foreach ($slots_values_org as $slots_name => $value) {
+                            //     $options['tags'] .= ' '.$slots_name.'='.$value;
+                            // }
+
+                            foreach ($slots_values_org as $slots_name => $value) {
+                                $tags['#'.$slots_name.'#'] = $value;
+                            }
+                            $options['tags'] = $tags;
+                            
                             snips::debug('[Binding Execution] tag aft value is :'.$options['tags']);
                         }
 
