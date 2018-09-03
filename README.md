@@ -7,7 +7,7 @@ The Snips Voice Platform allows anyone to integrate AI powered voice interaction
 # Objectives
 To be able to use all your JeeDom devices by using voice! And, we should let you done this in a simple way!
 
-# Installation (beta user)
+# Installation (On a developer side)
 > Since this plugin is not published on JeeDom market yet, installation has to be done manually. 
 
 ## Step 1. Download plugin
@@ -54,13 +54,14 @@ sudo chown -R www-data /var/www/html/plugins/snips/
 ```
 
 ## Step 4. Activate Snips plugin
-Now you can direct to your Jeedom platform, go to <Plugin Management>, find <Snips>, and then activate it. 
+Now you can direct to your Jeedom platform, go to **Plugin Management**, find **Snips**, and then activate it. 
 
 Then you need to set the correct IP address on the plugin configuration page. 
 
 (Use `sam devices` command to see the IP address of snips site)
 
-# Planned Features
+# Features
+## Planned
 - [x] Configurable MQTT client
 - [x] Receive all the intents and its slots from the bus
 - [x] Load all the intents automaticly
@@ -71,7 +72,7 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Managing conditions
 - [x] Dynamic TTS contents
 
-# Todo list for the <beta> release
+## Todo list for the **beta** release
 - [x] Create the snips-intent object automaticly when load assistant // mandatory
 - [x] 0 to 100 value max 99 (for all lights and so on) // mandatory
 - [x] Find a way to reset slot value for scenario uses // mandatory
@@ -82,20 +83,19 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] Dynamic TTS player selection // mandatory
 - [x] Find a way to map binary to text // improvement
 
-# Todo list for the <public> release 
+## Todo list for the **public** release 
 - [x] Adapt to dark sobre theme
-- [ ] Output bindings should be able to manage (Able to delete)
-- [ ] Optimise the intent select modal
-- [ ] Re-arrange debug log output
 - [x] Clean code rules apply to all the previous code
+- [ ] Output bindings should be able to manage (Able to delete)
+- [x] Re-arrange debug log output
 
-# Founded Bugs
+## Founded Bugs
 - [x] losing tts command in scenario after reload (27 Aug)
 - [x] listEquipmentInfo button does not work very well. Need to double check (23 Aug)
 
 # Develop Diary
 3, Sep, 2018
-- [ ] Fix a small bug of passing tags
+- [x] Fixed a small bug of passing tags
 
 31, Aug, 2018
 - [x] Look through the whole documentaiton
@@ -406,7 +406,9 @@ if (is_object($cmdSet)) $cmdSet->execCmd($options);
 31, May, 2018
 - [x] Learn how to use configuration patameters.
 
-# Functions name & Variables name
+# Contributing
+
+## Programming styling
 
 ### Function(Method) name:
 - Should be composed by one or more English words, which can clearly and simply describe what this function does
