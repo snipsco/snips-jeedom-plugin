@@ -17,6 +17,15 @@
 .eqLogicAction:hover{
 	opacity: 0.6;
 }
+.testSite:hover{
+    opacity: 0.6;
+}
+
+.testSite .badge{
+    background-color: #d9edf7;
+    font-size: 0.9em;
+    color: #31708f;
+}
 
 #bt_addNewBinding:hover{
 	background-color: #f5f7f9 !important;

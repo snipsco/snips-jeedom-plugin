@@ -77,19 +77,15 @@ $eqLogics = eqLogic::byType($plugin->getId());
           if ($eqLogic->getConfiguration('snipsType') == 'TTS') {
 
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
+            $master = config::byKey('masterSite', 'snips', 'default');
+            $icon = ($master == $eqLogic->getConfiguration('siteName')) ? 'master': 'satellite';
 
-            echo '<div data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 160px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
-            echo '<img src="/plugins/snips/3rdparty/icons/speaker.png" height="95px" width="95px" />';
+            echo '<div class="cursor testSite" data-site="'.$eqLogic->getConfiguration('siteName').'" data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 160px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
+            echo '<img src="/plugins/snips/3rdparty/icons/'.$icon.'.png" height="95px" width="95px" />';
             echo "<br>";
 
-            $master = config::byKey('masterSite', 'snips', 'default');
-            if ($eqLogic->getConfiguration('siteName') == $master) {
-              echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="label label-danger" style="text-shadow : none;"><i class="fa fa-rocket"></i></span>&nbsp;<span class="label label-primary" style="text-shadow : none;">'.$eqLogic->getConfiguration('siteName').'</span>&nbsp;<a class="btn btn-xs btn-primary testSite" data-site="'.$eqLogic->getConfiguration('siteName').'"><i class="fa fa fa-play"></i></a><br></span>';
-              echo '</div>';
-            }else{
-              echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="label label-primary" style="text-shadow : none;"><i class="fa fa-microphone"></i></span>&nbsp;<span class="label label-primary" style="text-shadow : none;">'.$eqLogic->getConfiguration('siteName').'</span>&nbsp;<a class="btn btn-xs btn-primary testSite" data-site="'.$eqLogic->getConfiguration('siteName').'"><i class="fa fa fa-play"></i></a><br></span>';
-              echo '</div>';
-            }
+            echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="badge">'.$eqLogic->getConfiguration('siteName').'</span></span>';
+            echo '</div>';
             
           }
         }
