@@ -94,6 +94,9 @@ Then you need to set the correct IP address on the plugin configuration page.
 - [x] listEquipmentInfo button does not work very well. Need to double check (23 Aug)
 
 # Develop Diary
+5, Seo, 2018
+- [x] Better design for displaying snips devices
+
 3, Sep, 2018
 - [x] Fixed a small bug of passing tags
 
