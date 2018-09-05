@@ -521,40 +521,32 @@ class snips extends eqLogic
         snips::debug('[reloadSnipsDevices]########## Saved with result:'.$res);
 
         if (count($devices) == 0) {
-            $elogic = snips::byLogicalId('Snips-TTS-default', 'snips');
-            if (!is_object($elogic)) {
-                $elogic = new snips();
-                $elogic->setName('Snips-TTS-default');
-                $elogic->setLogicalId('Snips-TTS-default');
-                snips::debug('[reloadSnipsDevices] Created TTS entity: Snips-TTS-default');
-            }
-            $elogic->setEqType_name('snips');
-            $elogic->setIsEnable(1);
-            $elogic->setConfiguration('snipsType', 'TTS');
-            $elogic->setConfiguration('language', $_lang);
-            $elogic->setConfiguration('siteName', 'default');
-            $elogic->setObject_id(object::byName('Snips-Intents')->getId());
-            $elogic->save();
+            snips::createSnipsDevices('default', $_lang);
         }else{
             foreach ($devices as $key => $device) {
                 $siteName = str_replace('@mqtt', '', $device);
-
-                $elogic = snips::byLogicalId('Snips-TTS-'.$siteName, 'snips');
-                if (!is_object($elogic)) {
-                    $elogic = new snips();
-                    $elogic->setName('Snips-TTS-'.$siteName);
-                    $elogic->setLogicalId('Snips-TTS-'.$siteName);
-                    snips::debug('[reloadSnipsDevices] Created TTS entity: Snips-TTS-'.$siteName);
-                }
-                $elogic->setEqType_name('snips');
-                $elogic->setIsEnable(1);
-                $elogic->setConfiguration('snipsType', 'TTS');
-                $elogic->setConfiguration('language', $_lang);
-                $elogic->setConfiguration('siteName', $siteName);
-                $elogic->setObject_id(object::byName('Snips-Intents')->getId());
-                $elogic->save();
+                snips::createSnipsDevices($siteName, $_lang);
             }
         }
+    }
+
+    public static
+
+    function createSnipsDevices($_site_name, $_lang){
+        $elogic = snips::byLogicalId('Snips-TTS-'.$siteName, 'snips');
+        if (!is_object($elogic)) {
+            $elogic = new snips();
+            $elogic->setName('Snips-TTS-'.$siteName);
+            $elogic->setLogicalId('Snips-TTS-'.$siteName);
+            snips::debug('[createSnipsDevices] Created TTS entity: Snips-TTS-'.$siteName);
+        }
+        $elogic->setEqType_name('snips');
+        $elogic->setIsEnable(1);
+        $elogic->setConfiguration('snipsType', 'TTS');
+        $elogic->setConfiguration('language', $_lang);
+        $elogic->setConfiguration('siteName', $siteName);
+        $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+        $elogic->save();
     }
 
     public static
