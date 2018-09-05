@@ -2,8 +2,8 @@
 
 echo "Start to install dependances"
 
-touch /tmp/SNIPS_dep
-echo 0 > /tmp/SNIPS_dep
+touch /tmp/snips_dep
+echo 0 > /tmp/snips_dep
 apt-get -y install lsb-release php-pear
 archi=`lscpu | grep Architecture | awk '{ print $2 }'`
 
@@ -14,30 +14,26 @@ if [ "$archi" == "x86_64" ]; then
     cd /etc/apt/sources.list.d/
     if [ `lsb_release -c -s` == "jessie" ]; then
       wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
-      rm /etc/apt/sources.list.d/mosquitto-jessie.list
-      cp -r mosquitto-jessie.list /etc/apt/sources.list.d/mosquitto-jessie.list
     fi
     if [ `lsb_release -c -s` == "stretch" ]; then
       wget http://repo.mosquitto.org/debian/mosquitto-stretch.list
-      rm /etc/apt/sources.list.d/mosquitto-stretch.list
-      cp -r mosquitto-stretch.list /etc/apt/sources.list.d/mosquitto-stretch.list
     fi
   fi
 fi
-echo 10 > /tmp/SNIPS_dep
+echo 10 > /tmp/snips_dep
 
 apt-get update
-echo 30 > /tmp/SNIPS_dep
+echo 30 > /tmp/snips_dep
 echo "Installing mqtt dependances"
 apt-get -y install mosquitto mosquitto-clients libmosquitto-dev
 
-echo 80 > /tmp/SNIPS_dep
+echo 80 > /tmp/snips_dep
 
 if [[ -d "/etc/php5/" ]]; then
   apt-get -y install php5-dev
   if [[ -d "/etc/php5/cli/" && ! `cat /etc/php5/cli/php.ini | grep "mosquitto"` ]]; then
   	echo "" | pecl install Mosquitto-alpha
-    echo 80 > /tmp/SNIPS_dep
+    echo 80 > /tmp/snips_dep
   	echo "extension=mosquitto.so" | tee -a /etc/php5/cli/php.ini
   fi
   if [[ -d "/etc/php5/fpm/" && ! `cat /etc/php5/fpm/php.ini | grep "mosquitto"` ]]; then
@@ -46,7 +42,7 @@ if [[ -d "/etc/php5/" ]]; then
   fi
   if [[ -d "/etc/php5/apache2/" && ! `cat /etc/php5/apache2/php.ini | grep "mosquitto"` ]]; then
   	echo "extension=mosquitto.so" | tee -a /etc/php5/apache2/php.ini
-    rm /tmp/SNIPS_dep
+    rm /tmp/snips_dep
     echo "Dependances installation is done"
     service apache2 restart
   fi
@@ -54,7 +50,7 @@ else
   apt-get -y install php7.0-dev
   if [[ -d "/etc/php/7.0/cli/" && ! `cat /etc/php/7.0/cli/php.ini | grep "mosquitto"` ]]; then
     echo "" | pecl install Mosquitto-alpha
-    echo 80 > /tmp/SNIPS_dep
+    echo 80 > /tmp/snips_dep
     echo "extension=mosquitto.so" | tee -a /etc/php/7.0/cli/php.ini
   fi
   if [[ -d "/etc/php/7.0/fpm/" && ! `cat /etc/php/7.0/fpm/php.ini | grep "mosquitto"` ]]; then
@@ -63,14 +59,14 @@ else
   fi
   if [[ -d "/etc/php/7.0/apache2/" && ! `cat /etc/php/7.0/apache2/php.ini | grep "mosquitto"` ]]; then
     echo "extension=mosquitto.so" | tee -a /etc/php/7.0/apache2/php.ini
-    rm /tmp/SNIPS_dep
+    rm /tmp/snips_dep
     echo "Dependances installation is done"
     service apache2 restart
   fi
 fi
 
 
-rm /tmp/SNIPS_dep
+rm /tmp/snips_dep
 mkdir /tmp/jeedom/snips
 chmod 777 /tmp/jeedom/snips
 
