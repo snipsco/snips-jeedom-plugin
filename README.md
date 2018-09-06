@@ -20,22 +20,22 @@ ssh pi@raspberry.local
 ```
 As long as you have successfully loged in, you can simply use `git clone` command to download this repository:
 ```
-git clone https://github.com/snipsco/Snips-JeeDom-Plugin.git
+git clone https://github.com/snipsco/Snips-Jeedom-Plugin.git
 ```
-Now you can do `ls` to check if `Snips-JeeDom-Plugin` is under your current directory:
+Now you can do `ls` to check if `Snips-Jeedom-Plugin` is under your current directory:
 ```
-ls Snips-JeeDom-Plugin
+ls Snips-Jeedom-Plugin
 ```
 You should see the result:
 ```
 README.md	    snips
 ```
-## Step 2. Copy plugin to JeeDom folder
-Now you have the plugin file on your Jeedom site, but JeeDom an not detect this yet.
+## Step 2. Copy plugin to Jeedom folder
+Now you have the plugin file on your Jeedom site, but Jeedom an not detect this yet.
 
-Run the following command to copy snips plugin to JeeDom directory:
+Run the following command to copy snips plugin to Jeedom directory:
 ```
-sudo cp -r Snips-JeeDom-Plugin/snips/ /var/www/html/plugins/
+sudo cp -r Snips-Jeedom-Plugin/snips/ /var/www/html/plugins/
 ```
 
 ## Step 3. Change permission
