@@ -7,8 +7,7 @@ The Snips Voice Platform allows anyone to integrate AI powered voice interaction
 # Objectives
 To be able to use all your Jeedom devices by using voice! And, we should let you done this in a simple way!
 
-# Installation (On a developer side)
-> Since this plugin is not published on JeeDom market yet, installation has to be done manually. 
+# Installation (As a developer)
 
 ## Step 1. Download plugin
 For this step, I would recommand you use `ssh` login your Jeedom site through console:
