@@ -183,7 +183,26 @@ class snips extends eqLogic
             return;
         }
         else {
-            snips::findAndDoAction(json_decode($_message->payload));
+            $payload = json_decode($_message->payload);
+            $site_id = $payload->{'siteId'};
+
+            $exist_sites = array();
+            $plugin = plugin::byId('snips');
+            $intents_and_tts = eqLogic::byType($plugin->getId());
+            foreach ($intents_and_tts as $key => $obj) {
+                if ($obj->getConfiguration('snipsType') == 'TTS') {
+                    $exist_sites = $obj->getConfiguration('siteName');
+                }
+            }
+
+            if (!in_array($site_id, $exist_sites)) {
+                snips::debug('[message] Find a snips device which is not in the list:'.$site_id);
+                $obj_intent = object::byName('Snips-Intents');
+                $lang = $obj_intent->getConfiguration('language');
+                snips::createSnipsDevices($site_id, $lang);
+            }
+
+            snips::findAndDoAction($payload);
         }
     }
 
@@ -533,18 +552,18 @@ class snips extends eqLogic
     public static
 
     function createSnipsDevices($_site_name, $_lang){
-        $elogic = snips::byLogicalId('Snips-TTS-'.$siteName, 'snips');
+        $elogic = snips::byLogicalId('Snips-TTS-'.$_site_name, 'snips');
         if (!is_object($elogic)) {
             $elogic = new snips();
-            $elogic->setName('Snips-TTS-'.$siteName);
-            $elogic->setLogicalId('Snips-TTS-'.$siteName);
-            snips::debug('[createSnipsDevices] Created TTS entity: Snips-TTS-'.$siteName);
+            $elogic->setName('Snips-TTS-'.$_site_name);
+            $elogic->setLogicalId('Snips-TTS-'.$_site_name);
+            snips::debug('[createSnipsDevices] Created TTS entity: Snips-TTS-'.$_site_name);
         }
         $elogic->setEqType_name('snips');
         $elogic->setIsEnable(1);
         $elogic->setConfiguration('snipsType', 'TTS');
         $elogic->setConfiguration('language', $_lang);
-        $elogic->setConfiguration('siteName', $siteName);
+        $elogic->setConfiguration('siteName', $_site_name);
         $elogic->setObject_id(object::byName('Snips-Intents')->getId());
         $elogic->save();
     }
