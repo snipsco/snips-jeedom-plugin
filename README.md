@@ -1,14 +1,13 @@
 ![Snips Voice Platform](https://s3.amazonaws.com/get.docs.snips.ai/static/images/wiki/snips_banner_prod.png)
 
-# Snips-JeeDom-Plugin
+# Snips-Jeedom-Plugin
 
 The Snips Voice Platform allows anyone to integrate AI powered voice interaction in their devices with ease. The end-to-end pipeline - Hotword detection, Automatic Speech Recognition (ASR) and Natural Language Understanding (NLU) - runs fully on device, powered by state of the art deep learning. By using Snips, you can avoid cloud provider costs, cloud latency, and protect user's privacy.
 
 # Objectives
-To be able to use all your JeeDom devices by using voice! And, we should let you done this in a simple way!
+To be able to use all your Jeedom devices by using voice! And, we should let you done this in a simple way!
 
-# Installation (On a developer side)
-> Since this plugin is not published on JeeDom market yet, installation has to be done manually. 
+# Installation (As a developer)
 
 ## Step 1. Download plugin
 For this step, I would recommand you use `ssh` login your Jeedom site through console:
@@ -21,22 +20,22 @@ ssh pi@raspberry.local
 ```
 As long as you have successfully loged in, you can simply use `git clone` command to download this repository:
 ```
-git clone https://github.com/snipsco/Snips-JeeDom-Plugin.git
+git clone https://github.com/snipsco/Snips-Jeedom-Plugin.git
 ```
-Now you can do `ls` to check if `Snips-JeeDom-Plugin` is under your current directory:
+Now you can do `ls` to check if `Snips-Jeedom-Plugin` is under your current directory:
 ```
-ls Snips-JeeDom-Plugin
+ls Snips-Jeedom-Plugin
 ```
 You should see the result:
 ```
 README.md	    snips
 ```
-## Step 2. Copy plugin to JeeDom folder
-Now you have the plugin file on your Jeedom site, but JeeDom an not detect this yet.
+## Step 2. Copy plugin to Jeedom folder
+Now you have the plugin file on your Jeedom site, but Jeedom an not detect this yet.
 
-Run the following command to copy snips plugin to JeeDom directory:
+Run the following command to copy snips plugin to Jeedom directory:
 ```
-sudo cp -r Snips-JeeDom-Plugin/snips/ /var/www/html/plugins/
+sudo cp -r Snips-Jeedom-Plugin/snips/ /var/www/html/plugins/
 ```
 
 ## Step 3. Change permission
