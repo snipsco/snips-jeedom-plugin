@@ -1091,10 +1091,11 @@ class snips extends eqLogic
                 foreach($actions as $action) {
                     $options = $action['options'];
                     foreach($options as $option) {
-                        if (preg_match("/^#.*#$/", $option)) {
-                            if (in_array(cmd::byId(str_replace('#', '', $option))->getName() , $slotSet)) {
-                                if (!in_array(cmd::byId(str_replace('#', '', $option))->getName() , $necessary_slots)) {
-                                    $necessary_slots[] = cmd::byId(str_replace('#', '', $option))->getName();
+                        if (preg_match("/#.*#/", $option, $match_res)) {
+                            $cmd_name = cmd::byId(str_replace('#', '', $match_res[0]))->getName();
+                            if (in_array($cmd_name, $slotSet)) {
+                                if (!in_array($cmd_name, $necessary_slots)) {
+                                    $necessary_slots[] = $cmd_name;
                                 }
                             }
                         }
