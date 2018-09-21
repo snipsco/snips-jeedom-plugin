@@ -89,7 +89,8 @@ class snips extends eqLogic
     function dependancy_info()
     {
         $return = array();
-        $return['log'] = 'SNIPS_dep';
+        $return['log'] = 'snips_dep';
+        $return['progress_file'] = jeedom::getTmpFolder('snips') . '/dependance';
         $return['state'] = 'nok';
         $cmd = "dpkg -l | grep mosquitto";
         exec($cmd, $output, $return_var);
@@ -106,8 +107,9 @@ class snips extends eqLogic
     function dependancy_install()
     {
         self::debug('Installation of dependences');
+        log::remove(__CLASS__ . '_dep');
         $resource_path = realpath(dirname(__FILE__) . '/../../resources');
-        passthru('sudo /bin/bash ' . $resource_path . '/install.sh ' . $resource_path . ' > ' . log::getPathToLog('SNIPS_dep') . ' 2>&1 &');
+        passthru('sudo /bin/bash ' . $resource_path . '/install.sh ' . $resource_path . ' > ' . log::getPathToLog('snips_dep') . ' 2>&1 &');
         return true;
     }
 
@@ -1049,11 +1051,13 @@ class snips extends eqLogic
         $lang = translate::getLanguage();
         if ($lang == 'fr_FR') {
             $msg = 'Dispositif '.$_site_id.' est ici!';
+            snips::sayFeedback($msg, $_session_id = null, 'fr-FR', $_site_id);
         }else if ($lang == 'en_US') {
             $msg = 'Device '.$_site_id.' is here!';
+            snips::sayFeedback($msg, $_session_id = null, 'en-GB', $_site_id);
         } 
         snips::debug('[findDevice] Test device: '.$_site_id);
-        snips::sayFeedback($msg, $_session_id = null, $lang, $_site_id);
+        
     }
 
     public
