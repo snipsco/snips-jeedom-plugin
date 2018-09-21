@@ -1,4 +1,4 @@
-![Snips Voice Platform](https://s3.amazonaws.com/get.docs.snips.ai/static/images/wiki/snips_banner_prod.png)
+<img align="right" src="/snips/plugin_info/snips_icon.png" width="150">
 
 # Snips-Jeedom-Plugin
 
