@@ -134,6 +134,8 @@ class snips extends eqLogic
             foreach($topics as $topic) {
                 $client->subscribe($topic, 0);
             }
+            $client->subscribe('hermes/dialogueManager/sessionStarted', 0);
+            $client->subscribe('hermes/dialogueManager/sessionEnded', 0);
             $client->loopForever();
         }
 
@@ -180,12 +182,30 @@ class snips extends eqLogic
     {
         $topics = snips::getTopics();
         $intents_slots = snips::getIntents();
-        snips::debug('[MQTT] Received message.');
+        snips::debug('[MQTT] Received message. Topic:'.$_message->topic);
+        $payload = json_decode($_message->payload);
+
+        if ($_message->topic == 'hermes/dialogueManager/sessionStarted'){
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+            if (is_object($var)) {
+                $var->setValue($payload->{'sessionId'});
+                $var->save();
+                snips::debug('[Binding Execution] Set '.$var->getValue().' => snipsMsgSession');
+            }
+        }
+        if ($_message->topic == 'hermes/dialogueManager/sessionEnded'){
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+            if (is_object($var)) {
+                $var->setValue('');
+                $var->save();
+                snips::debug('[Binding Execution] Set '.$var->getValue().' => snipsMsgSession');
+            }
+        } 
         if (in_array($_message->topic, $topics) == false) {
             return;
         }
         else {
-            $payload = json_decode($_message->payload);
+            
             $site_id = $payload->{'siteId'};
 
             $exist_sites = array();
@@ -511,6 +531,17 @@ class snips extends eqLogic
             $dataStore = new dataStore();
             $dataStore->setKey('snipsMsgSiteId');
             snips::debug('[Load Assistant] Created variable snipsMsgSiteId');
+        }
+        //$dataStore->setValue();
+        $dataStore->setType('scenario');
+        $dataStore->setLink_id(-1);
+        $dataStore->save();
+
+        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+        if (!is_object($var)) {
+            $dataStore = new dataStore();
+            $dataStore->setKey('snipsMsgSession');
+            snips::debug('[Load Assistant] Created variable snipsMsgSession');
         }
         //$dataStore->setValue();
         $dataStore->setType('scenario');
@@ -1055,9 +1086,8 @@ class snips extends eqLogic
         }else if ($lang == 'en_US') {
             $msg = 'Device '.$_site_id.' is here!';
             snips::sayFeedback($msg, $_session_id = null, 'en-GB', $_site_id);
-        } 
-        snips::debug('[findDevice] Test device: '.$_site_id);
-        
+        }
+        snips::debug('[findDevice] Test device: '.$_site_id);  
     }
 
     public
