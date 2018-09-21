@@ -1,4 +1,4 @@
-<img align="right" src="/snips/plugin_info/snips_icon.png" width="150">
+<img align="right" src="/snips/plugin_info/snips_icon.png" width="180">
 
 # Snips-Jeedom-Plugin
 
