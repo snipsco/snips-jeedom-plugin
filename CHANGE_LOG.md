@@ -1,4 +1,4 @@
-## Version: 2018-09-03 17:49:57
+## `Version: 2018-09-03 17:49:57`
 
 ### Added
 - Added satellite test button
@@ -7,7 +7,7 @@
 - Passing tags as original format
 
 
-## Version: 2018-08-29 12:21:31
+## `Version: 2018-08-29 12:21:31`
 
 ### Improved
 - Support french interface translation
@@ -19,7 +19,7 @@
 ### Fixed
 - Losing request command in scenario ask command
 
-## Version: 2018-08-24 18:16:52
+## `Version: 2018-08-24 18:16:52`
 
 ### Added
 - Support 'ask' command
@@ -36,7 +36,7 @@
 - ListEquipmentCmd button fills value to wrong input box for command options
 
 
-## Version: 2018-08-13 13:12:19
+## `Version: 2018-08-13 13:12:19`
 ### Addred
 - Variable name "snipsMsgSiteId", access from scenario (Thanks to @fwehrle)
 
@@ -48,7 +48,7 @@
 ### Fixed
 - Message selection box (Thanks to @Hugo)
 
-## Version: 2018-08-08 18:15:31
+## `Version: 2018-08-08 18:15:31`
 ### Added
 - Only load intent which has Jeedom as a part of its name
 - Light shift for multi-light
@@ -56,14 +56,14 @@
 ### Fixed
 - Binary value mapping is always "0"
 
-## Version: 2018-08-07 12:52:50
+## `Version: 2018-08-07 12:52:50`
 ### Improved
 - Adaption: Jeedom 3.3.3
 
 ### Changed
 - Disabled multi-dialog function for the moment
 
-## Version: 2018-08-05 15:07:49
+## `Version: 2018-08-05 15:07:49`
 ### Added
 - Support multi-feedback
 - Sites automatically detection
@@ -71,7 +71,7 @@
 ### Improved
 - Reload assistant with bidings
 
-## Version: 2018-08-01 18:25:37
+## `Version: 2018-08-01 18:25:37`
 ### Added
 - Allow to select a non-snips tts command
 - Support synonyms in conditon
@@ -79,16 +79,16 @@
 ### Improved
 - Improved stability
 
-## Version: 2018-07-29 20:55:36
+## `Version: 2018-07-29 20:55:36`
 ### Changed
 - Updated Logo
 - More debug output
 
-## Version: 2018-07-27 18:21:29
+## `Version: 2018-07-27 18:21:29`
 ### Changed
 - Simplfied steps for loading assistant. 
 
-## Version: 2018-07-26 16:08:40
+## `Version: 2018-07-26 16:08:40`
 ### Changed
 - Moved to 'communication' cotegory from 'automation'
 - All the log will be shown udner snips(debug level)
@@ -100,6 +100,6 @@
 ### Improved
 - Improved stability.
 
-## Version: 2018-07-25 18:42:36
+## `Version: 2018-07-25 18:42:36`
 ### Fixed
 - SSH can not fetch assistant. (Reported by @rudloffl)
