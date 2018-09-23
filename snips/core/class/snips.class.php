@@ -670,6 +670,16 @@ class snips extends eqLogic
                 $slots_values[$slot->{'slotName'}] = $slot->{'value'}->{'value'};
                 $slots_values_org[$slot->{'slotName'}] = $slot->{'value'}->{'value'};
             }
+            if ($slot->{'entity'} == 'snips/duration') {
+                $totalSeconds = 0;
+                $totalSeconds += $slot->{'value'}->{'weeks'} * 604800;
+                $totalSeconds += $slot->{'value'}->{'days'} * 86400;
+                $totalSeconds += $slot->{'value'}->{'hours'} * 3600;
+                $totalSeconds += $slot->{'value'}->{'minutes'} * 60;
+                $totalSeconds += $slot->{'value'}->{'seconds'};
+                $slots_values[$slot->{'slotName'}] = $totalSeconds;
+                $slots_values_org[$slot->{'slotName'}] = $totalSeconds;
+            }
         }
 
         snips::setSlotsCmd($slots_values, $intent_name);
