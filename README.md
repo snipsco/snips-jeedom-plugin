@@ -1,5 +1,11 @@
 <img align="right" src="/snips/plugin_info/snips_icon.png" width="180">
 
+# User documentation
+
+Please reach ***[Snips Dev Center](https://snips.gitbook.io/)*** for the user documentation.
+- ***[English Version](https://snips.gitbook.io/documentation/home-automation-platforms/jeedom)***
+- ***[French Version](https://snips.gitbook.io/documentation/home-automation-platforms/jeedom-fr)***
+
 # Snips-Jeedom-Plugin
 
 The Snips Voice Platform allows anyone to integrate AI powered voice interaction in their devices with ease. The end-to-end pipeline - Hotword detection, Automatic Speech Recognition (ASR) and Natural Language Understanding (NLU) - runs fully on device, powered by state of the art deep learning. By using Snips, you can avoid cloud provider costs, cloud latency, and protect user's privacy.
