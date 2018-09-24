@@ -1335,3 +1335,5 @@ function displayBinaryMap(_el, _cmd) {
     _el.append(span);
 }
 
+
+

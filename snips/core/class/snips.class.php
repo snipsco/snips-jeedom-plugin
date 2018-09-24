@@ -185,6 +185,13 @@ class snips extends eqLogic
         snips::debug('[MQTT] Received message. Topic:'.$_message->topic);
         $payload = json_decode($_message->payload);
 
+        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
+        if (is_object($var)) {
+            $var->setValue($payload->{'siteId'});
+            $var->save();
+            snips::debug('[Binding Execution] Set '.$var->getValue().' => snipsMsgSiteId');
+        }
+
         if ($_message->topic == 'hermes/dialogueManager/sessionStarted'){
             $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
             if (is_object($var)) {
@@ -526,28 +533,6 @@ class snips extends eqLogic
 
         snips::reloadSnipsDevices($intent['language']);
 
-        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
-        if (!is_object($var)) {
-            $dataStore = new dataStore();
-            $dataStore->setKey('snipsMsgSiteId');
-            snips::debug('[Load Assistant] Created variable snipsMsgSiteId');
-        }
-        //$dataStore->setValue();
-        $dataStore->setType('scenario');
-        $dataStore->setLink_id(-1);
-        $dataStore->save();
-
-        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
-        if (!is_object($var)) {
-            $dataStore = new dataStore();
-            $dataStore->setKey('snipsMsgSession');
-            snips::debug('[Load Assistant] Created variable snipsMsgSession');
-        }
-        //$dataStore->setValue();
-        $dataStore->setType('scenario');
-        $dataStore->setLink_id(-1);
-        $dataStore->save();
-
         snips::recoverScenarioExpressions();
         snips::debug('[Load Assistant] Assistant loaded, restarting deamon');
         snips::deamon_start();
@@ -653,13 +638,6 @@ class snips extends eqLogic
         snips::debug('[Binding Execution] Intent:' . $intent_name . ' siteId:' . $site_id . ' sessionId:' . $session_id);
         $slots_values = array();
         $slots_values_org = array();
-
-        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
-        if (is_object($var)) {
-            $var->setValue($site_id);
-            $var->save();
-            snips::debug('[Binding Execution] Set '.$var->getValue().' => snipsMsgSiteId');
-        }
 
         foreach($_payload->{'slots'} as $slot) {
             if (is_string($slot->{'value'}->{'value'})) {
@@ -1100,6 +1078,44 @@ class snips extends eqLogic
         snips::debug('[findDevice] Test device: '.$_site_id);  
     }
 
+    public static
+
+    function postConfiguration(){
+        if(!config::byKey('isVarMsgSession', 'snips', 0)){
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+            $var->remove();
+            snips::debug('[SnipsUpdate] Removed variable snipsMsgSession');
+        }else{
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+            if (!is_object($var)) {
+                $dataStore = new dataStore();
+                $dataStore->setKey('snipsMsgSession');
+                snips::debug('[SnipsUpdate] Created variable snipsMsgSession');
+            }
+            $dataStore->setValue('');
+            $dataStore->setType('scenario');
+            $dataStore->setLink_id(-1);
+            $dataStore->save();
+        }
+
+        if(!config::byKey('isVarMsgSiteId', 'snips', 0)){
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
+            $var->remove();
+            snips::debug('[SnipsUpdate] Removed variable snipsMsgSiteId');
+        }else{
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
+            if (!is_object($var)) {
+                $dataStore = new dataStore();
+                $dataStore->setKey('snipsMsgSiteId');
+                snips::debug('[SnipsUpdate] Created variable snipsMsgSiteId');
+            }
+            $dataStore->setValue('');
+            $dataStore->setType('scenario');
+            $dataStore->setLink_id(-1);
+            $dataStore->save();
+        }
+    }
+
     public
 
     function preInsert()
@@ -1161,7 +1177,8 @@ class snips extends eqLogic
     public
 
     function postSave()
-    {
+    {   
+        snips::debug("post saved");
         if($this->getConfiguration('snipsType') == 'Intent'){
             $slots = $this->getConfiguration('slots');
             foreach($slots as $slot) {

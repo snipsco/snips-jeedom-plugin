@@ -6,6 +6,33 @@ if (!isConnect()) {
     die();
 }
 ?>
+<script type="text/javascript">
+function snips_postSaveConfiguration(){
+    console.log("Yes, I am snips_postSaveConfiguration");
+
+    $.ajax({
+        type: "POST",
+        url: "plugins/snips/core/ajax/snips.ajax.php",
+        data: {
+            action: "postConfiguration"
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) {
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({
+                    message: data.result,
+                    level: 'danger'
+                });
+                return;
+            }
+        }
+    });
+}
+</script>>
 <form class="form-horizontal">
     <fieldset>
         <div class="form-group">
@@ -51,6 +78,7 @@ if (!isConnect()) {
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagPlugin"> {{#plugin#}}</input></li>
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagIdentifier"> {{#identifier#}}</input></li>
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagIntent"> {{#intent#}}</input></li>
+                <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagIntent"> {{#slots#}}</input></li>
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagSiteId"> {{#siteId#}}</input></li>
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagQuery"> {{#query#}}</input></li>
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagProbability"> {{#probability#}}</input></li>

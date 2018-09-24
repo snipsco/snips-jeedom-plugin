@@ -36,7 +36,18 @@ function snips_install() {
         config::save('defaultTTS', 'Désolé, je ne trouve pas les actions!', 'snips');
     }else if ($lang == 'en_US') {
         config::save('defaultTTS', 'Sorry, I cant find any actions!', 'snips');
-    } 
+    }
+
+    config::save('isTagPlugin',0,'snips');
+    config::save('isTagIdentifier',0,'snips');
+    config::save('isTagIntent',1,'snips');
+    config::save('isTagSlots',1,'snips');
+    config::save('isTagSiteId',1,'snips');
+    config::save('isTagQuery',0,'snips');
+    config::save('isTagProbability',0,'snips');
+
+    config::save('isVarMsgSession',0,'snips');
+    config::save('isVarMsgSiteId',0,'snips');
 }
 
 function snips_update() {

@@ -105,6 +105,11 @@ try {
         snips::findDevice(init('siteId'));
         ajax::success();
     }
+
+    if (init('action') == 'postConfiguration') {
+        snips::postConfiguration();
+        ajax::success();
+    }
     
 
     throw new Exception(__('No method corresponding to : ', __FILE__) . init('action'));
