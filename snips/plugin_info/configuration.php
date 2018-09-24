@@ -78,7 +78,7 @@ function snips_postSaveConfiguration(){
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagPlugin"> {{#plugin#}}</input></li>
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagIdentifier"> {{#identifier#}}</input></li>
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagIntent"> {{#intent#}}</input></li>
-                <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagIntent"> {{#slots#}}</input></li>
+                <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagSlots"> {{#slots#}}</input></li>
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagSiteId"> {{#siteId#}}</input></li>
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagQuery"> {{#query#}}</input></li>
                 <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagProbability"> {{#probability#}}</input></li>

@@ -754,16 +754,29 @@ class snips extends eqLogic
                                 $tags['#' . trim(trim($key), '#') . '#'] = $value;
                             }
 
-                            $tags['#plugin#'] = 'snips';
-                            $tags['#identifier#'] = 'snips::'.$intent_name.'::'.$binding['name'];
-                            $tags['#intent#'] = substr($intent_name,strpos($intent_name,':')+1);
-                            $tags['#siteId#'] = $site_id;
-                            $tags['#query#'] = $query_input;
-                            $tags['#probability#'] = $probability;
+                            if(config::byKey('isTagPlugin', 'snips', 0))
+                                $tags['#plugin#'] = 'snips';
 
-                            foreach ($slots_values_org as $slots_name => $value) {
-                                $tags['#'.$slots_name.'#'] = $value;
-                            }
+                            if(config::byKey('isTagIdentifier', 'snips', 0))
+                                $tags['#identifier#'] = 'snips::'.$intent_name.'::'.$binding['name'];
+
+                            if(config::byKey('isTagIntent', 'snips', 0))
+                                $tags['#intent#'] = substr($intent_name,strpos($intent_name,':')+1);
+
+                            if(config::byKey('isTagSiteId', 'snips', 0))
+                                $tags['#siteId#'] = $site_id;
+
+                            if(config::byKey('isTagQuery', 'snips', 0))
+                                $tags['#query#'] = $query_input;
+
+                            if(config::byKey('isTagProbability', 'snips', 0))
+                                $tags['#probability#'] = $probability;
+
+                            if(config::byKey('isTagSlots', 'snips', 0))
+                                foreach ($slots_values_org as $slots_name => $value) {
+                                    $tags['#'.$slots_name.'#'] = $value;
+                                }
+                                
                             $options['tags'] = $tags;
 
                             snips::debug('[Binding Execution] tag aft value is :'.$options['tags']);
