@@ -776,7 +776,7 @@ class snips extends eqLogic
                                 foreach ($slots_values_org as $slots_name => $value) {
                                     $tags['#'.$slots_name.'#'] = $value;
                                 }
-                                
+
                             $options['tags'] = $tags;
 
                             snips::debug('[Binding Execution] tag aft value is :'.$options['tags']);
@@ -1096,7 +1096,9 @@ class snips extends eqLogic
     function postConfiguration(){
         if(!config::byKey('isVarMsgSession', 'snips', 0)){
             $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
-            $var->remove();
+            if (is_object($var)) {
+                $var->remove();
+            }
             snips::debug('[SnipsUpdate] Removed variable snipsMsgSession');
         }else{
             $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
@@ -1113,7 +1115,9 @@ class snips extends eqLogic
 
         if(!config::byKey('isVarMsgSiteId', 'snips', 0)){
             $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
-            $var->remove();
+            if (is_object($var)) {
+                $var->remove();
+            }
             snips::debug('[SnipsUpdate] Removed variable snipsMsgSiteId');
         }else{
             $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
