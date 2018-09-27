@@ -13,6 +13,11 @@ The Snips Voice Platform allows anyone to integrate AI powered voice interaction
 # Objectives
 To be able to use all your Jeedom devices by using voice! And, we should let you done this in a simple way!
 
+# To do list
+- [ ] Allow use binary remapping in the scenario
+- [ ] Configurable for passing tags for each intent 
+- [x] Configurable for snips variables (Beta)
+
 # Installation (As a developer)
 
 ## Step 1. Download plugin
