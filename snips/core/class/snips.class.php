@@ -321,6 +321,8 @@ class snips extends eqLogic
 
     function generateFeedback($_org_text, $_vars)
     {
+        // Support round() function 
+        // Support binary remapping grammar {0,1}(yes,no)
         snips::debug('[TTs] Generating feedback text');
         $string_subs = explode('{#}', $_org_text);
         $speaking_text = '';

@@ -32,7 +32,7 @@ function snips_postSaveConfiguration(){
         }
     });
 }
-</script>>
+</script>
 <form class="form-horizontal">
     <fieldset>
         <div class="form-group">
