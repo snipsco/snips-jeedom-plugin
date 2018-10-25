@@ -62,6 +62,26 @@ function snips_update() {
         $cron->setTimeout('1440');
         $cron->save();
     }
+
+    if (config::byKey('isTagPlugin', 'snips', "NULL") == "NULL")
+        config::save('isTagPlugin',0,'snips');
+    if (config::byKey('isTagIdentifier', 'snips', "NULL") == "NULL")
+        config::save('isTagIdentifier',0,'snips');
+    if (config::byKey('isTagIntent', 'snips', "NULL") == "NULL")
+        config::save('isTagIntent',1,'snips');
+    if (config::byKey('isTagSlots', 'snips', "NULL") == "NULL")
+        config::save('isTagSlots',1,'snips');
+    if (config::byKey('isTagSiteId', 'snips', "NULL") == "NULL")
+        config::save('isTagSiteId',1,'snips');
+    if (config::byKey('isTagQuery', 'snips', "NULL") == "NULL")
+        config::save('isTagQuery',0,'snips');
+    if (config::byKey('isTagProbability', 'snips', "NULL") == "NULL")
+        config::save('isTagProbability',0,'snips');
+
+    if (config::byKey('isVarMsgSession', 'snips', "NULL") == "NULL")
+        config::save('isVarMsgSession',0,'snips');
+    if (config::byKey('isVarMsgSiteId', 'snips', "NULL") == "NULL")
+        config::save('isVarMsgSiteId',0,'snips');
 }
 
 function snips_remove() {
