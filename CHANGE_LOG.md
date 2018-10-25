@@ -1,3 +1,12 @@
+## Version: 2018-09-21 19:12:12
+
+### Added
+- Added config options for snips-used variables/ tags
+
+### Fix
+- Support snips/built-in type `duration` (Thanks to Kiboost)
+
+
 ## Version: 2018-09-03 17:49:57
 
 ### Added
