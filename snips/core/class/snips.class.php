@@ -628,6 +628,43 @@ class snips extends eqLogic
         $res = fwrite($file, json_encode($reload_reference));
     }   
 
+    public static 
+
+    function extractSlotsValues($_payload_slots){
+        $result = array('slots_values' => array(), 
+                        'slots_values_org' => array());
+
+        foreach ($_payload_slots as $slot) {
+            snips::debug(__FUNCTION__, 'Checking slots: '.$slot->{'slotName'});
+
+            if ($slot->{'entity'} == 'snips/duration') {
+                $total_seconds = 0;
+                $total_seconds += $slot->{'value'}->{'weeks'} * 604800;
+                $total_seconds += $slot->{'value'}->{'days'} * 86400;
+                $total_seconds += $slot->{'value'}->{'hours'} * 3600;
+                $total_seconds += $slot->{'value'}->{'minutes'} * 60;
+                $total_seconds += $slot->{'value'}->{'seconds'};
+                $single_ready_value = (string)$total_seconds;
+                $single_ready_value_org = (string)$total_seconds;
+            }else{
+                $single_ready_value = strtolower(str_replace(' ', '', (string)$slot->{'value'}->{'value'}));
+                $single_ready_value_org = (string)$slot->{'value'}->{'value'};
+            }
+
+            if (array_key_exists($slot->{'slotName'}, $result['slots_values'])) {
+                // does not support use this slot value in the slot commond
+                snips::debug(__FUNCTION__, 'Yes, this exists in the array :'.$slot->{'slotName'});
+                $result['slots_values'][$slot->{'slotName'}] = $single_ready_value;
+                $result['slots_values_org'][$slot->{'slotName'}] .= '&'.$single_ready_value_org;
+            }else{
+                snips::debug(__FUNCTION__, 'No, this does not exist in the array :'.$slot->{'slotName'});
+                $result['slots_values'][$slot->{'slotName'}] = $single_ready_value;
+                $result['slots_values_org'][$slot->{'slotName'}] = $single_ready_value_org;
+            }
+        }
+        return $result;
+    }
+
     public static
 
     function findAndDoAction($_payload)
@@ -638,29 +675,11 @@ class snips extends eqLogic
         $session_id = $_payload->{'sessionId'};
         $query_input = $_payload->{'input'};
         snips::debug(__FUNCTION__, 'Intent:' . $intent_name . ' siteId:' . $site_id . ' sessionId:' . $session_id);
-        $slots_values = array();
-        $slots_values_org = array();
 
-        foreach($_payload->{'slots'} as $slot) {
-            if (is_string($slot->{'value'}->{'value'})) {
-                $slots_values[$slot->{'slotName'}] = strtolower(str_replace(' ', '', $slot->{'value'}->{'value'}));
-                $slots_values_org[$slot->{'slotName'}] = $slot->{'value'}->{'value'};
-            }
-            else {
-                $slots_values[$slot->{'slotName'}] = $slot->{'value'}->{'value'};
-                $slots_values_org[$slot->{'slotName'}] = $slot->{'value'}->{'value'};
-            }
-            if ($slot->{'entity'} == 'snips/duration') {
-                $totalSeconds = 0;
-                $totalSeconds += $slot->{'value'}->{'weeks'} * 604800;
-                $totalSeconds += $slot->{'value'}->{'days'} * 86400;
-                $totalSeconds += $slot->{'value'}->{'hours'} * 3600;
-                $totalSeconds += $slot->{'value'}->{'minutes'} * 60;
-                $totalSeconds += $slot->{'value'}->{'seconds'};
-                $slots_values[$slot->{'slotName'}] = $totalSeconds;
-                $slots_values_org[$slot->{'slotName'}] = $totalSeconds;
-            }
-        }
+        $slots_values_dual = snips::extractSlotsValues($_payload->{'slots'});
+
+        $slots_values = $slots_values_dual['slots_values'];
+        $slots_values_org = $slots_values_dual['slots_values_org']; 
 
         snips::setSlotsCmd($slots_values, $intent_name);
         $eqLogic = eqLogic::byLogicalId($intent_name, 'snips');
