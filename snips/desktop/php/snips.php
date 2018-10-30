@@ -105,7 +105,7 @@ $scenarios = scenario::all();
           if ($eqLogic->getConfiguration('snipsType') == 'Intent') {
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
             echo '<span class="panel panel-info eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
-            echo '<li class="panel-heading" style="padding: 5px 15px;list-style:none;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></li>';
+            echo '<li class="panel-heading" style="padding: 5px 5px;list-style:none;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></li>';
             echo '<li class="panel-body" style="padding: 0px;list-style:none;">';
 
             echo '<ul class="list-group" style="margin: 0;">';
