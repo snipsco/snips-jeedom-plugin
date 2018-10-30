@@ -1,11 +1,22 @@
-## Version: 2018-09-21 19:12:12
+## Version: 2018-10-30 17:30:07 [Beta]
+
+### Added
+- Callback scenario for each intent
+
+### Changed
+- Display callback scenario status instead of language
+- Intent card is shown in the different color setup
+
+### Removed
+- Tag passing config items on the configuration page 
+
+## Version: 2018-09-21 19:12:12 [Beta]
 
 ### Added
 - Added config options for snips-used variables/ tags
 
 ### Fix
 - Support snips/built-in type `duration` (Thanks to Kiboost)
-
 
 ## Version: 2018-09-03 17:49:57
 
