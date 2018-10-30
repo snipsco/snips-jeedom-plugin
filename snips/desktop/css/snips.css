@@ -43,3 +43,8 @@
 .eqLogicThumbnailContainer{
     min-height: 160px;
 }
+
+.callbackScenarioTags{
+	margin-right: 40px;
+	display: inline-flex;
+}

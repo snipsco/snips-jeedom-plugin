@@ -6,6 +6,7 @@ if (!isConnect('admin')) {
 $plugin = plugin::byId('snips');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
+$scenarios = scenario::all();
 ?>
 
 <div class="row row-overflow">
@@ -201,6 +202,51 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 </div>
             </div>
 
+        <legend>{{Callback Scenario}}</legend>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">{{Scenario}}</label>
+                <div class="col-sm-4"> 
+                    <select class="eqLogicAttr form-control input-sm" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="scenario">
+                        <option value="-1">{{None}}</option>
+                        <?php
+                        foreach ($scenarios as $scenario) {
+                          echo '<option value="'.$scenario->getId().'">'.$scenario->getName().'</option>';
+                        }
+                        ?>
+
+                    </select>
+                </div>
+                <label class="col-sm-1 control-label">{{Action}}</label>
+                <div class="col-sm-2">
+                    <select class="eqLogicAttr form-control input-sm" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="action">
+                        <option value="start">{{Start}}</option>
+                        <option value="startsync">{{Start (sync)}}</option>
+                        <option value="stop">{{Stop}}</option>
+                        <option value="activate">{{Activer}}</option>
+                        <option value="deactivate">{{Désactiver}}</option>
+                        <option value="resetRepeatIfStatus">{{Remise à zero des SI}}</option>
+                    </select>
+                </div>
+
+                <label class="col-sm-1 control-label">{{Tags}}</label>
+                <div class="col-sm-2">
+                    <textarea style="height: 30px;width: 236px;"></textarea> 
+                </div>
+
+                <div class="col-sm-4"></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">{{SnipsTags}}</label>
+                <div class="col-sm-11">
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagPlugin">{{#plugin#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagIdentifier"> {{#identifier#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagIntent"> {{#intent#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagSlots"> {{#slots#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagSiteId"> {{#siteId#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagQuery"> {{#query#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagProbability"> {{#probability#}}</span>
+                </div>
+            </div>
         <legend>{{Action Binding}}</legend>
 
         <div class="panel-heading btn btn-default" id="bt_addNewBinding" style="width: 100%; border: 1.5px dashed #ddd; box-shadow: 0 1px 1px rgba(0,0,0,.05); background-color:#fff;"><i class="fa fa-plus-circle"></i> {{Attach a new binding}}</div>
