@@ -104,24 +104,36 @@ $scenarios = scenario::all();
         foreach ($eqLogics as $eqLogic) {
           if ($eqLogic->getConfiguration('snipsType') == 'Intent') {
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-            echo '<span class="panel panel-success eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
+            echo '<span class="panel panel-info eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
             echo '<li class="panel-heading" style="padding: 5px 15px;list-style:none;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></li>';
             echo '<li class="panel-body" style="padding: 0px;list-style:none;">';
 
             echo '<ul class="list-group" style="margin: 0;">';
 
-            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.$eqLogic->getConfiguration('language').'</span>{{Language}}</li>';
+            //echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.$eqLogic->getConfiguration('language').'</span>{{Language}}</li>';
 
-            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('slots')).'</span>Slots</li>';
+            if ($eqLogic->getConfiguration('callbackScenario')['scenario'] > 0) {
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;"> {{YES}}</span>{{Callback Scenario}}</li>';
+            }else{
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;"> {{NO}}</span>{{Callback Scenario}}</li>';
+            }
+            
+
+            if (count($eqLogic->getConfiguration('slots'))) {
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">'.count($eqLogic->getConfiguration('slots')).'</span>Slots</li>';
+            }else{
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;">0</span>Slots</li>';
+            }
+              
 
             if ($eqLogic->getConfiguration('bindings')) {
-              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('bindings')).'</span>{{Bindings}}</li>';
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">'.count($eqLogic->getConfiguration('bindings')).'</span>{{Bindings}}</li>';
             }else{
-              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #c9302c;">0</span>{{Bindings}}</li>';
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;">0</span>{{Bindings}}</li>';
             }
 
             if ($eqLogic->getConfiguration('isSnipsConfig')) {
-              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">{{Snips Binding}}</span>{{Reaction}}</li>';
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">{{Snips Binding}}</span>{{Reaction}}</li>';
             }else if($eqLogic->getConfiguration('isInteraction')){
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #f0ad4e;">{{Interaction}}</span>{{Reaction}}</li>';
             }else{
