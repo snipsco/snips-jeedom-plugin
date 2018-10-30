@@ -113,9 +113,9 @@ $scenarios = scenario::all();
             //echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.$eqLogic->getConfiguration('language').'</span>{{Language}}</li>';
 
             if ($eqLogic->getConfiguration('callbackScenario')['scenario'] > 0) {
-              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;"> {{YES}}</span>{{Callback Scenario}}</li>';
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;"> {{Yes}}</span>{{Callback Scenario}}</li>';
             }else{
-              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;"> {{NO}}</span>{{Callback Scenario}}</li>';
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;"> {{No}}</span>{{Callback Scenario}}</li>';
             }
             
 
