@@ -29,7 +29,7 @@
             "Action Binding": "Action Liaison",
             "Attach a new binding": "Ajouter une nouvelle liaison",
             "Enable": "Activer",
-            "In the Jeedom system, the maximum length of all the tags passed to the scenario is limited. Since the <kbd>#query#<\/kbd> and <kbd>#intent#<\/kbd> tag can take significant space, the other tags may not be passed as expected. Please only select the tags that will be used in the callback scenario.": "Dans le système Jeedom, la longueur maximale de toutes les tags transmises au scénario est limitée. Etant donné que les tags <kbd> #query# <\/kbd> et <kbd> #intent# <\/ kbd> peuvent prendre beaucoup de place, les autres tags peuvent ne pas être transmises comme prévu. Sélectionnez uniquement les tags qui seront utilisées dans le scénario de rappel.",
+            "In the Jeedom system, the maximum length of all the tags passed to the scenario is limited. Since the <kbd>#query#<\/kbd> and <kbd>#intent#<\/kbd> tag can take significant space, the other tags may not be passed as expected. Please only select the tags that will be used in the callback scenario.": "Dans le système Jeedom, la longueur maximale de toutes les tags transmises au scénario est limitée. Etant donné que les tags <kbd> #query# <\/kbd> et <kbd> #intent# <\/kbd> peuvent prendre beaucoup de place, les autres tags peuvent ne pas être transmises comme prévu. Sélectionnez uniquement les tags qui seront utilisées dans le scénario de rappel.",
             "Scenario": "Scénario"
       },
       "plugins\/snips\/desktop\/js\/snips.js":{
