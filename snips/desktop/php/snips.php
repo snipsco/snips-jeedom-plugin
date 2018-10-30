@@ -230,7 +230,7 @@ $scenarios = scenario::all();
 
                 <label class="col-sm-1 control-label">{{Tags}}</label>
                 <div class="col-sm-2">
-                    <textarea style="height: 30px;width: 236px;"></textarea> 
+                    <textarea class="eqLogicAttr" style="height: 30px;width: 236px;" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="user_tags"></textarea> 
                 </div>
 
                 <div class="col-sm-4"></div>
