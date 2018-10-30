@@ -247,6 +247,10 @@ $scenarios = scenario::all();
                     <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagProbability"> {{#probability#}}</span>
                 </div>
             </div>
+
+            <div class="form-group">
+                <div class="alert alert-info col-lg-12" role="alert"> {{In the Jeedom system, the maximum length of all the tags passed to the scenario is limited. Since the <kbd>#query#</kbd> and <kbd>#intent#</kbd> tag can take significant space, the other tags may not be passed as expected. Please only select the tags that will be used in the callback scenario.}}</div>
+            </div>
         <legend>{{Action Binding}}</legend>
 
         <div class="panel-heading btn btn-default" id="bt_addNewBinding" style="width: 100%; border: 1.5px dashed #ddd; box-shadow: 0 1px 1px rgba(0,0,0,.05); background-color:#fff;"><i class="fa fa-plus-circle"></i> {{Attach a new binding}}</div>
