@@ -825,7 +825,7 @@ class snips extends eqLogic
 
     function executeCallbackScenario($_parameters, $_slots_values_org, $_payload){
         snips::debug(__FUNCTION__, ' Intent: ' . $_payload->{'intent'}->{'intentName'});
-        if ($_parameters['scenario'] == -1)
+        if ($_parameters['scenario'] == -1 || $_parameters['scenario'] == NULL)
             return;
 
         $options = array();
