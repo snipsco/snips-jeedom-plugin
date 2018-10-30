@@ -72,21 +72,6 @@ function snips_postSaveConfiguration(){
             <div class="alert alert-info col-lg-3" role="alert"> {{Assigned with snips device id which received the command when triggered.}}</div>
         </div>
 
-        <div class="form-group">
-            <label class="col-lg-4 control-label" >{{Scenario Tags}}</label>
-            <div class="col-lg-4">
-                <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagPlugin"> {{#plugin#}}</input></li>
-                <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagIdentifier"> {{#identifier#}}</input></li>
-                <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagIntent"> {{#intent#}}</input></li>
-                <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagSlots"> {{#slots#}}</input></li>
-                <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagSiteId"> {{#siteId#}}</input></li>
-                <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagQuery"> {{#query#}}</input></li>
-                <li style="list-style-type:none;"><input type="checkbox" class="configKey" data-l1key="isTagProbability"> {{#probability#}}</input></li>
-            </div>
-            <div class="alert alert-info col-lg-3" role="alert"> {{Tags that will be passed to the scenario which is trigger by snips binding engine.}}</div>
-            <div class="alert alert-warning col-lg-3" role="alert"> {{Beware that if you enable all the tags, some of the scenario blocks will not work due to the total tag size can overflow.}}</div>
-        </div>
-
         <!-- <div class="form-group">
             <label class="col-lg-4 control-label" >{{Multi-dialog conversation}}</label>
             <div class="col-lg-4">

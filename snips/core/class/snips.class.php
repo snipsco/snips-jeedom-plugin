@@ -779,29 +779,6 @@ class snips extends eqLogic
                                 $tags['#' . trim(trim($key), '#') . '#'] = $value;
                             }
 
-                            if(config::byKey('isTagPlugin', 'snips', 0))
-                                $tags['#plugin#'] = 'snips';
-
-                            if(config::byKey('isTagIdentifier', 'snips', 0))
-                                $tags['#identifier#'] = 'snips::'.$intent_name.'::'.$binding['name'];
-
-                            if(config::byKey('isTagIntent', 'snips', 0))
-                                $tags['#intent#'] = substr($intent_name,strpos($intent_name,':')+1);
-
-                            if(config::byKey('isTagSiteId', 'snips', 0))
-                                $tags['#siteId#'] = $site_id;
-
-                            if(config::byKey('isTagQuery', 'snips', 0))
-                                $tags['#query#'] = $query_input;
-
-                            if(config::byKey('isTagProbability', 'snips', 0))
-                                $tags['#probability#'] = $probability;
-
-                            if(config::byKey('isTagSlots', 'snips', 0))
-                                foreach ($slots_values_org as $slots_name => $value) {
-                                    $tags['#'.$slots_name.'#'] = $value;
-                                }
-
                             $options['tags'] = $tags;
 
                             snips::debug(__FUNCTION__, '[Binding Execution] tag aft value is :'.$options['tags']);
@@ -850,7 +827,7 @@ class snips extends eqLogic
         snips::debug(__FUNCTION__, ' Intent: ' . $_payload->{'intent'}->{'intentName'});
         if ($_parameters['scenario'] == -1)
             return;
-        
+
         $options = array();
         $options['scenario_id'] = $_parameters['scenario'];
         $options['action'] = $_parameters['action'];
