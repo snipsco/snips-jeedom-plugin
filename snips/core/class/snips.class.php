@@ -670,7 +670,7 @@ class snips extends eqLogic
     function findAndDoAction($_payload)
     {
         $intent_name = $_payload->{'intent'}->{'intentName'};
-        $probability = $_payload->{'probability'};
+        $probability = $_payload->{'intent'}->{'probability'};
         $site_id = $_payload->{'siteId'};
         $session_id = $_payload->{'sessionId'};
         $query_input = $_payload->{'input'};
@@ -683,6 +683,10 @@ class snips extends eqLogic
 
         snips::setSlotsCmd($slots_values, $intent_name);
         $eqLogic = eqLogic::byLogicalId($intent_name, 'snips');
+
+        $callback_scenario_parameters = $eqLogic->getConfiguration('callbackScenario');
+        snips::executeCallbackScenario($callback_scenario_parameters, $slots_values_org, $_payload);
+
         $bindings = $eqLogic->getConfiguration('bindings');
         if (!$eqLogic->getConfiguration('isSnipsConfig') && $eqLogic->getConfiguration('isInteraction')) {
             $param = array();
@@ -838,6 +842,50 @@ class snips extends eqLogic
         }
         sleep(1);
         snips::resetSlotsCmd();
+    }
+
+    public static 
+
+    function executeCallbackScenario($_parameters, $_slots_values_org, $_payload){
+        snips::debug(__FUNCTION__, ' Intent: ' . $_payload->{'intent'}->{'intentName'});
+        if ($_parameters['scenario'] == -1)
+            return;
+        
+        $options = array();
+        $options['scenario_id'] = $_parameters['scenario'];
+        $options['action'] = $_parameters['action'];
+
+        $tags = array();
+        $args = arg2array($_parameters['user_tags']);
+
+        foreach ($args as $key => $value)
+            $tags['#' . trim(trim($key), '#') . '#'] = $value;
+
+        if($_parameters['isTagPlugin'])
+            $tags['#plugin#'] = 'snips';
+
+        if($_parameters['isTagIdentifier'])
+            $tags['#identifier#'] = 'snips::'.$_payload->{'intent'}->{'intentName'}.'::Callback';
+
+        if($_parameters['isTagIntent'])
+            $tags['#intent#'] = substr($_payload->{'intent'}->{'intentName'},strpos($_payload->{'intent'}->{'intentName'},':')+1);
+
+        if($_parameters['isTagSiteId'])
+            $tags['#siteId#'] = $_payload->{'siteId'};
+
+        if($_parameters['isTagQuery'])
+            $tags['#query#'] = $_payload->{'input'};
+
+        if($_parameters['isTagProbability'])
+            $tags['#probability#'] = $_payload->{'intent'}->{'probability'};
+
+        if($_parameters['isTagSlots'])
+            foreach ($_slots_values_org as $slots_name => $value)
+                $tags['#'.$slots_name.'#'] = $value;
+
+        $options['tags'] = $tags;
+
+        scenarioExpression::createAndExec('action', 'scenario', $options);
     }
 
     public static
