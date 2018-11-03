@@ -136,6 +136,7 @@ class snips extends eqLogic
             }
             $client->subscribe('hermes/dialogueManager/sessionStarted', 0);
             $client->subscribe('hermes/dialogueManager/sessionEnded', 0);
+            $client->subscribe('hermes/hotword/default/detected', 0);
             $client->loopForever();
         }
 
@@ -190,6 +191,11 @@ class snips extends eqLogic
             $var->setValue($payload->{'siteId'});
             $var->save();
             snips::debug(__FUNCTION__, 'Set '.$var->getValue().' => snipsMsgSiteId');
+        }
+        
+        if ($_message->topic == 'hermes/hotword/default/detected'){
+          	$modelId = $payload->{'modelId'};
+          	scenario::setData("snips_model", $modelId);
         }
 
         if ($_message->topic == 'hermes/dialogueManager/sessionStarted'){
