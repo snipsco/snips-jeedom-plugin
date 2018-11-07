@@ -770,19 +770,6 @@ class snips extends eqLogic
                         $options = $action['options'];
 
                         snips::setSlotsCmd($slots_values, $intent_name, $options);
-                        if ($action['cmd'] == 'scenario') {
-                            snips::debug(__FUNCTION__, '[Binding Execution] tag value is :'.$options['tags']);
-                            $tags = array();
-                            $args = arg2array($options['tags']);
-
-                            foreach ($args as $key => $value) {
-                                $tags['#' . trim(trim($key), '#') . '#'] = $value;
-                            }
-
-                            $options['tags'] = $tags;
-
-                            snips::debug(__FUNCTION__, '[Binding Execution] tag aft value is :'.$options['tags']);
-                        }
 
                         $execution_return_msg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
                         if (is_string($execution_return_msg) && $execution_return_msg!='') {
