@@ -136,6 +136,7 @@ class snips extends eqLogic
             }
             $client->subscribe('hermes/dialogueManager/sessionStarted', 0);
             $client->subscribe('hermes/dialogueManager/sessionEnded', 0);
+            $client->subscribe('hermes/hotword/default/detected', 0);
             $client->loopForever();
         }
 
@@ -206,6 +207,14 @@ class snips extends eqLogic
                 $var->setValue('');
                 $var->save();
                 snips::debug(__FUNCTION__, 'Set '.$var->getValue().' => snipsMsgSession');
+            }
+        } 
+        if ($_message->topic == 'hermes/hotword/default/detected'){
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
+            if (is_object($var)) {
+                $var->setValue($payload->{'modelId'});
+                $var->save();
+                snips::debug(__FUNCTION__, 'Set '.$var->getValue().' => snipsMsgHotwordId');
             }
         } 
         if (in_array($_message->topic, $topics) == false) {
@@ -855,8 +864,8 @@ class snips extends eqLogic
         if (is_string($execution_return_msg) && 
             $execution_return_msg!='' && 
             config::byKey('dynamicSnipsTTS', 'snips', 0)) {
-            
-            snips::playTTS('#[Snips-Intents][Snips-TTS-'.$_payload->{'siteId'}.'][say]#', $execution_return_msg);
+
+            snips::playTTS('#[Snips-Intents][Snips-TTS-'.$_payload->{'siteId'}.'][say]#', $execution_return_msg, $_payload->{'sessionId'});
         }
         return $execution_return_msg;
     }
@@ -1167,6 +1176,25 @@ class snips extends eqLogic
                 $var = new dataStore();
                 $var->setKey('snipsMsgSiteId');
                 snips::debug(__FUNCTION__, 'Created variable snipsMsgSiteId');
+            }
+            $var->setValue('');
+            $var->setType('scenario');
+            $var->setLink_id(-1);
+            $var->save();
+        }
+
+        if(!config::byKey('isVarMsgHotwordId', 'snips', 0)){
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
+            if (is_object($var)) {
+                $var->remove();
+            }
+            snips::debug(__FUNCTION__, 'Removed variable snipsMsgHotwordId');
+        }else{
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
+            if (!is_object($var)) {
+                $var = new dataStore();
+                $var->setKey('snipsMsgHotwordId');
+                snips::debug(__FUNCTION__, 'Created variable snipsMsgHotwordId');
             }
             $var->setValue('');
             $var->setType('scenario');

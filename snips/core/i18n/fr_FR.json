@@ -113,6 +113,7 @@
             "When selecting a snips tts command in binding configuration with this option checked, the reply tts will be played on the device which received the command.": "Lorsque vous sélectionnez une commande snips tts dans la configuration de liaison avec cette option cochée, les réponses tts seront lues sur le périphérique qui a reçu la commande.",
             "Multi-dialog conversation": "conversation à dialogue multiple",
             "Updated when a session is started and ended.": "Mis à jour lorsqu'une session est démarrée et terminée.",
-            "Assigned with snips device id which received the command when triggered.": "Attribué avec l'identifiant de périphérique snips qui a reçu la commande lorsqu'il est déclenché."
+            "Assigned with snips device id which received the command when triggered.": "Attribué avec l'identifiant de périphérique snips qui a reçu la commande lorsqu'il est déclenché.",
+            "Assigned with detected hotword model id when triggered.": "Attribué avec l'ID de modèle de mot faible détecté lorsqu'il est déclenché."
       }
 }

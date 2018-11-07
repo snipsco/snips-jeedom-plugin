@@ -40,6 +40,7 @@ function snips_install() {
 
     config::save('isVarMsgSession',0,'snips');
     config::save('isVarMsgSiteId',0,'snips');
+    config::save('isVarMsgHotwordId',0,'snips');
 }
 
 function snips_update() {
@@ -59,6 +60,8 @@ function snips_update() {
         config::save('isVarMsgSession',0,'snips');
     if (config::byKey('isVarMsgSiteId', 'snips', "NULL") == "NULL")
         config::save('isVarMsgSiteId',0,'snips');
+    if (config::byKey('isVarMsgHotwordId', 'snips', "NULL") == "NULL")
+        config::save('isVarMsgHotwordId',0,'snips');
 }
 
 function snips_remove() {

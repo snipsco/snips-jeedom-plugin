@@ -70,6 +70,12 @@ function snips_postSaveConfiguration(){
                 <input type="checkbox" class="configKey" data-l1key="isVarMsgSiteId"> {{snipsMsgSiteId}}</input>
             </div>
             <div class="alert alert-info col-lg-3" role="alert"> {{Assigned with snips device id which received the command when triggered.}}</div>
+
+            <label class="col-lg-4 control-label" ></label>
+            <div class="col-lg-4">
+                <input type="checkbox" class="configKey" data-l1key="isVarMsgHotwordId"> {{snipsMsgHotwordId}}</input>
+            </div>
+            <div class="alert alert-info col-lg-3" role="alert"> {{Assigned with detected hotword model id when triggered.}}</div>
         </div>
 
         <!-- <div class="form-group">
