@@ -6,6 +6,7 @@ if (!isConnect('admin')) {
 $plugin = plugin::byId('snips');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
+$scenarios = scenario::all();
 ?>
 
 <div class="row row-overflow">
@@ -103,24 +104,36 @@ $eqLogics = eqLogic::byType($plugin->getId());
         foreach ($eqLogics as $eqLogic) {
           if ($eqLogic->getConfiguration('snipsType') == 'Intent') {
             $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-            echo '<span class="panel panel-success eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
-            echo '<li class="panel-heading" style="padding: 5px 15px;list-style:none;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></li>';
+            echo '<span class="panel panel-info eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
+            echo '<li class="panel-heading" style="padding: 5px 5px;list-style:none;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></li>';
             echo '<li class="panel-body" style="padding: 0px;list-style:none;">';
 
             echo '<ul class="list-group" style="margin: 0;">';
 
-            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.$eqLogic->getConfiguration('language').'</span>{{Language}}</li>';
+            //echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.$eqLogic->getConfiguration('language').'</span>{{Language}}</li>';
 
-            echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('slots')).'</span>Slots</li>';
+            if ($eqLogic->getConfiguration('callbackScenario')['scenario'] > 0) {
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;"> {{Yes}}</span>{{Callback Scenario}}</li>';
+            }else{
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;"> {{No}}</span>{{Callback Scenario}}</li>';
+            }
+            
+
+            if (count($eqLogic->getConfiguration('slots'))) {
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">'.count($eqLogic->getConfiguration('slots')).'</span>Slots</li>';
+            }else{
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;">0</span>Slots</li>';
+            }
+              
 
             if ($eqLogic->getConfiguration('bindings')) {
-              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.count($eqLogic->getConfiguration('bindings')).'</span>{{Bindings}}</li>';
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">'.count($eqLogic->getConfiguration('bindings')).'</span>{{Bindings}}</li>';
             }else{
-              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #c9302c;">0</span>{{Bindings}}</li>';
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;">0</span>{{Bindings}}</li>';
             }
 
             if ($eqLogic->getConfiguration('isSnipsConfig')) {
-              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">{{Snips Binding}}</span>{{Reaction}}</li>';
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">{{Snips Binding}}</span>{{Reaction}}</li>';
             }else if($eqLogic->getConfiguration('isInteraction')){
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #f0ad4e;">{{Interaction}}</span>{{Reaction}}</li>';
             }else{
@@ -201,6 +214,55 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 </div>
             </div>
 
+        <legend>{{Callback Scenario}}</legend>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">{{Scenario}}</label>
+                <div class="col-sm-4"> 
+                    <select class="eqLogicAttr form-control input-sm" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="scenario">
+                        <option value="-1">{{None}}</option>
+                        <?php
+                        foreach ($scenarios as $scenario) {
+                          echo '<option value="'.$scenario->getId().'">'.$scenario->getName().'</option>';
+                        }
+                        ?>
+
+                    </select>
+                </div>
+                <label class="col-sm-1 control-label">{{Action}}</label>
+                <div class="col-sm-2">
+                    <select class="eqLogicAttr form-control input-sm" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="action">
+                        <option value="start">{{Start}}</option>
+                        <option value="startsync">{{Start (sync)}}</option>
+                        <option value="stop">{{Stop}}</option>
+                        <option value="activate">{{Activer}}</option>
+                        <option value="deactivate">{{Désactiver}}</option>
+                        <option value="resetRepeatIfStatus">{{Remise à zero des SI}}</option>
+                    </select>
+                </div>
+
+                <label class="col-sm-1 control-label">{{Tags}}</label>
+                <div class="col-sm-2">
+                    <textarea class="eqLogicAttr" style="height: 30px;width: 236px;" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="user_tags"></textarea> 
+                </div>
+
+                <div class="col-sm-4"></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">{{SnipsTags}}</label>
+                <div class="col-sm-11">
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagPlugin">{{#plugin#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagIdentifier"> {{#identifier#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagIntent"> {{#intent#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagSlots"> {{#slots#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagSiteId"> {{#siteId#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagQuery"> {{#query#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagProbability"> {{#probability#}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="alert alert-info col-lg-12" role="alert"> {{In the Jeedom system, the maximum length of all the tags passed to the scenario is limited. Since the <kbd>#query#</kbd> and <kbd>#intent#</kbd> tag can take significant space, the other tags may not be passed as expected. Please only select the tags that will be used in the callback scenario.}}</div>
+            </div>
         <legend>{{Action Binding}}</legend>
 
         <div class="panel-heading btn btn-default" id="bt_addNewBinding" style="width: 100%; border: 1.5px dashed #ddd; box-shadow: 0 1px 1px rgba(0,0,0,.05); background-color:#fff;"><i class="fa fa-plus-circle"></i> {{Attach a new binding}}</div>

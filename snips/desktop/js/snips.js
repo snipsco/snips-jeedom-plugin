@@ -288,7 +288,6 @@ $('.nav-tabs li a').off('click').on('click', function () {
 });
 
 $('#div_bindings').off('click', '.panel-heading').on('click', '.panel-heading', function () {
-    debugger;
     setTimeout(function () {
         taAutosize();
     }, 50);
@@ -1334,4 +1333,6 @@ function displayBinaryMap(_el, _cmd) {
 
     _el.append(span);
 }
+
+
 

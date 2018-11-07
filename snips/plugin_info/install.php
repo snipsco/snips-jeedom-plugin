@@ -36,7 +36,11 @@ function snips_install() {
         config::save('defaultTTS', 'Désolé, je ne trouve pas les actions!', 'snips');
     }else if ($lang == 'en_US') {
         config::save('defaultTTS', 'Sorry, I cant find any actions!', 'snips');
-    } 
+    }
+
+    config::save('isVarMsgSession',0,'snips');
+    config::save('isVarMsgSiteId',0,'snips');
+    config::save('isVarMsgHotwordId',0,'snips');
 }
 
 function snips_update() {
@@ -51,6 +55,13 @@ function snips_update() {
         $cron->setTimeout('1440');
         $cron->save();
     }
+
+    if (config::byKey('isVarMsgSession', 'snips', "NULL") == "NULL")
+        config::save('isVarMsgSession',0,'snips');
+    if (config::byKey('isVarMsgSiteId', 'snips', "NULL") == "NULL")
+        config::save('isVarMsgSiteId',0,'snips');
+    if (config::byKey('isVarMsgHotwordId', 'snips', "NULL") == "NULL")
+        config::save('isVarMsgHotwordId',0,'snips');
 }
 
 function snips_remove() {
@@ -63,21 +74,21 @@ function snips_remove() {
     $obj = object::byName('Snips-Intents');
     if (is_object($obj)) {
         $obj->remove();
-        snips::debug('[Snips Remove] Removed object: Snips-Intents');
+        snips::debug(__FUNCTION__, 'Removed object: Snips-Intents');
     }
 
     $eqLogics = eqLogic::byType('snips');
     foreach($eqLogics as $eq) {
         $cmds = snipsCmd::byEqLogicId($eq->getLogicalId);
         foreach($cmds as $cmd) {
-            snips::debug('[Snips Remove] Removed slot cmd: '.$cmd->getName());
+            snips::debug(__FUNCTION__, 'Removed slot cmd: '.$cmd->getName());
             $cmd->remove();
         }
-        snips::debug('[Snips Remove] Removed intent entity: '.$eq->getName());
+        snips::debug(__FUNCTION__, 'Removed intent entity: '.$eq->getName());
         $eq->remove();
     }
 
-    snips::debug('[Snips Remove] Removed Snips Voice assistant!');
+    snips::debug(__FUNCTION__, 'Removed Snips Voice assistant!');
 
     //log::add('snips','info','Suppression extension');
     $resource_path = realpath(dirname(__FILE__) . '/../resources');
