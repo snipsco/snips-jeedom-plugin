@@ -796,14 +796,12 @@ class snips extends eqLogic
                         snips::playTTS($binding['ttsPlayer'], $text, $session_id);
                     }
                 }
-            }else if(count($bindings_with_correct_condition) == 0){
-                if (!$callback_called)
-                {
-                    $orgMessage = config::byKey('defaultTTS', 'snips', 'Désolé, je n’ai pas compris');
+            }else if(count($bindings_with_correct_condition) == 0 && !$callback_called){
 
-                    $Messages = snips::generateFeedback($orgMessage, null, false);
-                    snips::playTTS('#[Snips-Intents][Snips-TTS-'.$site_id.'][say]#', $Messages, $session_id);
-                }
+                $orgMessage = config::byKey('defaultTTS', 'snips', 'Désolé, je n’ai pas compris');
+
+                $messages = snips::generateFeedback($orgMessage, null, false);
+                snips::playTTS('#[Snips-Intents][Snips-TTS-'.$site_id.'][say]#', $messages, $session_id);
             }
         }
         sleep(1);
@@ -851,8 +849,16 @@ class snips extends eqLogic
 
         $options['tags'] = $tags;
 
-        scenarioExpression::createAndExec('action', 'scenario', $options);
-        return True;
+        $execution_return_msg = False;
+        $execution_return_msg = scenarioExpression::createAndExec('action', 'scenario', $options);
+
+        if (is_string($execution_return_msg) && 
+            $execution_return_msg!='' && 
+            config::byKey('dynamicSnipsTTS', 'snips', 0)) {
+            
+            snips::playTTS('#[Snips-Intents][Snips-TTS-'.$_payload->{'siteId'}.'][say]#', $execution_return_msg);
+        }
+        return $execution_return_msg;
     }
 
     public static
@@ -1139,14 +1145,14 @@ class snips extends eqLogic
         }else{
             $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
             if (!is_object($var)) {
-                $dataStore = new dataStore();
-                $dataStore->setKey('snipsMsgSession');
+                $var = new dataStore();
+                $var->setKey('snipsMsgSession');
                 snips::debug(__FUNCTION__, 'Created variable snipsMsgSession');
             }
-            $dataStore->setValue('');
-            $dataStore->setType('scenario');
-            $dataStore->setLink_id(-1);
-            $dataStore->save();
+            $var->setValue('');
+            $var->setType('scenario');
+            $var->setLink_id(-1);
+            $var->save();
         }
 
         if(!config::byKey('isVarMsgSiteId', 'snips', 0)){
@@ -1158,14 +1164,14 @@ class snips extends eqLogic
         }else{
             $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
             if (!is_object($var)) {
-                $dataStore = new dataStore();
-                $dataStore->setKey('snipsMsgSiteId');
+                $var = new dataStore();
+                $var->setKey('snipsMsgSiteId');
                 snips::debug(__FUNCTION__, 'Created variable snipsMsgSiteId');
             }
-            $dataStore->setValue('');
-            $dataStore->setType('scenario');
-            $dataStore->setLink_id(-1);
-            $dataStore->save();
+            $var->setValue('');
+            $var->setType('scenario');
+            $var->setLink_id(-1);
+            $var->save();
         }
     }
 
