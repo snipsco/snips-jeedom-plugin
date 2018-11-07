@@ -685,8 +685,8 @@ class snips extends eqLogic
         $eqLogic = eqLogic::byLogicalId($intent_name, 'snips');
 
         $callback_scenario_parameters = $eqLogic->getConfiguration('callbackScenario');
-        snips::executeCallbackScenario($callback_scenario_parameters, $slots_values_org, $_payload);
-
+        $callback_called = snips::executeCallbackScenario($callback_scenario_parameters, $slots_values_org, $_payload);
+        
         $bindings = $eqLogic->getConfiguration('bindings');
         if (!$eqLogic->getConfiguration('isSnipsConfig') && $eqLogic->getConfiguration('isInteraction')) {
             $param = array();
@@ -797,11 +797,13 @@ class snips extends eqLogic
                     }
                 }
             }else if(count($bindings_with_correct_condition) == 0){
+                if (!$callback_called)
+                {
+                    $orgMessage = config::byKey('defaultTTS', 'snips', 'Désolé, je n’ai pas compris');
 
-                $orgMessage = config::byKey('defaultTTS', 'snips', 'Désolé, je n’ai pas compris');
-
-                $Messages = snips::generateFeedback($orgMessage, null, false);
-                snips::playTTS('#[Snips-Intents][Snips-TTS-'.$site_id.'][say]#', $Messages, $session_id);
+                    $Messages = snips::generateFeedback($orgMessage, null, false);
+                    snips::playTTS('#[Snips-Intents][Snips-TTS-'.$site_id.'][say]#', $Messages, $session_id);
+                }
             }
         }
         sleep(1);
@@ -850,6 +852,7 @@ class snips extends eqLogic
         $options['tags'] = $tags;
 
         scenarioExpression::createAndExec('action', 'scenario', $options);
+        return True;
     }
 
     public static
