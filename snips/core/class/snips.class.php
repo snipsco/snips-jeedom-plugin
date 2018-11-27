@@ -42,14 +42,12 @@ class snips extends eqLogic
         $return['log'] = '';
         $return['state'] = 'nok';
         $cron = cron::byClassAndFunction('snips', 'mqttClient');
-        if (is_object($cron) && $cron->running()) {
+        if (is_object($cron) && $cron->running())
             $return['state'] = 'ok';
-        }
 
         $dependancy_info = self::dependancy_info();
-        if ($dependancy_info['state'] == 'ok') {
+        if ($dependancy_info['state'] == 'ok')
             $return['launchable'] = 'ok';
-        }
 
         return $return;
     }
@@ -60,14 +58,12 @@ class snips extends eqLogic
     {
         self::deamon_stop();
         $deamon_info = self::deamon_info();
-        if ($deamon_info['launchable'] != 'ok') {
+        if ($deamon_info['launchable'] != 'ok')
             throw new Exception(__('Please check your configuration', __FILE__));
-        }
 
         $cron = cron::byClassAndFunction('snips', 'mqttClient');
-        if (!is_object($cron)) {
+        if (!is_object($cron))
             throw new Exception(__('Can not find task corn ', __FILE__));
-        }
 
         $cron->run();
     }
@@ -77,9 +73,8 @@ class snips extends eqLogic
     function deamon_stop()
     {
         $cron = cron::byClassAndFunction('snips', 'mqttClient');
-        if (!is_object($cron)) {
+        if (!is_object($cron))
             throw new Exception(__('Can not find taks corn', __FILE__));
-        }
 
         $cron->halt();
     }
@@ -95,9 +90,8 @@ class snips extends eqLogic
         $cmd = "dpkg -l | grep mosquitto";
         exec($cmd, $output, $return_var);
         $libphp = extension_loaded('mosquitto');
-        if ($output[0] != "" && $libphp) {
+        if ($output[0] != "" && $libphp)
             $return['state'] = 'ok';
-        }
 
         return $return;
     }
