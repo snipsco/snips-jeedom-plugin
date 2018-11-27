@@ -125,9 +125,9 @@ class snips extends eqLogic
             $client->connect($addr, $port, 60);
             $topics = array();
             $topics = snips::getTopics();
-            foreach($topics as $topic) {
+            foreach($topics as $topic)
                 $client->subscribe($topic, 0);
-            }
+
             $client->subscribe('hermes/dialogueManager/sessionStarted', 0);
             $client->subscribe('hermes/dialogueManager/sessionEnded', 0);
             $client->subscribe('hermes/hotword/default/detected', 0);
@@ -143,6 +143,7 @@ class snips extends eqLogic
 
     function connect($r, $message)
     {
+
         snips::debug(__FUNCTION__, 'Connected, code: ' . $r . ' message: ' . $message);
         config::save('status', '1', 'snips');
     }
@@ -307,7 +308,8 @@ class snips extends eqLogic
     }
 
     //------------ New Hermes Protocol Implementation START------------
-    public static function hermes_publish_continue_session($_session_id, $_text, $_intent_filter, $_custom_data, $_send_intent_not_recognized){
+    public static function hermes_publish_continue_session($_session_id, $_text, $_intent_filter, $_custom_data, $_send_intent_not_recognized)
+    {
         $topic = 'hermes/dialogueManager/continueSession';
         $payload = array();
 
@@ -333,7 +335,8 @@ class snips extends eqLogic
         return self::mqtt_publish($topic, json_encode($payload));
     }
 
-    public static function hermes_publish_end_session($_session_id, $_text){
+    public static function hermes_publish_end_session($_session_id, $_text)
+    {
         $topic = 'hermes/dialogueManager/endSession';
         $payload = array();
 
@@ -348,7 +351,8 @@ class snips extends eqLogic
         return self::mqtt_publish($topic, json_encode($payload));
     }
 
-    public static function hermes_publish_start_session_action($_site_id, $_session_init_text, $_session_init_can_be_enqueued, $_session_init_intent_filter, $_session_init_send_intent_not_recognized, $_custom_data){
+    public static function hermes_publish_start_session_action($_site_id, $_session_init_text, $_session_init_can_be_enqueued, $_session_init_intent_filter, $_session_init_send_intent_not_recognized, $_custom_data)
+    {
         $topic = 'hermes/dialogueManager/startSession';
         $payload = array();
         $init = array('type' => 'action');
@@ -376,7 +380,8 @@ class snips extends eqLogic
         return self::mqtt_publish($topic, json_encode($payload));
     }
 
-    public static function hermes_publish_start_session_notification($_site_id, $_session_init_text, $_custom_data){
+    public static function hermes_publish_start_session_notification($_site_id, $_session_init_text, $_custom_data)
+    {
         $topic = 'hermes/dialogueManager/startSession';
         $payload = array();
         $init = array('type' => 'notification');
@@ -398,8 +403,38 @@ class snips extends eqLogic
     //------------ New Hermes Protocol Implementation END------------
 
     //------------ New Mqtt Operation API START------------
+    public static function mqtt_client()
+    {
+        $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
+        $port = config::byKey('mqttPort', 'snips', 1883);
+        $user = config::byKey('mqttUser', 'snips', '');
+        $pass = config::byKey('mqttPass', 'snips', '');
 
-    private function mqtt_publish($_topic, $_payload){
+        snips::debug(__FUNCTION__, 'MQTT connection, Host: ' . $addr . ', Port: ' . $port . ', User: ' . $user . ', Pass: ' . $pass);
+        $client = new Mosquitto\Client();
+        $client->onConnect('snips::mqtt_on_connect');
+        $client->onDisconnect('snips::mqtt_on_disconnect');
+        $client->onSubscribe('snips::mqtt_on_subscribe');
+        $client->onMessage('snips::mqtt_on_message');
+        $client->onLog('snips::mqtt_on_log');
+        try {
+            $client->connect($addr, $port, 60);
+            $topics = snips::getTopics();
+            foreach($topics as $topic)
+                $client->subscribe($topic, 0);
+
+            $client->subscribe('', 0);
+            $client->subscribe('', 0);
+            $client->subscribe('', 0);
+            $client->loopForever();
+        }
+
+        catch (Exception $e)
+            snips::debug(__FUNCTION__, 'Exception: '.$e->getMessage());
+    }
+
+    private function mqtt_publish($_topic, $_payload)
+    {
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $port = 1883;
         $client = new Mosquitto\Client();
@@ -413,6 +448,57 @@ class snips extends eqLogic
     }
 
     //------------ New Mqtt Operation API END------------
+
+    //------------ Renew & Supplement of the existing method START------------
+    public static function get_necessary_hermes_system_topics()
+    {
+        $topics = array('hermes/dialogueManager/sessionStarted',
+                        'hermes/dialogueManager/sessionEnded',
+                        'hermes/hotword/default/detected');
+        return $topics;
+    }
+
+    public static function get_user_intent_topics()
+    {
+        $intents = self::get_user_intents();
+        $topics = array();
+        foreach($intents as $intent)
+            array_push($topics, 'hermes/intent/' . $intent);
+
+        return $topics;
+    }
+
+    public static function get_all_topics()
+    {
+        $system_topics = self::get_necessary_hermes_system_topics();
+        $user_topics = self::get_user_intent_topics();
+
+        $topics = array_merge($system_topics, $user_topics);
+
+        return $topics;
+    }
+
+    public static function get_user_intents()
+    {
+        $intents_origin = get_assistant_json_as_array()["intents"];
+        $intents = array();
+        foreach($intents_origin as $intent_origin)
+            /* only fetch the jeedom related intents */
+            if (strpos(strtolower($intent_origin['name']), 'jeedom'))
+                array_push($intents, $intent_origin['name']);
+
+        return $intents;
+    }
+
+    public static function get_assistant_json_as_array()
+    {
+        $assistant_json_file = dirname(__FILE__) . '/../../config_running/assistant.json';
+        $json_string = file_get_contents($assistant_json_file);
+        $json_array = json_decode($json_string, true);
+
+        return $json_array;
+    }
+    //------------ Renew & Supplement of the existing method END------------
     public static
 
     function publish($_topic, $_payload)
