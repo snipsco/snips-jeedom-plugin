@@ -307,32 +307,112 @@ class snips extends eqLogic
     }
 
     //------------ New Hermes Protocol Implementation START------------
+    public static function hermes_publish_continue_session($_session_id, $_text, $_intent_filter, $_custom_data, $_send_intent_not_recognized){
+        $topic = 'hermes/dialogueManager/continueSession';
+        $payload = array();
 
-    public static
+        if ($_session_id)
+            $payload['sessionId'] = $_session_id;
+        else
+            return 0;
 
-    function hermes_publish_continue_session($_session_id, $_text, $_intent_filter){
+        if ($_text)
+            $payload['text'] = $_text;
+        else
+            return 0;
 
+        if ($_intent_filter)
+            $payload['intentFilter'] = $_intent_filter;
+
+        if ($_custom_data)
+            $payload['customData'] = $_custom_data;
+
+        if ($_send_intent_not_recognized)
+            $payload['sendIntentNotRecognized'] = $_send_intent_not_recognized;
+
+        return self::mqtt_publish($topic, json_encode($payload));
     }
 
-    public static
+    public static function hermes_publish_end_session($_session_id, $_text){
+        $topic = 'hermes/dialogueManager/endSession';
+        $payload = array();
 
-    function hermes_publish_end_session($_session_id, $_text){
+        if ($_session_id)
+            $payload['sessionId'] = $_session_id;
+        else
+            return 0;
 
+        if ($_text)
+            $payload['text'] = $_text;
+
+        return self::mqtt_publish($topic, json_encode($payload));
     }
 
-    public static
+    public static function hermes_publish_start_session_action($_site_id, $_session_init_text, $_session_init_can_be_enqueued, $_session_init_intent_filter, $_session_init_send_intent_not_recognized, $_custom_data){
+        $topic = 'hermes/dialogueManager/startSession';
+        $payload = array();
+        $init = array('type' => 'action');
 
-    function hermes_publish_start_session_action($_site_id, $_session_init_text, $_session_init_intent_filter, $_session_init_can_be_enqueued, $_custom_data){
+        if ($_site_id)
+            $payload['siteId'] = $_session_id;
 
+        if ($_session_init_text)
+            $init['text'] = $_session_init_text;
+
+        if ($_session_init_can_be_enqueued)
+            $init['canBeEnqueued'] = $_session_init_can_be_enqueued;
+
+        if ($_session_init_intent_filter)
+            $init['intentFilter'] = $_session_init_intent_filter;
+
+        if ($_session_init_send_intent_not_recognized)
+            $init['sendIntentNotRecognized'] = $_session_init_send_intent_not_recognized;
+
+        if ($_custom_data)
+            $payload['customData'] = $_custom_data
+
+        $payload['init'] = $init;
+
+        return self::mqtt_publish($topic, json_encode($payload));
     }
 
-    public static
+    public static function hermes_publish_start_session_notification($_site_id, $_session_init_text, $_custom_data){
+        $topic = 'hermes/dialogueManager/startSession';
+        $payload = array();
+        $init = array('type' => 'notification');
 
-    function hermes_publish_start_session_notification($_site_id, $_session_init_value, $_custom_data){
+        if ($_site_id)
+            $payload['siteId'] = $_session_id;
 
+        if ($_session_init_text)
+            $init['text'] = $_session_init_text;
+
+        if ($_custom_data)
+            $payload['customData'] = $_custom_data
+
+        $payload['init'] = $init;
+
+        return self::mqtt_publish($topic, json_encode($payload));
     }
 
     //------------ New Hermes Protocol Implementation END------------
+
+    //------------ New Mqtt Operation API START------------
+
+    private function mqtt_publish($_topic, $_payload){
+        $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
+        $port = 1883;
+        $client = new Mosquitto\Client();
+        $client->connect($addr, $port, 60);
+        $client->publish($_topic, $_payload);
+        $client->disconnect();
+        snips::debug(__FUNCTION__, 'published message: '.$_payload.' to topic: '.$_topic);
+        unset($client);
+
+        return 1;
+    }
+
+    //------------ New Mqtt Operation API END------------
     public static
 
     function publish($_topic, $_payload)
