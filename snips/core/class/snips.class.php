@@ -460,7 +460,7 @@ class snips extends eqLogic
 
     public static function get_user_intent_topics()
     {
-        $intents = self::get_user_intents();
+        $intents = self::get_user_intent_ids();
         $topics = array();
         foreach($intents as $intent)
             array_push($topics, 'hermes/intent/' . $intent);
@@ -478,7 +478,7 @@ class snips extends eqLogic
         return $topics;
     }
 
-    public static function get_user_intents()
+    public static function get_user_intent_ids()
     {
         $intents_origin = get_assistant_json_as_array()["intents"];
         $intents = array();
@@ -488,6 +488,16 @@ class snips extends eqLogic
                 array_push($intents, $intent_origin['name']);
 
         return $intents;
+    }
+
+    public static function get_user_intent_slot_names($_intent_id)
+    {
+        $slots_origin = get_assistant_json_as_array()["intents"][$_intent_id]["slots"];
+        $slot_names = array();
+        foreach ($slots_origin as $slot_origin)
+            array_push($slot_names, $slot_origin['name']);
+
+        return $slot_names;
     }
 
     public static function get_assistant_json_as_array()
