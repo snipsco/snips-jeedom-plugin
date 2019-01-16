@@ -8,6 +8,7 @@ Please reach ***[Snips Dev Center](https://snips.gitbook.io/)*** for the user do
 
 ## Snips-Jeedom-Plugin
 
+![Version](https://img.shields.io/badge/snips--jeedom--plugin-v1.6.0-blue.svg)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/snipsco/snips-skill-respeaker/blob/master/LICENSE)
 
 The Snips Voice Platform allows anyone to integrate AI powered voice interaction in their devices with ease. The end-to-end pipeline - Hotword detection, Automatic Speech Recognition (ASR) and Natural Language Understanding (NLU) - runs fully on device, powered by state of the art deep learning. By using Snips, you can avoid cloud provider costs, cloud latency, and protect user's privacy.
