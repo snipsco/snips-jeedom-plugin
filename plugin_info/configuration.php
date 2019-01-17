@@ -78,12 +78,12 @@ function snips_postSaveConfiguration(){
             <div class="alert alert-info col-lg-3" role="alert"> {{Assigned with detected hotword model id when triggered.}}</div>
         </div>
 
-        <!-- <div class="form-group">
+        <div class="form-group">
             <label class="col-lg-4 control-label" >{{Multi-dialog conversation}}</label>
             <div class="col-lg-4">
                 <input type="checkbox" class="configKey" data-l1key="multiDialog"> {{Enable}}</input>
             </div>
-        </div> -->
+        </div>
 
     </fieldset>
 </form>
