@@ -410,8 +410,6 @@ class snips extends eqLogic
         $user = config::byKey('mqttUser', 'snips', '');
         $pass = config::byKey('mqttPass', 'snips', '');
 
-        snips::debug(__FUNCTION__, 'MQTT connection, Host: ' . $addr . ', Port: ' . $port . ', User: ' . $user . ', Pass: ' . $pass);
-        $client = new Mosquitto\Client();
         $client->onConnect('snips::mqtt_on_connect');
         $client->onDisconnect('snips::mqtt_on_disconnect');
         $client->onSubscribe('snips::mqtt_on_subscribe');
@@ -419,13 +417,9 @@ class snips extends eqLogic
         $client->onLog('snips::mqtt_on_log');
         try {
             $client->connect($addr, $port, 60);
-            $topics = snips::getTopics();
+            $topics = snips::get_all_topics();
             foreach($topics as $topic)
                 $client->subscribe($topic, 0);
-
-            $client->subscribe('', 0);
-            $client->subscribe('', 0);
-            $client->subscribe('', 0);
             $client->loopForever();
         }
 
@@ -447,9 +441,126 @@ class snips extends eqLogic
         return 1;
     }
 
+    public static function mqtt_on_connect($r, $message)
+    {
+        snips::debug(__FUNCTION__, 'Connected, code: ' . $r . ' message: ' . $message);
+        config::save('status', '1', 'snips');
+    }
+
+    public static function mqtt_on_disconnect($r, $message)
+    {
+        snips::debug(__FUNCTION__, 'Disconnected, code: ' . $r);
+        config::save('status', '0', 'snips');
+    }
+
+    public static function mqtt_on_subscribe($r, $message)
+    {
+        log::add('snips', 'inof', '[MQTT] Subscribeed to .'.$topic);
+    }
+
+    public static function mqtt_on_log($r, $message)
+    {
+        if (strpos($str, 'PINGREQ') === false && strpos($str, 'PINGRESP') === false) {
+            snips::debug(__FUNCTION__, 'code: '.$code . ' : ' . $str);
+        }
+    }
+
+    public static function mqtt_on_message($_message)
+    {
+        snips::debug(__FUNCTION__, 'Received message. Topic:'.$_message->topic);
+        $payload_array = json_decode($_message->payload);
+
+        if ($payload_array->{'siteId'}) {
+            check_and_add_site_devices($payload_array->{'siteId'});
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
+            if (is_object($var)) {
+                $var->setValue($payload_array->{'siteId'});
+                $var->save();
+            }
+        }
+
+        switch ($_message->topic) {
+            case 'hermes/dialogueManager/sessionStarted':
+                snips::on_session_started_callback($payload_array);
+                break;
+            case 'hermes/dialogueManager/sessionEnded':
+                snips::on_session_ended_callback($payload_array);
+                break;
+            case 'hermes/hotword/default/detected':
+                snips::on_hotword_detected_callback($payload_array);
+                break;
+            default:
+                snips::on_intent_detected_callback($payload_array);
+        }
+    }
     //------------ New Mqtt Operation API END------------
 
+    //------------ Mqtt topic callback methods START------------
+    public static function on_intent_detected_callback($payload_array)
+    {
+
+    }
+
+    public static function on_hotword_detected_callback($payload_array)
+    {
+        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
+        if (is_object($var)) {
+            $var->setValue($payload_array->{'modelId'});
+            $var->save();
+            snips::debug(__FUNCTION__, 'Set '.$var->getValue().' => snipsMsgHotwordId');
+        }
+    }
+
+    public static function on_session_started_callback($payload_array)
+    {
+        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+        if (is_object($var)) {
+            $var->setValue($payload_array->{'sessionId'});
+            $var->save();
+            snips::debug(__FUNCTION__, 'Set '.$var->getValue().' => snipsMsgSession');
+        }
+    }
+
+    public static function on_session_ended_callback($payload_array)
+    {
+        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+        if (is_object($var)) {
+            $var->setValue('');
+            $var->save();
+            snips::debug(__FUNCTION__, 'Set '.$var->getValue().' => snipsMsgSession');
+        }
+    }
+
+    public static function on_intent_not_recognized_callback($payload_array)
+    {
+        ;
+    }
+    //------------ Mqtt topic callback methods END------------
+
+
     //------------ Renew & Supplement of the existing method START------------
+    private static function check_and_add_site_devices($_site_id)
+    {
+        $site_id = $payload_array->{'siteId'};
+        $obj_intent = object::byName('Snips-Intents');
+        $lang = $obj_intent->getConfiguration('language');
+
+        $elogic = snips::byLogicalId('Snips-TTS-'.$_site_id, 'snips');
+        if (!is_object($elogic)) {
+            $elogic = new snips();
+            $elogic->setName('Snips-TTS-'.$_site_id);
+            $elogic->setLogicalId('Snips-TTS-'.$_site_id);
+            $elogic->setEqType_name('snips');
+            $elogic->setIsEnable(1);
+            $elogic->setConfiguration('snipsType', 'TTS');
+            $elogic->setConfiguration('language', $lang);
+            $elogic->setConfiguration('siteName', $_site_id);
+            $elogic->setObject_id(object::byName('Snips-Intents')->getId());
+            $elogic->save();
+            snips::debug(__FUNCTION__, 'Created TTS entity: Snips-TTS-'.$_site_id);
+        }
+    }
+
     public static function get_necessary_hermes_system_topics()
     {
         $topics = array('hermes/dialogueManager/sessionStarted',
@@ -1303,18 +1414,22 @@ class snips extends eqLogic
         $lights = $json['LIGHTS'];
         $_up_down = $json['OPERATION'];
         foreach ($lights as $light) {
-
             $cmd = cmd::byString($light['LIGHT_BRIGHTNESS_VALUE']);
             if (is_object($cmd))
-            if ($cmd->getValue()) $current_val = $cmd->getValue();
-            else $current_val = $cmd->getCache('value', 'NULL');
+                if ($cmd->getValue())
+                    $current_val = $cmd->getValue();
+                else
+                    $current_val = $cmd->getCache('value', 'NULL');
             $options = array();
             $change = round(($light['MAX_VALUE'] - $light['MIN_VALUE']) * $light['STEP_VALUE']);
-            if ($_up_down === 'UP') $options['slider'] = $current_val + $change;
-            else
-            if ($_up_down === 'DOWN') $options['slider'] = $current_val - $change;
-            if ($options['slider'] < $light['MIN_VALUE']) $options['slider'] = $light['MIN_VALUE'];
-            if ($options['slider'] > $light['MAX_VALUE']) $options['slider'] = $light['MAX_VALUE'];
+            if ($_up_down === 'UP')
+                $options['slider'] = $current_val + $change;
+            if ($_up_down === 'DOWN')
+                $options['slider'] = $current_val - $change;
+            if ($options['slider'] < $light['MIN_VALUE'])
+                $options['slider'] = $light['MIN_VALUE'];
+            if ($options['slider'] > $light['MAX_VALUE'])
+                $options['slider'] = $light['MAX_VALUE'];
             $cmdSet = cmd::byString($light['LIGHT_BRIGHTNESS_ACTION']);
             if (is_object($cmdSet)) {
                 $cmdSet->execCmd($options);
