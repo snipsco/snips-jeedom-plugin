@@ -83,6 +83,7 @@ function snips_postSaveConfiguration(){
             <div class="col-lg-4">
                 <input type="checkbox" class="configKey" data-l1key="multiDialog"> {{Enable}}</input>
             </div>
+            <div class="alert alert-info col-lg-3" role="alert"> {{By checking this option, snips will keep listening to your instructions once its hotword is triggered.}}</div>
         </div>
 
     </fieldset>
