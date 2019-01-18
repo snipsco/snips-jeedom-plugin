@@ -373,7 +373,7 @@ class snips extends eqLogic
             $init['sendIntentNotRecognized'] = $_session_init_send_intent_not_recognized;
 
         if ($_custom_data)
-            $payload['customData'] = $_custom_data
+            $payload['customData'] = $_custom_data;
 
         $payload['init'] = $init;
 
