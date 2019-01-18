@@ -59,6 +59,14 @@ function snips_postSaveConfiguration(){
         </div>
 
         <div class="form-group">
+            <label class="col-lg-4 control-label" >{{Multi-dialog conversation}}</label>
+            <div class="col-lg-4">
+                <input type="checkbox" class="configKey" data-l1key="isMultiDialog"> {{Enable}}</input>
+            </div>
+            <div class="alert alert-info col-lg-3" role="alert"> {{By checking this option, snips will keep listening to your instructions once its hotword is triggered. If you want to terminate the conversion, simply ignore its new conversion prompt.}}</div>
+        </div>
+
+        <div class="form-group">
             <label class="col-lg-4 control-label" >{{Snips Variables}}</label>
             <div class="col-lg-4">
                 <input type="checkbox" class="configKey" data-l1key="isVarMsgSession"> {{snipsMsgSession}}</input>
@@ -77,14 +85,6 @@ function snips_postSaveConfiguration(){
             </div>
             <div class="alert alert-info col-lg-3" role="alert"> {{Assigned with detected hotword model id when triggered.}}</div>
         </div>
-
-        <!-- <div class="form-group">
-            <label class="col-lg-4 control-label" >{{Multi-dialog conversation}}</label>
-            <div class="col-lg-4">
-                <input type="checkbox" class="configKey" data-l1key="multiDialog"> {{Enable}}</input>
-            </div>
-        </div> -->
-
     </fieldset>
 </form>
 
