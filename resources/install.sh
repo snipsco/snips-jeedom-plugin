@@ -46,7 +46,9 @@ if [[ -d "/etc/php5/" ]]; then
     echo "Dependances installation is done"
     service apache2 restart
   fi
-else
+fi
+
+if [[ -d "/etc/php5/" ]]; then
   apt-get -y install php7.0-dev
   if [[ -d "/etc/php/7.0/cli/" && ! `cat /etc/php/7.0/cli/php.ini | grep "mosquitto"` ]]; then
     echo "" | pecl install Mosquitto-alpha
