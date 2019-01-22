@@ -17,7 +17,7 @@
 */
 
 /* for using jeedom logger */
-require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+require_once dirname(__FILE__) . '/../../../core/class/cron.class.php';
 
 class hermes{
 
@@ -35,8 +35,8 @@ class hermes{
     private $logger;
     /* static methods */
     static public function hermes_echo($str){
-        echo $str."\n";
-        log::add('snips-hermes', 'debug', $str);
+        log::add('snips', 'debug', $str);
+        //echo $str."\n";
         //$this->logger($str);
     }
 
