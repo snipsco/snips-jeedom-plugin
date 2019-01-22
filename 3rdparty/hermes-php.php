@@ -96,7 +96,7 @@ class hermes{
 
     /* deconstructor */
     function __destruct(){
-        $this->disconnect();
+        $this->client->disconnect();
         unset($this->client);
     }
 
