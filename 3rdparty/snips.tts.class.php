@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__FILE__) . '/../../../core/class/log.class.php';
 
-class snips_tts{
+class SnipsTts{
 
     private $raw_message = '';
     private $var_list = array();
@@ -11,7 +11,7 @@ class snips_tts{
 
     static function dump($_raw_message, $_var_list = array())
     {
-        $T = new snips_tts($_raw_message, $_var_list);
+        $T = new SnipsTts($_raw_message, $_var_list);
         return $T;
     }
 

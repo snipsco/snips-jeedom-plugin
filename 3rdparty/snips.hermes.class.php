@@ -19,7 +19,7 @@
 /* for using jeedom logger */
 require_once dirname(__FILE__) . '/../../../core/class/cron.class.php';
 
-class hermes{
+class SnipsHermes{
 
     private $connected = 0;
 
