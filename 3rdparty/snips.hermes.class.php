@@ -32,12 +32,18 @@ class SnipsHermes{
     private $callback_session_started;
     private $callback_session_ended;
 
-    private $logger;
     /* static methods */
-    static public function hermes_echo($str){
+    static public function logger($str){
         log::add('snips', 'debug', $str);
         //echo $str."\n";
         //$this->logger($str);
+    }
+
+    /* private method */
+    private function mqtt_publish($_topic, $_payload)
+    {
+        $this->client->publish($_topic, $_payload);
+        self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Published message: ' . $_payload . ' to topic: ' . $_topic);
     }
 
     static private function generate_client_id(){
@@ -76,15 +82,6 @@ class SnipsHermes{
         unset($this->client);
     }
 
-    /* set the callbacks */
-    public function set_on_message_callback($_callback){
-        $this->client->onMessage($_callback);
-    }
-
-    public function set_logger($_logger){
-        $this->logger = $_logger;
-    }
-
     /* subscribe to needed topics */
     public function subscribe_intents($callback)
     {
@@ -117,7 +114,7 @@ class SnipsHermes{
             $this->client->loopForever();
         }
         catch(Exception $e){
-            self::hermes_echo('['.__FUNCTION__.'] Connection exception: ' . $e->getMessage());
+            self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Connection exception: ' . $e->getMessage());
         }
     }
 
@@ -208,72 +205,50 @@ class SnipsHermes{
         return $this->mqtt_publish($topic, json_encode($payload));
     }
 
-    /* private method */
-    private function mqtt_publish($_topic, $_payload)
-    {
-        $this->client->publish($_topic, $_payload);
-        self::hermes_echo('['.__FUNCTION__.'] Published message: ' . $_payload . ' to topic: ' . $_topic);
-        return 1;
-    }
-
+    // mqtt callbacks
     public function mqtt_on_connect($_r, $_message)
     {
-        self::hermes_echo('['.__FUNCTION__.'] Connected to the broker with code: ' . $_r . ' message: ' . $_message);
-        //$this->connected = 1;
+        self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Connected to the broker with code: ' . $_r . ' message: ' . $_message);
+        $this->connected = 1;
     }
 
     public function mqtt_on_disconnect($_r)
     {
-        self::hermes_echo('['.__FUNCTION__.'] Disconnected from the broker with code: ' . $_r);
-        //$this->connected = 0;
+        self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Disconnected from the broker with code: ' . $_r);
+        $this->connected = 0;
     }
 
     public function mqtt_on_subscribe($_r)
     {
-        self::hermes_echo('['.__FUNCTION__.'] Subscribeed with code '. $_r);
+        self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Subscribeed with code '. $_r);
     }
 
     public function mqtt_on_log($_r, $_str)
     {
         if (strpos($_str, 'PINGREQ') === false && strpos($_str, 'PINGRESP') === false) {
-            self::hermes_echo('['.__FUNCTION__.'] Log code: ' . $_r . ' : ' . $_str);
+            self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Log code: ' . $_r . ' : ' . $_str);
         }
     }
 
     public function mqtt_on_message($_message)
     {
-        self::hermes_echo('['.__FUNCTION__.'] Received message. Topic:' . $_message->topic);
+        self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Received message. Topic:' . $_message->topic);
         $payload_array = json_decode($_message->payload);
 
-        if ('hermes/dialogueManager/sessionStarted' == $_message->topic) {
+        if ('hermes/dialogueManager/sessionStarted' == $_message->topic)
             $_callback = $this->callback_session_started;
-        }else if ('hermes/dialogueManager/sessionEnded' == $_message->topic) {
+        else if ('hermes/dialogueManager/sessionEnded' == $_message->topic)
             $_callback = $this->callback_session_ended;
-        }else if ('hermes/hotword/default/detected' == $_message->topic) {
+        else if ('hermes/hotword/default/detected' == $_message->topic)
             $_callback = $this->callback_hotword_detected;
-        }else{
+        else
             $_callback = $this->callback_intents;
-        }
-
-        // switch ($_message->topic) {
-        //     case 'hermes/dialogueManager/sessionStarted':
-        //         $_callback = $this->callback_session_started;
-        //         break;
-        //     case 'hermes/dialogueManager/sessionEnded':
-        //         $_callback = $this->callback_session_ended;
-        //         break;
-        //     case 'hermes/hotword/default/detected':
-        //         $_callback = $this->callback_hotword_detected;
-        //         break;
-        //     default:
-        //         $_callback = $this->callback_intents;
-        // }
 
         try{
             $_callback($_message->payload);
         }
         catch(Exception $e){
-            self::hermes_echo('['.__FUNCTION__.']  Callback execution: ' . $e->getMessage());
+            self::logger('['.__CLASS__.'] ['.__FUNCTION__.']  Callback execution: ' . $e->getMessage());
         }
     }
 }
