@@ -120,7 +120,7 @@ class SnipsHermes{
 
     /* hermes protocol APIs */
     public function publish_start_session_action($_site_id,
-                                                 $_session_init_text,
+                                                 $_session_init_text = null,
                                                  $_session_init_can_be_enqueued = null,
                                                  $_session_init_intent_filter = null,
                                                  $_session_init_send_intent_not_recognized = null,
@@ -245,7 +245,7 @@ class SnipsHermes{
             $_callback = $this->callback_intents;
 
         try{
-            $_callback($_message->payload);
+            $_callback(json_decode($_message->payload));
         }
         catch(Exception $e){
             self::logger('['.__CLASS__.'] ['.__FUNCTION__.']  Callback execution: ' . $e->getMessage());
