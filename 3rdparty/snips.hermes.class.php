@@ -21,6 +21,10 @@ require_once dirname(__FILE__) . '/../../../core/class/cron.class.php';
 
 class SnipsHermes{
 
+    const SESSION_STARTED = 'hermes/dialogueManager/sessionStarted';
+    const SESSION_ENDED = 'hermes/dialogueManager/sessionEnded';
+    const HOTWORD_DETECTED = 'hermes/hotword/default/detected';
+
     private $connected = 0;
 
     private $client;
@@ -33,8 +37,9 @@ class SnipsHermes{
     private $callback_session_ended;
 
     /* static methods */
-    static public function logger($str){
-        log::add('snips', 'debug', $str);
+    static public function logger($_str){
+        $msg = '['.__CLASS__.'] '.$_str;
+        log::add('snips', 'debug', $msg);
         //echo $str."\n";
         //$this->logger($str);
     }
@@ -43,7 +48,7 @@ class SnipsHermes{
     private function mqtt_publish($_topic, $_payload)
     {
         $this->client->publish($_topic, $_payload);
-        self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Published message: ' . $_payload . ' to topic: ' . $_topic);
+        self::logger('<'.__FUNCTION__.'> Published message: ' . $_payload . ' to topic: ' . $_topic);
     }
 
     static private function generate_client_id(){
@@ -83,27 +88,27 @@ class SnipsHermes{
     }
 
     /* subscribe to needed topics */
-    public function subscribe_intents($callback)
+    public function subscribe_intents($_callback)
     {
-        $this->callback_intents = $callback;
+        $this->callback_intents = $_callback;
         $this->client->subscribe('hermes/intent/#', 0);
     }
 
-    public function subscribe_session_started($callback)
+    public function subscribe_session_started($_callback)
     {
-        $this->callback_session_started = $callback;
+        $this->callback_session_started = $_callback;
         $this->client->subscribe('hermes/dialogueManager/sessionStarted', 0);
     }
 
-    public function subscribe_session_ended($callback)
+    public function subscribe_session_ended($_callback)
     {
-        $this->callback_session_ended = $callback;
+        $this->callback_session_ended = $_callback;
         $this->client->subscribe('hermes/dialogueManager/sessionEnded', 0);
     }
 
-    public function subscribe_hotword_detected($callback)
+    public function subscribe_hotword_detected($_callback)
     {
-        $this->callback_hotword_detected = $callback;
+        $this->callback_hotword_detected = $_callback;
         $this->client->subscribe('hermes/hotword/default/detected', 0);
     }
 
@@ -114,7 +119,7 @@ class SnipsHermes{
             $this->client->loopForever();
         }
         catch(Exception $e){
-            self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Connection exception: ' . $e->getMessage());
+            self::logger('<'.__FUNCTION__.'> Connection exception: ' . $e->getMessage());
         }
     }
 
@@ -208,47 +213,51 @@ class SnipsHermes{
     // mqtt callbacks
     public function mqtt_on_connect($_r, $_message)
     {
-        self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Connected to the broker with code: ' . $_r . ' message: ' . $_message);
+        self::logger('<'.__FUNCTION__.'> Connected to the broker with code: ' . $_r . ' message: ' . $_message);
         $this->connected = 1;
     }
 
     public function mqtt_on_disconnect($_r)
     {
-        self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Disconnected from the broker with code: ' . $_r);
+        self::logger('<'.__FUNCTION__.'> Disconnected from the broker with code: ' . $_r);
         $this->connected = 0;
     }
 
     public function mqtt_on_subscribe($_r)
     {
-        self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Subscribeed with code '. $_r);
+        self::logger('<'.__FUNCTION__.'> Subscribeed with code '. $_r);
     }
 
     public function mqtt_on_log($_r, $_str)
     {
         if (strpos($_str, 'PINGREQ') === false && strpos($_str, 'PINGRESP') === false) {
-            self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Log code: ' . $_r . ' : ' . $_str);
+            self::logger('<'.__FUNCTION__.'> Log code: ' . $_r . ' : ' . $_str);
         }
     }
 
     public function mqtt_on_message($_message)
     {
-        self::logger('['.__CLASS__.'] ['.__FUNCTION__.'] Received message. Topic:' . $_message->topic);
+        self::logger('<'.__FUNCTION__.'> Received message. Topic:' . $_message->topic);
         $payload_array = json_decode($_message->payload);
 
-        if ('hermes/dialogueManager/sessionStarted' == $_message->topic)
+        if ($this->SESSION_STARTED == $_message->topic){
             $_callback = $this->callback_session_started;
-        else if ('hermes/dialogueManager/sessionEnded' == $_message->topic)
+        }
+        else if ($this->SESSION_ENDED == $_message->topic){
             $_callback = $this->callback_session_ended;
-        else if ('hermes/hotword/default/detected' == $_message->topic)
+        }
+        else if ($this->HOTWORD_DETECTED == $_message->topic){
             $_callback = $this->callback_hotword_detected;
-        else
+        }
+        else{
             $_callback = $this->callback_intents;
+        }
 
         try{
             $_callback(json_decode($_message->payload));
         }
         catch(Exception $e){
-            self::logger('['.__CLASS__.'] ['.__FUNCTION__.']  Callback execution: ' . $e->getMessage());
+            self::logger('<'.__FUNCTION__.'>  Callback execution: ' . $e->getMessage());
         }
     }
 }
