@@ -9,9 +9,40 @@ require_once dirname(__FILE__) . '/snips.handler.class.php';
 
 class snips extends eqLogic
 {
+    public static function dump_eq_intent()
+    {
+        $eq_intent = array();
+        $eqs = self::byType('snips');
+        foreach($eqs as $eq){
+            if ($eq->getConfiguration('Intent')) {
+                $eq_intent[] = $eq;
+            }
+        }
+        return $eq_intent;
+    }
+
+    public static function dump_eq_TTS()
+    {
+        $eq_TTS = array();
+        $eqs = self::byType('snips');
+        foreach($eqs as $eq){
+            if ($eq->getConfiguration('TTS')) {
+                $eq_TTS[] = $eq;
+            }
+        }
+        return $eq_TTS;
+    }
+
+    public static function logger($_str){
+        $msg = '['.__CLASS__.'] '.$_str;
+        log::add('snips', 'debug', $msg);
+        //echo $str."\n";
+        //$this->logger($str);
+    }
+
     public static function dependancy_install()
     {
-        self::debug(__FUNCTION__, 'Installation of dependences');
+        self::logger('['.__FUNCTION__.'] Installing dependences..');
         log::remove(__CLASS__ . '_dep');
         $resource_path = realpath(dirname(__FILE__) . '/../../resources');
         passthru('sudo /bin/bash ' . $resource_path . '/install.sh ' . $resource_path . ' > ' . log::getPathToLog('snips_dep') . ' 2>&1 &');
@@ -51,7 +82,7 @@ class snips extends eqLogic
             $cron->setSchedule('* * * * *');
             $cron->setTimeout('1440');
             $cron->save();
-            snips::debug(__FUNCTION__, 'Created snips cron: deamon_hermes');
+            self::logger('['.__FUNCTION__.'] Created snips cron: deamon_hermes');
         }
         snips::deamon_start();
     }
@@ -97,7 +128,7 @@ class snips extends eqLogic
 
     public static function deamon_hermes()
     {
-        snips::debug(__FUNCTION__, 'Starting hermes deamon..');
+        snips::logger('['.__FUNCTION__.'] Starting hermes deamon..');
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $H = new SnipsHermes($addr, 1883);
         $H->subscribe_intents('SnipsHandler::intent_detected');
@@ -115,10 +146,35 @@ class snips extends eqLogic
         return $H;
     }
 
-
-    public static function debug($_source_function, $_info)
+    // snips eqlogic methods
+    public function get_bindings()
     {
-        log::add("snips", 'debug', '['.$_source_function.'] '.$_info);
+        return SnipsBinding::dump($this->getConfiguration('bindings'));
+    }
+
+    public function get_callback_scenarios()
+    {
+        return SnipsBindingScenario::dump($this->getConfiguration('callbackScenario'));
+    }
+
+    public function get_language()
+    {
+        ;//reserved to the next update
+    }
+
+    public function get_slots()
+    {
+        ;//reserved to the next update
+    }
+
+    public function is_snips_config()
+    {
+        ;//reserved to the next update
+    }
+
+    public function is_interaction()
+    {
+        ;//reserved to the next update
     }
 
     public static
@@ -170,7 +226,7 @@ class snips extends eqLogic
         $slots_table = $reference['Slots'];
         $slots_table_curr = snips::getCurrentReferTable();
 
-        snips::debug(__FUNCTION__, 'slots_table_curr'.json_encode($slots_table_curr));
+        self::logger('['.__FUNCTION__.'] slots_table_curr'.json_encode($slots_table_curr));
 
         $expressions = scenarioExpression::all();
         foreach ($expressions as $expression) {
@@ -182,7 +238,7 @@ class snips extends eqLogic
 
                     if ( strpos($old_expression_content, '#'.$id.'#') || strpos($old_expression_content, '#'.$id.'#') === 0 ) {
                         $new_expression = str_replace('#'.$id.'#', '#'.$slots_string.'#', $old_expression_content);
-                        snips::debug(__FUNCTION__, 'Old command entity: '.$slots_string.' with id: '.$id);
+                        self::logger('['.__FUNCTION__.'] Old command entity: '.$slots_string.' with id: '.$id);
                         $expression->setExpression($new_expression);
                     }
                 }
@@ -193,7 +249,7 @@ class snips extends eqLogic
                     if ( in_array($match[1][0], $slots_table) ) {
                         $slot_cmd_string = array_search($match[1][0], $slots_table);
                         $expression->setOptions($option_name, '#'.$slot_cmd_string.'#');
-                        snips::debug(__FUNCTION__, 'found option: '.$option_name. ' change to '.$slot_cmd_string);
+                        self::logger('['.__FUNCTION__.'] found option: '.$option_name. ' change to '.$slot_cmd_string);
                     }
                 }
             }
@@ -211,10 +267,10 @@ class snips extends eqLogic
             $intent_table[$eq->getHumanName()] = $eq->getId();
             $cmds = cmd::byEqLogicId($eq->getId());
             foreach($cmds as $cmd) {
-                snips::debug(__FUNCTION__, 'slot cmd: '.$cmd->getName());
+                self::logger('['.__FUNCTION__.'] slot cmd: '.$cmd->getName());
                 $slots_table[$cmd->getHumanName()] = $cmd->getId();
             }
-            snips::debug(__FUNCTION__, 'Intent entity: '.$eq->getName());
+            self::logger('['.__FUNCTION__.'] Intent entity: '.$eq->getName());
         }
 
         return $slots_table;
@@ -224,23 +280,23 @@ class snips extends eqLogic
 
     function reloadAssistant()
     {
-        snips::debug(__FUNCTION__, 'Assistant is being reloaded!');
+        self::logger('['.__FUNCTION__.'] Assistant is being reloaded!');
         $assistant_file = dirname(__FILE__) . '/../../config_running/assistant.json';
         $json_string = file_get_contents($assistant_file);
         $assistant = json_decode($json_string, true);
 
         if ( version_compare(jeedom::version(), '3.3.3', '>=') ) {
             $obj_field = 'jeeObject';
-            snips::debug(__FUNCTION__, 'Jeedom >= 3.3.3');
+            self::logger('['.__FUNCTION__.'] Jeedom >= 3.3.3');
         }else{
             $obj_field = 'object';
-            snips::debug(__FUNCTION__, 'Jeedom <= 3.3.3');
+            self::logger('['.__FUNCTION__.'] Jeedom <= 3.3.3');
         }
         $obj = object::byName('Snips-Intents');
         if (!isset($obj) || !is_object($obj)) {
             $obj = new $obj_field();
             $obj->setName('Snips-Intents');
-            snips::debug(__FUNCTION__, 'Created object: Snips-Intents');
+            self::logger('['.__FUNCTION__.'] Created object: Snips-Intents');
         }
         $obj->setIsVisible(1);
         $obj->setConfiguration('id', $assistant["id"]);
@@ -257,7 +313,7 @@ class snips extends eqLogic
                     $elogic = new snips();
                     $elogic->setLogicalId($intent['id']);
                     $elogic->setName($intent['name']);
-                    snips::debug(__FUNCTION__, 'Created intent entity: '.$intent['name']);
+                    self::logger('['.__FUNCTION__.'] Created intent entity: '.$intent['name']);
                 }
                 $elogic->setEqType_name('snips');
                 $elogic->setIsEnable(1);
@@ -274,7 +330,7 @@ class snips extends eqLogic
         snips::reloadSnipsDevices($intent['language']);
 
         snips::recoverScenarioExpressions();
-        snips::debug(__FUNCTION__, 'Assistant loaded, restarting deamon');
+        self::logger('['.__FUNCTION__.'] Assistant loaded, restarting deamon');
         snips::deamon_start();
     }
 
@@ -284,18 +340,18 @@ class snips extends eqLogic
         $devices = Toml::parseFile(dirname(__FILE__) . '/../../config_running/snips.toml')->{'snips-hotword'}->{'audio'};
 
         $master = Toml::parseFile(dirname(__FILE__) . '/../../config_running/snips.toml')->{'snips-audio-server'}->{'bind'};
-        snips::debug(__FUNCTION__, '########## Type is:'.gettype($master));
-        snips::debug(__FUNCTION__, '########## Value is:'.$master);
+        self::logger('['.__FUNCTION__.'] ########## Type is:'.gettype($master));
+        self::logger('['.__FUNCTION__.'] ########## Value is:'.$master);
         if (isset($master)) {
             $master = substr($master,0,strpos($master, '@'));
-            snips::debug(__FUNCTION__, '########## Not default:'.$master);
+            self::logger('['.__FUNCTION__.'] ########## Not default:'.$master);
         }else{
             $master = 'default';
-            snips::debug(__FUNCTION__, '########## Default:'.$master);
+            self::logger('['.__FUNCTION__.'] ########## Default:'.$master);
         }
         $res = config::save('masterSite', $master, 'snips');
 
-        snips::debug(__FUNCTION__, '########## Saved with result:'.$res);
+        self::logger('['.__FUNCTION__.'] ########## Saved with result:'.$res);
 
         if (count($devices) == 0) {
             snips::createSnipsDevices('default', $_lang);
@@ -315,7 +371,7 @@ class snips extends eqLogic
             $elogic = new snips();
             $elogic->setName('Snips-TTS-'.$_site_name);
             $elogic->setLogicalId('Snips-TTS-'.$_site_name);
-            snips::debug(__FUNCTION__, 'Created TTS entity: Snips-TTS-'.$_site_name);
+            self::logger('['.__FUNCTION__.'] Created TTS entity: Snips-TTS-'.$_site_name);
         }
         $elogic->setEqType_name('snips');
         $elogic->setIsEnable(1);
@@ -338,24 +394,24 @@ class snips extends eqLogic
             $intent_table[$eq->getHumanName()] = $eq->getId();
             $cmds = cmd::byEqLogicId($eq->getId());
             foreach($cmds as $cmd) {
-                snips::debug(__FUNCTION__, 'Removed slot cmd: '.$cmd->getName());
+                self::logger('['.__FUNCTION__.'] Removed slot cmd: '.$cmd->getName());
                 $slots_table[$cmd->getHumanName()] = $cmd->getId();
                 $cmd->remove();
             }
-            snips::debug(__FUNCTION__, 'Removed intent entity: '.$eq->getName());
+            self::logger('['.__FUNCTION__.'] Removed intent entity: '.$eq->getName());
             $eq->remove();
         }
 
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
         if (is_object($var)) {
-            snips::debug(__FUNCTION__, 'Removed variable: '.$var->getKey());
+            self::logger('['.__FUNCTION__.'] Removed variable: '.$var->getKey());
             $var->remove();
         }
 
         $obj = object::byName('Snips-Intents');
         if (is_object($obj)) {
             $obj->remove();
-            snips::debug(__FUNCTION__, 'Removed object: Snips-Intents');
+            self::logger('['.__FUNCTION__.'] Removed object: Snips-Intents');
         }
 
         $reload_reference = array(
@@ -373,7 +429,7 @@ class snips extends eqLogic
                         'slots_values_org' => array());
 
         foreach ($_payload_slots as $slot) {
-            snips::debug(__FUNCTION__, 'Checking slots: '.$slot->{'slotName'});
+            self::logger('['.__FUNCTION__.'] Checking slots: '.$slot->{'slotName'});
 
             if ($slot->{'entity'} == 'snips/duration') {
                 $total_seconds = 0;
@@ -391,11 +447,11 @@ class snips extends eqLogic
 
             if (array_key_exists($slot->{'slotName'}, $result['slots_values'])) {
                 // does not support use this slot value in the slot commond
-                snips::debug(__FUNCTION__, 'Yes, this exists in the array :'.$slot->{'slotName'});
+                self::logger('['.__FUNCTION__.'] Yes, this exists in the array :'.$slot->{'slotName'});
                 $result['slots_values'][$slot->{'slotName'}] = $single_ready_value;
                 $result['slots_values_org'][$slot->{'slotName'}] .= '&'.$single_ready_value_org;
             }else{
-                snips::debug(__FUNCTION__, 'No, this does not exist in the array :'.$slot->{'slotName'});
+                self::logger('['.__FUNCTION__.'] No, this does not exist in the array :'.$slot->{'slotName'});
                 $result['slots_values'][$slot->{'slotName'}] = $single_ready_value;
                 $result['slots_values_org'][$slot->{'slotName'}] = $single_ready_value_org;
             }
@@ -412,7 +468,7 @@ class snips extends eqLogic
         $site_id = $_payload->{'siteId'};
         $session_id = $_payload->{'sessionId'};
         $query_input = $_payload->{'input'};
-        snips::debug(__FUNCTION__, 'Intent:' . $intent_name . ' siteId:' . $site_id . ' sessionId:' . $session_id);
+        self::logger('['.__FUNCTION__.'] Intent:' . $intent_name . ' siteId:' . $site_id . ' sessionId:' . $session_id);
 
         $slots_values_dual = snips::extractSlotsValues($_payload->{'slots'});
 
@@ -436,11 +492,11 @@ class snips extends eqLogic
         else {
             $bindings_match_coming_slots = array();
             foreach($bindings as $binding) {
-                snips::debug(__FUNCTION__, 'Cur binding name : ' . $binding['name']);
-                snips::debug(__FUNCTION__, 'Binding count is : ' . count($binding['nsr_slots']));
-                snips::debug(__FUNCTION__, 'Snips count is : ' . count($slots_values));
+                self::logger('['.__FUNCTION__.'] Cur binding name : ' . $binding['name']);
+                self::logger('['.__FUNCTION__.'] Binding count is : ' . count($binding['nsr_slots']));
+                self::logger('['.__FUNCTION__.'] Snips count is : ' . count($slots_values));
                 if (count($binding['nsr_slots']) === count($slots_values)) {
-                    snips::debug(__FUNCTION__, 'Binding has corr number of slot: ' . $binding['name']);
+                    self::logger('['.__FUNCTION__.'] Binding has corr number of slot: ' . $binding['name']);
                     $slot_all_exists_indicator = 1;
                     foreach($binding['nsr_slots'] as $slot) {
                         if (array_key_exists($slot, $slots_values)) {
@@ -469,17 +525,17 @@ class snips extends eqLogic
                         else {
                             $pre_value = $cmd->getCache('value', 'NULL');
                         }
-                        snips::debug(__FUNCTION__, '[Condition] Condition Aft string: '.$condition['aft']);
+                        self::logger('['.__FUNCTION__.'] [Condition] Condition Aft string: '.$condition['aft']);
                         if (is_string($condition['aft'])) {
                             $aft_value = explode(',',strtolower(str_replace(' ', '', $condition['aft'])));
                             foreach ($aft_value as $key => $value) {
-                                snips::debug(__FUNCTION__, '[Condition] Condition Aft value index: '.$key.' value: ' . $value);
+                                self::logger('['.__FUNCTION__.'] [Condition] Condition Aft value index: '.$key.' value: ' . $value);
                             }
                             //$aft_value = strtolower(str_replace(' ', '', $condition['aft']));
                         }
                         else {
                             $aft_value = array($condition['aft']);
-                            snips::debug(__FUNCTION__, '[Condition] Condition Aft value is : ' . $aft_value);
+                            self::logger('['.__FUNCTION__.'] [Condition] Condition Aft value is : ' . $aft_value);
                         }
 
 
@@ -544,7 +600,7 @@ class snips extends eqLogic
                         }
 
                         snips::setSlotsCmd($slots_values, $intent_name, $options);
-                        snips::debug(__FUNCTION__, 'Current action: ' . $action['cmd']);
+                        self::logger('['.__FUNCTION__.'] Current action: ' . $action['cmd']);
                         $execution_return_msg = scenarioExpression::createAndExec('action', $action['cmd'], $options);
                         if (is_string($execution_return_msg) && $execution_return_msg!='') {
                             if (config::byKey('dynamicSnipsTTS', 'snips', 0) && cmd::byString($binding['ttsPlayer'])->getConfiguration('snipsType') == 'TTS') {
@@ -560,18 +616,17 @@ class snips extends eqLogic
                     $text = SnipsTts::dump($binding['ttsMessage'],(array)$binding['ttsVar'])->get_message();
                     self::hermes()->publish_start_session_notification($_payload->{'siteId'}, $text);
 
-                    snips::debug(__FUNCTION__, '[Binding Execution] Generated text is ' . $text);
-                    snips::debug(__FUNCTION__, '[Binding Execution] Orginal text is ' . $binding['ttsMessage']);
+                    self::logger('['.__FUNCTION__.'] [Binding Execution] Generated text is ' . $text);
+                    self::logger('['.__FUNCTION__.'] [Binding Execution] Orginal text is ' . $binding['ttsMessage']);
 
-                    snips::debug(__FUNCTION__, '[Binding Execution] Player is ' . $binding['ttsPlayer']);
-
-
-
+                    self::logger('['.__FUNCTION__.'] [Binding Execution] Player is ' . $binding['ttsPlayer']);
+                    
                     $tts_player_cmd = cmd::byString($binding['ttsPlayer']);
 
                     if (config::byKey('dynamicSnipsTTS', 'snips', 0) && $tts_player_cmd->getConfiguration('snipsType') == 'TTS') {
                         self::hermes()->publish_start_session_notification($site_id, $text);
                     }else{
+                        self::hermes()->publish_start_session_notification($site_id, $text);
                         //snips::playTTS($binding['ttsPlayer'], $text, $session_id);
                     }
                 }
@@ -590,7 +645,7 @@ class snips extends eqLogic
     public static
 
     function executeCallbackScenario($_parameters, $_slots_values_org, $_payload){
-        snips::debug(__FUNCTION__, ' Intent: ' . $_payload->{'intent'}->{'intentName'});
+        self::logger('['.__FUNCTION__.']  Intent: ' . $_payload->{'intent'}->{'intentName'});
         if ($_parameters['scenario'] == -1 || $_parameters['scenario'] == NULL)
             return;
 
@@ -647,20 +702,20 @@ class snips extends eqLogic
 
     function setSlotsCmd($_slots_values, $_intent, $_options = null)
     {
-        snips::debug(__FUNCTION__, 'Set slots cmd values');
+        self::logger('['.__FUNCTION__.'] Set slots cmd values');
         $eq = eqLogic::byLogicalId($_intent, 'snips');
         if (is_object($eq)) {
             foreach($_slots_values as $slot => $value) {
-                snips::debug(__FUNCTION__, 'Slots name is :' . $slot);
+                self::logger('['.__FUNCTION__.'] Slots name is :' . $slot);
                 $cmd = $eq->getCmd(null, $slot);
                 if (is_object($cmd)) {
                     if ($_options) {
-                        snips::debug(__FUNCTION__, 'Slots option entered, entityId is:' . $cmd->getConfiguration('entityId'));
+                        self::logger('['.__FUNCTION__.'] Slots option entered, entityId is:' . $cmd->getConfiguration('entityId'));
                         if ($cmd->getConfiguration('entityId') == 'snips/percentage') {
                             $org = $value;
                             $value = snips::percentageRemap($_options['LT'], $_options['HT'], $value);
                             $cmd->setConfiguration('orgVal', $org);
-                            snips::debug(__FUNCTION__, 'Slots is percentage, value after convert:' . $value);
+                            self::logger('['.__FUNCTION__.'] Slots is percentage, value after convert:' . $value);
                         }
                     }
                     $eq->checkAndUpdateCmd($cmd, $value);
@@ -669,7 +724,7 @@ class snips extends eqLogic
                 }
             }
         }else{
-            snips::debug(__FUNCTION__, 'Did not find entiry:' . $_intent);
+            self::logger('['.__FUNCTION__.'] Did not find entiry:' . $_intent);
         }
     }
 
@@ -693,7 +748,7 @@ class snips extends eqLogic
 
     function resetSlotsCmd($_slots_values = false, $_intent = false)
     {
-        snips::debug(__FUNCTION__, 'Reset all the slots');
+        self::logger('['.__FUNCTION__.'] Reset all the slots');
         if ($_slots_values == false && $_intent == false) {
             $eqs = eqLogic::byType('snips');
             foreach($eqs as $eq) {
@@ -710,7 +765,7 @@ class snips extends eqLogic
             if (is_object($var)) {
                 $var->setValue();
                 $var->save();
-                snips::debug(__FUNCTION__, 'Set '.$var->getValue().' => snipsMsgSiteId');
+                self::logger('['.__FUNCTION__.'] Set '.$var->getValue().' => snipsMsgSiteId');
             }
         }
         else {
@@ -734,7 +789,7 @@ class snips extends eqLogic
         foreach($eqs as $eq) {
             $org_bindings = $eq->getConfiguration('bindings');
             $json_string = json_encode($org_bindings);
-            snips::debug(__FUNCTION__, 'json_string type is: ' . gettype($json_string));
+            self::logger('['.__FUNCTION__.'] json_string type is: ' . gettype($json_string));
             preg_match_all('/#[^#]*[0-9]+#/', $json_string, $matches);
             $human_cmd = cmd::cmdToHumanReadable($matches[0]);
             foreach($human_cmd as $key => $cmd_text) {
@@ -745,19 +800,19 @@ class snips extends eqLogic
             $matches_c1 = $matches_c;
             foreach($matches_c[0] as $key => $value) {
                 $matches_c[0][$key] = str_replace('"pre":"', '#', $value);
-                snips::debug(__FUNCTION__, '1st : ' . $matches_c[0][$key]);
+                self::logger('['.__FUNCTION__.'] 1st : ' . $matches_c[0][$key]);
                 $matches_c[0][$key] = str_replace('"', '#', $matches_c[0][$key]);
-                snips::debug(__FUNCTION__, '2nd : ' . $matches_c[0][$key]);
+                self::logger('['.__FUNCTION__.'] 2nd : ' . $matches_c[0][$key]);
             }
 
             $humand_cond = cmd::cmdToHumanReadable($matches_c[0]);
             foreach($humand_cond as $key => $cmd_text) {
-                snips::debug(__FUNCTION__, 'key word : ' . $matches_c1[0][$key] . ' replace ' . '"pre":"' . $cmd_text . '"');
+                self::logger('['.__FUNCTION__.'] key word : ' . $matches_c1[0][$key] . ' replace ' . '"pre":"' . $cmd_text . '"');
                 $json_string = str_replace($matches_c1[0][$key], '"pre":"' . $cmd_text . '"', $json_string);
             }
 
             $aft_bindings = json_decode($json_string);
-            snips::debug(__FUNCTION__, 'vars: ' . $aft_bindings);
+            self::logger('['.__FUNCTION__.'] vars: ' . $aft_bindings);
             $binding_conf[$eq->getName() ] = $aft_bindings;
         }
 
@@ -765,10 +820,10 @@ class snips extends eqLogic
             $file = fopen(dirname(__FILE__) . '/../../config_backup/' . $_name . '.json', 'w');
             $res = fwrite($file, json_encode($binding_conf));
             if ($res) {
-                snips::debug(__FUNCTION__, 'Success output');
+                self::logger('['.__FUNCTION__.'] Success output');
             }
             else {
-                snips::debug(__FUNCTION__, 'Faild output');
+                self::logger('['.__FUNCTION__.'] Faild output');
             }
         }else{
             return json_encode($binding_conf);
@@ -781,10 +836,10 @@ class snips extends eqLogic
     function importConfigration($_configFileName = null, $_configurationJson = null)
     {
         if (isset($_configurationJson) && !isset($_configFileName)) {
-            snips::debug(__FUNCTION__, 'Asked to internally reload config file');
+            self::logger('['.__FUNCTION__.'] Asked to internally reload config file');
             $json_string = $_configurationJson;
         }else if (!isset($_configurationJson) && isset($_configFileName)){
-            snips::debug(__FUNCTION__, 'Asked to import file: ' . $_configFileName);
+            self::logger('['.__FUNCTION__.'] Asked to import file: ' . $_configFileName);
             $json_string = file_get_contents(dirname(__FILE__) . '/../../config_backup/' . $_configFileName);
         }
 
@@ -794,7 +849,7 @@ class snips extends eqLogic
         foreach($cmd_ids as $key => $cmd_id) {
             $cmd_id = str_replace('#', '', $cmd_id);
 
-            snips::debug(__FUNCTION__, 'key word : ' . '"pre":"'.$matches[2][$key].'"' . ' replace ' . '"pre":"'.$cmd_id.'"');
+            self::logger('['.__FUNCTION__.'] key word : ' . '"pre":"'.$matches[2][$key].'"' . ' replace ' . '"pre":"'.$cmd_id.'"');
 
             $json_string = str_replace('"pre":"'.$matches[2][$key].'"', '"pre":"'.$cmd_id.'"', $json_string);
         }
@@ -830,7 +885,7 @@ class snips extends eqLogic
 
     function tryToFetchDefault(){
         $res = snips::fetchAssistantJson('pi', 'raspberry');
-        snips::debug(__FUNCTION__, 'Result code: '.$res);
+        self::logger('['.__FUNCTION__.'] Result code: '.$res);
         return $res;
     }
 
@@ -839,19 +894,19 @@ class snips extends eqLogic
     function fetchAssistantJson($_usrename, $_password)
     {
         $ip_addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
-        snips::debug(__FUNCTION__, 'Connection : Trying to connect to: '.$ip_addr);
+        self::logger('['.__FUNCTION__.'] Connection : Trying to connect to: '.$ip_addr);
         $connection = ssh2_connect($ip_addr, 22);
         if (!$connection) {
-            snips::debug(__FUNCTION__, 'Connection: Faild code: -2');
+            self::logger('['.__FUNCTION__.'] Connection: Faild code: -2');
             return -2;
         }
 
         $resp = ssh2_auth_password($connection, $_usrename, $_password);
         if ($resp) {
-            snips::debug(__FUNCTION__, 'Verification: Success');
+            self::logger('['.__FUNCTION__.'] Verification: Success');
         }
         else {
-            snips::debug(__FUNCTION__, 'Verification: Faild code: -1');
+            self::logger('['.__FUNCTION__.'] Verification: Faild code: -1');
             return -1;
         }
 
@@ -860,13 +915,13 @@ class snips extends eqLogic
         if ($res && $res0) {
             ssh2_exec($connection, 'exit');
             unset($connection);
-            snips::debug(__FUNCTION__, 'Fecth resutlt : Success');
+            self::logger('['.__FUNCTION__.'] Fecth resutlt : Success');
             return 1;
         }
         else {
             ssh2_exec($connection, 'exit');
             unset($connection);
-            snips::debug(__FUNCTION__, 'Fecth resutlt : Faild code: 0');
+            self::logger('['.__FUNCTION__.'] Fecth resutlt : Faild code: 0');
             return 0;
         }
     }
@@ -894,9 +949,9 @@ class snips extends eqLogic
             $cmdSet = cmd::byString($light['LIGHT_BRIGHTNESS_ACTION']);
             if (is_object($cmdSet)) {
                 $cmdSet->execCmd($options);
-                snips::debug(__FUNCTION__, 'Shift action: ' . $cmdSet->getHumanName() . ', from -> ' . $options['slider'] . ' to ->' . $current_val);
+                self::logger('['.__FUNCTION__.'] Shift action: ' . $cmdSet->getHumanName() . ', from -> ' . $options['slider'] . ' to ->' . $current_val);
             }else{
-                snips::debug(__FUNCTION__, 'Can not find cmd: '. $light['LIGHT_BRIGHTNESS_ACTION']);
+                self::logger('['.__FUNCTION__.'] Can not find cmd: '. $light['LIGHT_BRIGHTNESS_ACTION']);
             }
         }
     }
@@ -922,13 +977,13 @@ class snips extends eqLogic
             if (is_object($var)) {
                 $var->remove();
             }
-            snips::debug(__FUNCTION__, 'Removed variable snipsMsgSession');
+            self::logger('['.__FUNCTION__.'] Removed variable snipsMsgSession');
         }else{
             $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
             if (!is_object($var)) {
                 $var = new dataStore();
                 $var->setKey('snipsMsgSession');
-                snips::debug(__FUNCTION__, 'Created variable snipsMsgSession');
+                self::logger('['.__FUNCTION__.'] Created variable snipsMsgSession');
             }
             $var->setValue('');
             $var->setType('scenario');
@@ -941,13 +996,13 @@ class snips extends eqLogic
             if (is_object($var)) {
                 $var->remove();
             }
-            snips::debug(__FUNCTION__, 'Removed variable snipsMsgSiteId');
+            self::logger('['.__FUNCTION__.'] Removed variable snipsMsgSiteId');
         }else{
             $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
             if (!is_object($var)) {
                 $var = new dataStore();
                 $var->setKey('snipsMsgSiteId');
-                snips::debug(__FUNCTION__, 'Created variable snipsMsgSiteId');
+                self::logger('['.__FUNCTION__.'] Created variable snipsMsgSiteId');
             }
             $var->setValue('');
             $var->setType('scenario');
@@ -960,13 +1015,13 @@ class snips extends eqLogic
             if (is_object($var)) {
                 $var->remove();
             }
-            snips::debug(__FUNCTION__, 'Removed variable snipsMsgHotwordId');
+            self::logger('['.__FUNCTION__.'] Removed variable snipsMsgHotwordId');
         }else{
             $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
             if (!is_object($var)) {
                 $var = new dataStore();
                 $var->setKey('snipsMsgHotwordId');
-                snips::debug(__FUNCTION__, 'Created variable snipsMsgHotwordId');
+                self::logger('['.__FUNCTION__.'] Created variable snipsMsgHotwordId');
             }
             $var->setValue('');
             $var->setType('scenario');
@@ -1037,13 +1092,13 @@ class snips extends eqLogic
 
     function postSave()
     {
-        snips::debug(__FUNCTION__, "post saved");
+        self::logger(__FUNCTION__, "post saved");
         if($this->getConfiguration('snipsType') == 'Intent'){
             $slots = $this->getConfiguration('slots');
             foreach($slots as $slot) {
                 $slot_cmd = $this->getCmd(null, $slot['name']);
                 if (!is_object($slot_cmd)) {
-                    snips::debug(__FUNCTION__, 'Created slot cmd: ' . $slot['name']);
+                    self::logger('['.__FUNCTION__.'] Created slot cmd: ' . $slot['name']);
                     $slot_cmd = new snipsCmd();
                 }
                 $slot_cmd->setName($slot['name']);
@@ -1060,7 +1115,7 @@ class snips extends eqLogic
         }else if($this->getConfiguration('snipsType') == 'TTS'){
             $tts_cmd = $this->getCmd(null, 'say');
             if (!is_object($tts_cmd)) {
-                snips::debug(__FUNCTION__, 'Created tts cmd: say');
+                self::logger('['.__FUNCTION__.'] Created tts cmd: say');
                 $tts_cmd = new snipsCmd();
                 $tts_cmd->setName('say');
                 $tts_cmd->setLogicalId('say');
@@ -1075,7 +1130,7 @@ class snips extends eqLogic
 
             $ask_cmd = $this->getCmd(null, 'ask');
             if (!is_object($ask_cmd)) {
-                snips::debug(__FUNCTION__, 'Created ask cmd: ask');
+                self::logger('['.__FUNCTION__.'] Created ask cmd: ask');
                 $ask_cmd = new snipsCmd();
                 $ask_cmd->setName('ask');
                 $ask_cmd->setLogicalId('ask');
@@ -1133,13 +1188,13 @@ class snipsCmd extends cmd
 
     public function snips_say($_options = array())
     {
-        snips::debug(__FUNCTION__, 'cmd: say, text:'.$_options['message']);
+        self::logger('['.__FUNCTION__.'] cmd: say, text:'.$_options['message']);
         snips::hermes()->publish_start_session_notification($this->getConfiguration('siteId'), $_options['message']);
     }
 
     public function snips_ask()
     {
-        snips::debug(__FUNCTION__, 'cmd: ask');
+        self::logger('['.__FUNCTION__.'] cmd: ask');
         preg_match_all("/(\[.*?\])/", $_options['answer'][0], $match_intent);
         $_ans_intent = str_replace('[', '', $match_intent[0][0]);
         $_ans_intent = str_replace(']', '', $_ans_intent);

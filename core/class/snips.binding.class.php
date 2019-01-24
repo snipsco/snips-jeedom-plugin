@@ -11,9 +11,10 @@ class SnipsBinding
 
     private $conditions = array();
 
+    private $nsr_slots = array();
 
 
-    static function dump_bindings($bindings_raw = array())
+    static function dump($bindings_raw = array())
     {
         $bindings = array();
 
@@ -25,8 +26,6 @@ class SnipsBinding
 
     function __construct($binding_raw)
     {
-
+        ;//reserved to the next update
     }
-
-
 }

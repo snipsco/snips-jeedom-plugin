@@ -16,7 +16,7 @@ class SnipsBindingAction
 
     function __construct($_action = array())
     {
-
+        ;//reserved to the next update
     }
 
     public function execute()
@@ -28,6 +28,6 @@ class SnipsBindingAction
 
     static function get_scenario_tags($_tags = array())
     {
-
+        ;//reserved to the next update
     }
 }
