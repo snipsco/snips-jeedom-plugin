@@ -1,4 +1,12 @@
-## Version: 2018-11-07 17:53:59
+## `Version: 2019-01-24 12:13:13`
+
+### Added
+- Multi dialogue function
+
+### Changed
+- None callback scenarios will have the customise tags as before
+
+## `Version: 2018-11-07 17:53:59`
 
 ### Added
 - Callback scenario for each intent
@@ -9,9 +17,9 @@
 - Intent card is shown in the different color setup
 
 ### Removed
-- Tag passing config items on the configuration page 
+- Tag passing config items on the configuration page
 
-## Version: 2018-09-21 19:12:12 [Beta]
+## `Version: 2018-09-21 19:12:12 [Beta]`
 
 ### Added
 - Added config options for snips-used variables/ tags
@@ -19,7 +27,7 @@
 ### Fix
 - Support snips/built-in type `duration` (Thanks to Kiboost)
 
-## Version: 2018-09-03 17:49:57
+## `Version: 2018-09-03 17:49:57`
 
 ### Added
 - Added satellite test button
@@ -107,7 +115,7 @@
 
 ## `Version: 2018-07-27 18:21:29`
 ### Changed
-- Simplfied steps for loading assistant. 
+- Simplfied steps for loading assistant.
 
 ## `Version: 2018-07-26 16:08:40`
 ### Changed
