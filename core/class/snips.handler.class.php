@@ -1,7 +1,8 @@
 <?php
+require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
-require_once dirname(__FILE__) . '/../../../core/class/cron.class.php';
-require_once dirname(__FILE__) . '/../core/class/snips.class.php';
+//require_once dirname(__FILE__) . '/../../../core/class/cron.class.php';
+require_once dirname(__FILE__) . '/snips.class.php';
 
 class SnipsHandler
 {

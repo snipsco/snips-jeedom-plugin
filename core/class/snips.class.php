@@ -1,9 +1,9 @@
 <?php
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
-require(dirname(__FILE__) . '/../../3rdparty/Toml.php');
-require(dirname(__FILE__) . '/../../3rdparty/snips.hermes.class.php');
-require(dirname(__FILE__) . '/../../3rdparty/snips.tts.class.php');
-require(dirname(__FILE__) . '/../../3rdparty/snips.handler.class.php');
+require_once dirname(__FILE__) . '/../../3rdparty/Toml.php';
+require_once dirname(__FILE__) . '/snips.hermes.class.php';
+require_once dirname(__FILE__) . '/snips.tts.class.php';
+require_once dirname(__FILE__) . '/snips.handler.class.php';
 // ini_set("display_errors","On");
 // error_reporting(E_ALL);
 

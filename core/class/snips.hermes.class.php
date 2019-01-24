@@ -17,7 +17,8 @@
 */
 
 /* for using jeedom logger */
-require_once dirname(__FILE__) . '/../../../core/class/cron.class.php';
+//require_once dirname(__FILE__) . '/../../../core/class/cron.class.php';
+require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 class SnipsHermes{
 
