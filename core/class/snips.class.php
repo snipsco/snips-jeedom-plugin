@@ -606,9 +606,10 @@ class snips extends eqLogic
                             if (config::byKey('dynamicSnipsTTS', 'snips', 0) && cmd::byString($binding['ttsPlayer'])->getConfiguration('snipsType') == 'TTS') {
                                 self::hermes()->publish_start_session_notification($site_id, $execution_return_msg);
                             }else{
-
-                                self::hermes()->publish_start_session_notification($site_id, $execution_return_msg);
-                                //snips::playTTS($binding['ttsPlayer'], $execution_return_msg);
+                                $cmd = cmd::byString($binding['ttsPlayer']);
+                                if (is_object($cmd)) {
+                                    $cmd->execCmd(array('message' => $execution_return_msg));
+                                }
                             }
                         }
                     }
@@ -620,14 +621,16 @@ class snips extends eqLogic
                     self::logger('['.__FUNCTION__.'] [Binding Execution] Orginal text is ' . $binding['ttsMessage']);
 
                     self::logger('['.__FUNCTION__.'] [Binding Execution] Player is ' . $binding['ttsPlayer']);
-                    
+
                     $tts_player_cmd = cmd::byString($binding['ttsPlayer']);
 
                     if (config::byKey('dynamicSnipsTTS', 'snips', 0) && $tts_player_cmd->getConfiguration('snipsType') == 'TTS') {
                         self::hermes()->publish_start_session_notification($site_id, $text);
                     }else{
-                        self::hermes()->publish_start_session_notification($site_id, $text);
-                        //snips::playTTS($binding['ttsPlayer'], $text, $session_id);
+                        $cmd = cmd::byString($binding['ttsPlayer']);
+                        if (is_object($cmd)) {
+                            $cmd->execCmd(array('message' => $execution_return_msg));
+                        }
                     }
                 }
             }else if(count($bindings_with_correct_condition) == 0 && !$callback_called){

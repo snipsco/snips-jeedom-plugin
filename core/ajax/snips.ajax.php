@@ -16,8 +16,8 @@ try {
             snips::deleteAssistant();
             snips::reloadAssistant();
             if (init('option') == 'mode_2') {
-                snips::debug(__FUNCTION__, '[AJAX reload] option :'.init('option'). ' Type is :'.gettype(init('option')));
-                snips::debug(__FUNCTION__, '[AJAX reload] configJson :'.$configJson);
+                snips::logger('['.__FUNCTION__.'] option :'.init('option'). ' Type is :'.gettype(init('option')));
+                snips::logger('['.__FUNCTION__.'] configJson :'.$configJson);
                 snips::importConfigration(null, $configJson);
             }
         }
@@ -34,8 +34,8 @@ try {
             snips::reloadAssistant();
 
             if (init('option') == 'mode_2') {
-                snips::debug(__FUNCTION__, '[AJAX reload] option :'.init('option'). ' Type is :'.gettype(init('option')));
-                snips::debug(__FUNCTION__, '[AJAX reload] configJson :'.$configJson);
+                snips::logger('['.__FUNCTION__.'] option :'.init('option'). ' Type is :'.gettype(init('option')));
+                snips::logger('['.__FUNCTION__.'] configJson :'.$configJson);
                 snips::importConfigration(null, $configJson);
             }
         }
@@ -68,12 +68,12 @@ try {
     }
 
     if (init('action') == 'playFeedback') {
-        snips::debug(__FUNCTION__, '[TTs] Testing Play...');
+        snips::logger('['.__FUNCTION__.'] Testing Play...');
 
         $text = SnipsTts::dump(init('text'), init('vars'))->get_message();
 
-        snips::debug(__FUNCTION__, '[AJAX playFeedback] player cmd: '.init('cmd'));
-        snips::debug(__FUNCTION__, '[AJAX playFeedback] text: '.$text);
+        snips::logger('['.__FUNCTION__.'] player cmd: '.init('cmd'));
+        snips::logger('['.__FUNCTION__.'] text: '.$text);
 
         $cmd = cmd::byString(init('cmd'));
         if (is_object($cmd)) {
