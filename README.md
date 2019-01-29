@@ -2,7 +2,7 @@
 
 ## User Guide
 
-Please reach ***[Snips Dev Center](https://snips.gitbook.io/)*** for the user documentation.
+Please reach ***[Snips Dev Center](https://docs.snips.ai/)*** for the user documentation.
 - ***[English Version](https://docs.snips.ai/articles/raspberrypi/jeedom/en)***
 
 ## Snips-Jeedom-Plugin
