@@ -3,8 +3,7 @@
 ## User Guide
 
 Please reach ***[Snips Dev Center](https://snips.gitbook.io/)*** for the user documentation.
-- ***[English Version](https://snips.gitbook.io/documentation/home-automation-platforms/jeedom)***
-- ***[French Version](https://snips.gitbook.io/documentation/home-automation-platforms/jeedom-fr)***
+- ***[English Version](https://docs.snips.ai/articles/raspberrypi/jeedom/en)***
 
 ## Snips-Jeedom-Plugin
 
