@@ -679,7 +679,7 @@ class snips extends eqLogic
     function findAndDoAction($_payload)
     {
         $intent_name = $_payload->{'intent'}->{'intentName'};
-        $probability = $_payload->{'intent'}->{'probability'};
+        $probability = $_payload->{'intent'}->{'confidenceScore'};
         $site_id = $_payload->{'siteId'};
         $session_id = $_payload->{'sessionId'};
         $query_input = $_payload->{'input'};
@@ -850,7 +850,7 @@ class snips extends eqLogic
             $tags['#query#'] = $_payload->{'input'};
 
         if($_parameters['isTagProbability'])
-            $tags['#probability#'] = $_payload->{'intent'}->{'probability'};
+            $tags['#probability#'] = $_payload->{'intent'}->{'confidenceScore'};
 
         if($_parameters['isTagSlots'])
             foreach ($_slots_values_org as $slots_name => $value)
