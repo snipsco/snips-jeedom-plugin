@@ -576,7 +576,7 @@ class snips extends eqLogic
                                 $tags['#plugin#'] = 'snips';
 
                             if($callback_scenario_parameters['isTagIdentifier'])
-                                $tags['#identifier#'] = 'snips::'.$_payload->{'intent'}->{'intentName'}.'::Callback';
+                                $tags['#identifier#'] = 'snips::'.$_payload->{'intent'}->{'intentName'}.'::'.$binding['name'];
 
                             if($callback_scenario_parameters['isTagIntent'])
                                 if(strpos($_payload->{'intent'}->{'intentName'},':'))
@@ -1191,13 +1191,13 @@ class snipsCmd extends cmd
 
     public function snips_say($_options = array())
     {
-        self::logger('['.__FUNCTION__.'] cmd: say, text:'.$_options['message']);
+        snips::logger('['.__FUNCTION__.'] cmd: say, text:'.$_options['message']);
         snips::hermes()->publish_start_session_notification($this->getConfiguration('siteId'), $_options['message']);
     }
 
     public function snips_ask()
     {
-        self::logger('['.__FUNCTION__.'] cmd: ask');
+        snips::logger('['.__FUNCTION__.'] cmd: ask');
         preg_match_all("/(\[.*?\])/", $_options['answer'][0], $match_intent);
         $_ans_intent = str_replace('[', '', $match_intent[0][0]);
         $_ans_intent = str_replace(']', '', $_ans_intent);
