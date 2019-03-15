@@ -21,16 +21,16 @@ class snips extends eqLogic
         return $eq_intent;
     }
 
-    public static function dump_eq_TTS()
+    public static function dump_eq_tts()
     {
-        $eq_TTS = array();
+        $eq_tts = array();
         $eqs = self::byType('snips');
         foreach($eqs as $eq){
             if ($eq->getConfiguration('TTS')) {
                 $eq_TTS[] = $eq;
             }
         }
-        return $eq_TTS;
+        return $eq_tts;
     }
 
     public static function logger($_str){
