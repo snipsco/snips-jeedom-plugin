@@ -52,32 +52,32 @@ class SnipsHandler
         }
     }
 
-    static function intent_detected($_payload)
+    static function intent_detected($hermes, $payload)
     {
         self::logger('<'.__FUNCTION__.'>');
 
-        if(!stristr($_payload->{'intent'}->{'intentName'}, 'jeedom')){
+        if(!stristr($payload->{'intent'}->{'intentName'}, 'jeedom')){
             return;
         }
-
-        snips::hermes()->publish_end_session($_payload->{'sessionId'});
-        snips::findAndDoAction($_payload);
+        self::logger('using hermes to turn *******************************');
+        $hermes->publish_end_session($payload->{'sessionId'});
+        snips::findAndDoAction($payload);
         if(config::byKey('isMultiDialog', 'snips', 0)){
             snips::hermes()->publish_start_session_action($_payload->{'siteId'}, null, null, null, true);
         }
     }
 
-    static function session_started($_payload){
+    static function session_started($hermes, $payload){
         self::logger('<'.__FUNCTION__.'>');
-        self::set_site_id($_payload->{'siteId'});
+        self::set_site_id($payload->{'siteId'});
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
         if (is_object($var)) {
-            $var->setValue($_payload->{'sessionId'});
+            $var->setValue($payload->{'sessionId'});
             $var->save();
         }
     }
 
-    static function session_ended($_payload){
+    static function session_ended($hermes, $payload){
         self::logger('<'.__FUNCTION__.'>');
         self::clear_site_id();
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
@@ -87,11 +87,11 @@ class SnipsHandler
         }
     }
 
-    static function hotword_detected($_payload){
+    static function hotword_detected($hermes, $payload){
         self::logger('<'.__FUNCTION__.'>');
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
         if (is_object($var)) {
-            $var->setValue($_payload->{'modelId'});
+            $var->setValue($payload->{'modelId'});
             $var->save();
         }
     }
