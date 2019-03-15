@@ -22,9 +22,14 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 class SnipsHermes{
 
-    const SESSION_STARTED = 'hermes/dialogueManager/sessionStarted';
-    const SESSION_ENDED = 'hermes/dialogueManager/sessionEnded';
-    const HOTWORD_DETECTED = 'hermes/hotword/default/detected';
+    static private const TOP_INTENTS = 'hermes/intent/#';
+    static private const TOP_SESSION_STARTED = 'hermes/dialogueManager/sessionStarted';
+    static private const TOP_SESSION_ENDED = 'hermes/dialogueManager/sessionEnded';
+    static private const TOP_HOTWORD_DETECTED = 'hermes/hotword/default/detected';
+
+    static private const TOP_START_SESSION = 'hermes/dialogueManager/startSession';
+    static private const TOP_CONTINUE_SESSION = 'hermes/dialogueManager/continueSession';
+    static private const TOP_END_SESSION = 'hermes/dialogueManager/endSession';
 
     private $connected = 0;
 
@@ -89,28 +94,32 @@ class SnipsHermes{
     }
 
     /* subscribe to needed topics */
-    public function subscribe_intents($_callback)
+    public function subscribe_intents($callback)
     {
-        $this->callback_intents = $_callback;
-        $this->client->subscribe('hermes/intent/#', 0);
+        $this->callback_intents = $callback;
+        //$this->client->subscribe('hermes/intent/#', 0);
+        $this->client->subscribe(self::$TOP_INTENTS, 0);
     }
 
-    public function subscribe_session_started($_callback)
+    public function subscribe_session_started($callback)
     {
-        $this->callback_session_started = $_callback;
-        $this->client->subscribe('hermes/dialogueManager/sessionStarted', 0);
+        $this->callback_session_started = $callback;
+        //$this->client->subscribe('hermes/dialogueManager/sessionStarted', 0);
+        $this->client->subscribe(self::$TOP_SESSION_STARTED, 0);
     }
 
-    public function subscribe_session_ended($_callback)
+    public function subscribe_session_ended($callback)
     {
-        $this->callback_session_ended = $_callback;
-        $this->client->subscribe('hermes/dialogueManager/sessionEnded', 0);
+        $this->callback_session_ended = $callback;
+        //$this->client->subscribe('hermes/dialogueManager/sessionEnded', 0);
+        $this->client->subscribe(self::$TOP_SESSION_ENDED, 0);
     }
 
-    public function subscribe_hotword_detected($_callback)
+    public function subscribe_hotword_detected($callback)
     {
-        $this->callback_hotword_detected = $_callback;
-        $this->client->subscribe('hermes/hotword/default/detected', 0);
+        $this->callback_hotword_detected = $callback;
+        //$this->client->subscribe('hermes/hotword/default/detected', 0);
+        $this->client->subscribe(self::$TOP_HOTWORD_DETECTED, 0);
     }
 
     /* blocking mqtt client */
@@ -125,14 +134,15 @@ class SnipsHermes{
     }
 
     /* hermes protocol APIs */
-    public function publish_start_session_action($_site_id,
-                                                 $_session_init_text = null,
-                                                 $_session_init_can_be_enqueued = null,
-                                                 $_session_init_intent_filter = null,
-                                                 $_session_init_send_intent_not_recognized = null,
-                                                 $_custom_data = null)
-    {
-        $topic = 'hermes/dialogueManager/startSession';
+    public function publish_start_session_action(
+        $_site_id,
+        $_session_init_text = null,
+        $_session_init_can_be_enqueued = null,
+        $_session_init_intent_filter = null,
+        $_session_init_send_intent_not_recognized = null,
+        $_custom_data = null
+    ) {
+        //$topic = 'hermes/dialogueManager/startSession';
         $payload = array();
         $init = array(
             'type' => 'action'
@@ -150,14 +160,15 @@ class SnipsHermes{
         if ($_custom_data)
             $payload['customData'] = $_custom_data;
         $payload['init'] = $init;
-        return $this->mqtt_publish($topic, json_encode($payload));
+        return $this->mqtt_publish(self::$TOP_START_SESSION, json_encode($payload));
     }
 
-    public function publish_start_session_notification($_site_id,
-                                                       $_session_init_text,
-                                                       $_custom_data = null)
-    {
-        $topic = 'hermes/dialogueManager/startSession';
+    public function publish_start_session_notification(
+        $_site_id,
+        $_session_init_text,
+        $_custom_data = null
+    ) {
+        //$topic = 'hermes/dialogueManager/startSession';
         $payload = array();
         $init = array(
             'type' => 'notification'
@@ -169,16 +180,17 @@ class SnipsHermes{
         if ($_custom_data)
             $payload['customData'] = $_custom_data;
         $payload['init'] = $init;
-        return $this->mqtt_publish($topic, json_encode($payload));
+        return $this->mqtt_publish(self::$TOP_START_SESSION, json_encode($payload));
     }
 
-    public function publish_continue_session($_session_id,
-                                             $_text,
-                                             $_intent_filter = null,
-                                             $_custom_data = null,
-                                             $_send_intent_not_recognized = null)
-    {
-        $topic = 'hermes/dialogueManager/continueSession';
+    public function publish_continue_session(
+        $_session_id,
+        $_text,
+        $_intent_filter = null,
+        $_custom_data = null,
+        $_send_intent_not_recognized = false
+    ) {
+        //$topic = 'hermes/dialogueManager/continueSession';
         $payload = array();
         if ($_session_id)
             $payload['sessionId'] = $_session_id;
@@ -194,13 +206,14 @@ class SnipsHermes{
             $payload['customData'] = $_custom_data;
         if ($_send_intent_not_recognized)
             $payload['sendIntentNotRecognized'] = $_send_intent_not_recognized;
-        return $this->mqtt_publish($topic, json_encode($payload));
+        return $this->mqtt_publish(self::$TOP_CONTINUE_SESSION, json_encode($payload));
     }
 
-    public function publish_end_session($_session_id,
-                                        $_text = null)
-    {
-        $topic = 'hermes/dialogueManager/endSession';
+    public function publish_end_session(
+        $_session_id,
+        $_text = null
+    ) {
+        // $topic = 'hermes/dialogueManager/endSession';
         $payload = array();
         if ($_session_id)
             $payload['sessionId'] = $_session_id;
@@ -208,7 +221,7 @@ class SnipsHermes{
             return 0;
         if ($_text)
             $payload['text'] = $_text;
-        return $this->mqtt_publish($topic, json_encode($payload));
+        return $this->mqtt_publish(self::$TOP_END_SESSION, json_encode($payload));
     }
 
     // mqtt callbacks
@@ -236,26 +249,28 @@ class SnipsHermes{
         }
     }
 
-    public function mqtt_on_message($_message)
+    public function mqtt_on_message($message)
     {
-        self::logger('<'.__FUNCTION__.'> Received message. Topic:' . $_message->topic);
-        $payload_array = json_decode($_message->payload);
+        self::logger('<'.__FUNCTION__.'> Received message. Topic:' . $message->topic);
+        $payload_array = json_decode($message->payload);
 
-        if ($this->SESSION_STARTED == $_message->topic){
-            $_callback = $this->callback_session_started;
-        }
-        else if ($this->SESSION_ENDED == $_message->topic){
-            $_callback = $this->callback_session_ended;
-        }
-        else if ($this->HOTWORD_DETECTED == $_message->topic){
-            $_callback = $this->callback_hotword_detected;
-        }
-        else{
-            $_callback = $this->callback_intents;
+        switch ($message->topic) {
+            case self::TOP_SESSION_STARTED:
+                $callback = $this->callback_session_started;
+                break;
+            case self::TOP_SESSION_ENDED:
+                $callback = $this->callback_session_ended;
+                break;
+            case self::TOP_HOTWORD_DETECTED:
+                $callback = $this->callback_hotword_detected;
+                break;
+            default:
+                $callback = $this->callback_intents;
+                break;
         }
 
         try{
-            $_callback(json_decode($_message->payload));
+            $callback($this, json_decode($message->payload));
         }
         catch(Exception $e){
             self::logger('<'.__FUNCTION__.'>  Callback execution: ' . $e->getMessage());
