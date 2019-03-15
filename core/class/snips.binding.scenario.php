@@ -1,6 +1,6 @@
 <?php
 
-class SnipsBindingScrnario
+class SnipsBindingScenario
 {
     private $scenario_id;
     private $action;
@@ -22,7 +22,7 @@ class SnipsBindingScrnario
         $this->payload = $_payload;
         $this->scenario = $_scenario['scenario_id'];
         $this->action = $_scenario['action'];
-        $this->user_tags = $_scenario['tags']; 
+        $this->user_tags = $_scenario['tags'];
     }
 
     public function execute()
