@@ -6,6 +6,7 @@ This file is used to track the development of this plugin. If you are a user, th
 To be able to use all your Jeedom devices by using voice! And, we should let you done this in a simple way!
 
 # To do list
+- [ ] Add back the scenario tag function for snips calling scenarios 
 - [ ] Allow binding passing `*`(any) for none fixed slots value
 - [ ] Allow use binary remapping in the scenario
 - [ ] Configurable for passing tags for each intent

@@ -9,7 +9,6 @@ MASTER_DEVICES = null;
         result_textareas = result.find('textarea').add(result.filter('textarea')),
         my_selects       = this.find('select').add(this.filter('select')),
         result_selects   = result.find('select').add(result.filter('select'));
-
     for (var i = 0, l = my_textareas.length; i < l; ++i) $(result_textareas[i]).val($(my_textareas[i]).val());
     for (var i = 0, l = my_selects.length;   i < l; ++i) {
       for (var j = 0, m = my_selects[i].options.length; j < m; ++j) {
@@ -68,12 +67,10 @@ $(document).on('change', '#intentName', function () {
             handleAjaxError(request, status, error);
         },
         success: function (data) {
-            MASTER_DEVICES = data.result;
+            MASTER_DEVICES = data.result; 
             console.log('Master:'+MASTER_DEVICES);
         }
     });
-
-
 });
 
 $(document).on('change', 'input[name=reaction]', function () {
@@ -185,7 +182,7 @@ $("body").off('click', '.listCmdAction').on('click', '.listCmdAction', function 
                     'var el = $(this);jeedom.cmd.getSelectModal');
 
                 html = html.replace(
-                    '.atCaret(\'insert\', result.human);',
+                    '.atCaret(\'insert\', result.human);', 
                     '.atCaret(\'insert\', result.human);$.ajax({type:"POST",url:"plugins/snips/core/ajax/snips.ajax.php",data:{action:"getSnipsType",cmd:result.cmd.id,},dataType:"json",global:false,error:function(request,status,error){handleAjaxError(request,status,error)},success:function(data){if(data.result=="snips/percentage"){el.closest(".action").find(".slotsOptions").empty();displayValueMap(el.closest(".action").find(".slotsOptions"))}else{el.closest(".action").find(".slotsOptions").empty()}}});'
                     );
             }
@@ -383,7 +380,7 @@ $('.reload').on('click', function () {
         },
         callback: function (result) {
             if (result == 'mode_1' || result == 'mode_2') {
-                var mode = result;
+                var mode = result; 
                 var loading = bootbox.dialog({
                     message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> {{Trying to load assistant...}}</div>',
                     closeButton: false
@@ -547,7 +544,7 @@ $('.reload').on('click', function () {
                     }
                 }
             });
-            }
+            }     
         }
     });
 });
@@ -600,7 +597,7 @@ $('.exportConfigration').on('click', function () {
                     message: '{{Please specify a name!}}',
                     level: 'warning'
                 });
-            }
+            }   
         }
     });
 

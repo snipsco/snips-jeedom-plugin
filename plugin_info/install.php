@@ -20,17 +20,22 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function snips_install() {
     $cron = cron::byClassAndFunction('snips', 'mqttClient');
+    if (is_object($cron)) {
+        $cron->stop();
+        $cron->remove();
+    }
+
+    $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
     if (!is_object($cron)) {
         $cron = new cron();
         $cron->setClass('snips');
-        $cron->setFunction('mqttClient');
+        $cron->setFunction('deamon_hermes');
         $cron->setEnable(1);
         $cron->setDeamon(1);
         $cron->setSchedule('* * * * *');
         $cron->setTimeout('1440');
         $cron->save();
     }
-    
     $lang = translate::getLanguage();
     if ($lang == 'fr_FR') {
         config::save('defaultTTS', 'Désolé, je ne trouve pas les actions!', 'snips');
@@ -45,10 +50,16 @@ function snips_install() {
 
 function snips_update() {
     $cron = cron::byClassAndFunction('snips', 'mqttClient');
+    if (is_object($cron)) {
+        $cron->stop();
+        $cron->remove();
+    }
+
+    $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
     if (!is_object($cron)) {
         $cron = new cron();
         $cron->setClass('snips');
-        $cron->setFunction('mqttClient');
+        $cron->setFunction('deamon_hermes');
         $cron->setEnable(1);
         $cron->setDeamon(1);
         $cron->setSchedule('* * * * *');
@@ -71,29 +82,34 @@ function snips_remove() {
         $cron->remove();
     }
 
+    $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
+    if (is_object($cron)) {
+        $cron->stop();
+        $cron->remove();
+    }
+
     $obj = object::byName('Snips-Intents');
     if (is_object($obj)) {
         $obj->remove();
-        snips::debug(__FUNCTION__, 'Removed object: Snips-Intents');
+        snips::logger('['.__FUNCTION__.'] Removed object: Snips-Intents');
     }
 
     $eqLogics = eqLogic::byType('snips');
     foreach($eqLogics as $eq) {
         $cmds = snipsCmd::byEqLogicId($eq->getLogicalId);
         foreach($cmds as $cmd) {
-            snips::debug(__FUNCTION__, 'Removed slot cmd: '.$cmd->getName());
+            snips::logger('['.__FUNCTION__.'] Removed slot cmd: '.$cmd->getName());
             $cmd->remove();
         }
-        snips::debug(__FUNCTION__, 'Removed intent entity: '.$eq->getName());
+        snips::logger('['.__FUNCTION__.'] Removed intent entity: '.$eq->getName());
         $eq->remove();
     }
 
-    snips::debug(__FUNCTION__, 'Removed Snips Voice assistant!');
+    snips::logger('['.__FUNCTION__.'] Removed Snips Voice assistant!');
 
     //log::add('snips','info','Suppression extension');
     $resource_path = realpath(dirname(__FILE__) . '/../resources');
     passthru('sudo /bin/bash ' . $resource_path . '/remove.sh ' . $resource_path . ' > ' . log::getPathToLog('SNIPS_dep') . ' 2>&1 &');
     return true;
 }
-
 ?>

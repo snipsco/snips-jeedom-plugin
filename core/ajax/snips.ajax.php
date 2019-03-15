@@ -8,7 +8,6 @@ try {
     }
 
     if (init('action') == 'reload') {
-        
         $res = snips::fetchAssistantJson(init('username') , init('password'));
 
         if ($res == 1) {
@@ -16,8 +15,8 @@ try {
             snips::deleteAssistant();
             snips::reloadAssistant();
             if (init('option') == 'mode_2') {
-                snips::debug(__FUNCTION__, '[AJAX reload] option :'.init('option'). ' Type is :'.gettype(init('option')));
-                snips::debug(__FUNCTION__, '[AJAX reload] configJson :'.$configJson);
+                snips::logger('['.__FUNCTION__.'] option :'.init('option'). ' Type is :'.gettype(init('option')));
+                snips::logger('['.__FUNCTION__.'] configJson :'.$configJson);
                 snips::importConfigration(null, $configJson);
             }
         }
@@ -25,17 +24,15 @@ try {
     }
 
     if (init('action') == 'tryToFetchDefault') {
-        
         $res = snips::tryToFetchDefault();
 
         if ($res == 1) {
             $configJson = snips::exportConfigration(null, false);
             snips::deleteAssistant();
             snips::reloadAssistant();
-            
             if (init('option') == 'mode_2') {
-                snips::debug(__FUNCTION__, '[AJAX reload] option :'.init('option'). ' Type is :'.gettype(init('option')));
-                snips::debug(__FUNCTION__, '[AJAX reload] configJson :'.$configJson);
+                snips::logger('['.__FUNCTION__.'] option :'.init('option'). ' Type is :'.gettype(init('option')));
+                snips::logger('['.__FUNCTION__.'] configJson :'.$configJson);
                 snips::importConfigration(null, $configJson);
             }
         }
@@ -68,10 +65,19 @@ try {
     }
 
     if (init('action') == 'playFeedback') {
-        snips::debug(__FUNCTION__, '[TTs] Testing Play...');
-        $text = snips::generateFeedback(init('text') , init('vars') , true);
-        snips::debug(__FUNCTION__, '[AJAX playFeedback] player cmd: '.init('cmd'));
-        snips::playTTS(init('cmd'), $text);
+        snips::logger('['.__FUNCTION__.'] Testing Play...');
+
+        $text = SnipsTts::dump(init('text'), init('vars'))->get_message();
+
+        snips::logger('['.__FUNCTION__.'] player cmd: '.init('cmd'));
+        snips::logger('['.__FUNCTION__.'] text: '.$text);
+
+        $cmd = cmd::byString(init('cmd'));
+        if (is_object($cmd)) {
+            $options = array();
+            $options['message'] = $text;
+            $cmd->execCmd($options);
+        }
         ajax::success();
     }
 
@@ -110,7 +116,6 @@ try {
         snips::postConfiguration();
         ajax::success();
     }
-    
 
     throw new Exception(__('No method corresponding to : ', __FILE__) . init('action'));
 }

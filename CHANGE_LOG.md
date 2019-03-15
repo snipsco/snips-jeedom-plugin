@@ -1,3 +1,11 @@
+## `Version: 2019-01-24 12:13:13`
+
+### Added
+- Multi dialogue function
+
+### Changed
+- None callback scenarios will have the customise tags as before
+
 ## `Version: 2018-11-07 17:53:59`
 
 ### Added

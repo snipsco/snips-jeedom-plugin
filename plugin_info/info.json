@@ -1,10 +1,10 @@
 {
 	"id" : "snips",
-	"name" : "Snips Voice Assistant",
+	"name" : "Snips - Voice Control",
 	"description" : "Snips voice control plugin, which allows you execute command by using your voice",
 	"author" : "Coor Fang - Snips",
 	"require" : "2.4",
-	"version" : "1.0",
+	"version" : "0.5.1",
 	"category" : "communication",
 	"hasDependency" : 1,
 	"hasOwnDeamon" : 1,

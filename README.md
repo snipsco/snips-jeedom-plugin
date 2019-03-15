@@ -3,17 +3,16 @@
 ## User Guide
 
 Please reach ***[Snips Dev Center](https://snips.gitbook.io/)*** for the user documentation.
-- ***[English Version](https://snips.gitbook.io/documentation/home-automation-platforms/jeedom)***
-- ***[French Version](https://snips.gitbook.io/documentation/home-automation-platforms/jeedom-fr)***
+- ***[English Version](https://docs.snips.ai/articles/raspberrypi/jeedom/en)***
 
-## Snips-Jeedom-Plugin
+## snips-jeedom-plugin
 
 ![Version](https://img.shields.io/badge/snips--jeedom--plugin-v1.6.0-blue.svg)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/snipsco/snips-skill-respeaker/blob/master/LICENSE)
 
 The Snips Voice Platform allows anyone to integrate AI powered voice interaction in their devices with ease. The end-to-end pipeline - Hotword detection, Automatic Speech Recognition (ASR) and Natural Language Understanding (NLU) - runs fully on device, powered by state of the art deep learning. By using Snips, you can avoid cloud provider costs, cloud latency, and protect user's privacy.
 
-## Installation (As a developer)
+## Installation
 
 ### Step 1. Download plugin
 For this step, I would recommand you use `ssh` login your Jeedom site through console:
