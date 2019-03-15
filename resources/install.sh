@@ -73,9 +73,7 @@ if [[ -d "/etc/php7/" ]]; then
         service apache2 restart
     fi
 fi
-
 rm /tmp/snips_dep
 mkdir /tmp/jeedom/snips
 chmod 777 /tmp/jeedom/snips
-
 echo "Dependances installation is done"

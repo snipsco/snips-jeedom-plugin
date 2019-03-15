@@ -625,6 +625,7 @@ class snips extends eqLogic
                     $tts_player_cmd = cmd::byString($binding['ttsPlayer']);
 
                     if (config::byKey('dynamicSnipsTTS', 'snips', 0) && $tts_player_cmd->getConfiguration('snipsType') == 'TTS') {
+
                         self::hermes()->publish_start_session_notification($site_id, $text);
                     }else{
                         $cmd = cmd::byString($binding['ttsPlayer']);
@@ -937,7 +938,6 @@ class snips extends eqLogic
         $lights = $json['LIGHTS'];
         $_up_down = $json['OPERATION'];
         foreach ($lights as $light) {
-
             $cmd = cmd::byString($light['LIGHT_BRIGHTNESS_VALUE']);
             if (is_object($cmd))
             if ($cmd->getValue()) $current_val = $cmd->getValue();

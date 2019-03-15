@@ -8,7 +8,6 @@ try {
     }
 
     if (init('action') == 'reload') {
-
         $res = snips::fetchAssistantJson(init('username') , init('password'));
 
         if ($res == 1) {
@@ -25,14 +24,12 @@ try {
     }
 
     if (init('action') == 'tryToFetchDefault') {
-
         $res = snips::tryToFetchDefault();
 
         if ($res == 1) {
             $configJson = snips::exportConfigration(null, false);
             snips::deleteAssistant();
             snips::reloadAssistant();
-
             if (init('option') == 'mode_2') {
                 snips::logger('['.__FUNCTION__.'] option :'.init('option'). ' Type is :'.gettype(init('option')));
                 snips::logger('['.__FUNCTION__.'] configJson :'.$configJson);
@@ -81,7 +78,6 @@ try {
             $options['message'] = $text;
             $cmd->execCmd($options);
         }
-
         ajax::success();
     }
 
@@ -120,7 +116,6 @@ try {
         snips::postConfiguration();
         ajax::success();
     }
-
 
     throw new Exception(__('No method corresponding to : ', __FILE__) . init('action'));
 }

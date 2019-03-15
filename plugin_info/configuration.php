@@ -87,4 +87,3 @@ function snips_postSaveConfiguration(){
         </div>
     </fieldset>
 </form>
-

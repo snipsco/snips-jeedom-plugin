@@ -46,7 +46,12 @@ To be able to use all your Jeedom devices by using voice! And, we should let you
 - [x] listEquipmentInfo button does not work very well. Need to double check (23 Aug)
 
 # Develop Diary
-5, Seo, 2018
+27, Nov, 2018
+- [x] Hermes API for dialog management
+- [x] Rewrite all the mqtt related method
+- [x] Rewrite part of the old method
+
+5, Sep, 2018
 - [x] Better design for displaying snips devices
 
 3, Sep, 2018

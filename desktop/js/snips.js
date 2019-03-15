@@ -9,7 +9,6 @@ MASTER_DEVICES = null;
         result_textareas = result.find('textarea').add(result.filter('textarea')),
         my_selects       = this.find('select').add(this.filter('select')),
         result_selects   = result.find('select').add(result.filter('select'));
- 
     for (var i = 0, l = my_textareas.length; i < l; ++i) $(result_textareas[i]).val($(my_textareas[i]).val());
     for (var i = 0, l = my_selects.length;   i < l; ++i) {
       for (var j = 0, m = my_selects[i].options.length; j < m; ++j) {
@@ -72,8 +71,6 @@ $(document).on('change', '#intentName', function () {
             console.log('Master:'+MASTER_DEVICES);
         }
     });
-
-    
 });
 
 $(document).on('change', 'input[name=reaction]', function () {
@@ -1333,6 +1330,3 @@ function displayBinaryMap(_el, _cmd) {
 
     _el.append(span);
 }
-
-
-
