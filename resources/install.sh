@@ -72,4 +72,7 @@ fi
 
 rm /tmp/snips_dep
 
+mkdir ../config_running
+mkdir ../config_backup
+
 echo "Dependances installation is done"
