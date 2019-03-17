@@ -22,14 +22,14 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 class SnipsHermes{
 
-    static private const TOP_INTENTS = 'hermes/intent/#';
-    static private const TOP_SESSION_STARTED = 'hermes/dialogueManager/sessionStarted';
-    static private const TOP_SESSION_ENDED = 'hermes/dialogueManager/sessionEnded';
-    static private const TOP_HOTWORD_DETECTED = 'hermes/hotword/default/detected';
+    const TOP_INTENTS = 'hermes/intent/#';
+    const TOP_SESSION_STARTED = 'hermes/dialogueManager/sessionStarted';
+    const TOP_SESSION_ENDED = 'hermes/dialogueManager/sessionEnded';
+    const TOP_HOTWORD_DETECTED = 'hermes/hotword/default/detected';
 
-    static private const TOP_START_SESSION = 'hermes/dialogueManager/startSession';
-    static private const TOP_CONTINUE_SESSION = 'hermes/dialogueManager/continueSession';
-    static private const TOP_END_SESSION = 'hermes/dialogueManager/endSession';
+    const TOP_START_SESSION = 'hermes/dialogueManager/startSession';
+    const TOP_CONTINUE_SESSION = 'hermes/dialogueManager/continueSession';
+    const TOP_END_SESSION = 'hermes/dialogueManager/endSession';
 
     private $connected = 0;
 
@@ -98,28 +98,28 @@ class SnipsHermes{
     {
         $this->callback_intents = $callback;
         //$this->client->subscribe('hermes/intent/#', 0);
-        $this->client->subscribe(self::$TOP_INTENTS, 0);
+        $this->client->subscribe(self::TOP_INTENTS, 0);
     }
 
     public function subscribe_session_started($callback)
     {
         $this->callback_session_started = $callback;
         //$this->client->subscribe('hermes/dialogueManager/sessionStarted', 0);
-        $this->client->subscribe(self::$TOP_SESSION_STARTED, 0);
+        $this->client->subscribe(self::TOP_SESSION_STARTED, 0);
     }
 
     public function subscribe_session_ended($callback)
     {
         $this->callback_session_ended = $callback;
         //$this->client->subscribe('hermes/dialogueManager/sessionEnded', 0);
-        $this->client->subscribe(self::$TOP_SESSION_ENDED, 0);
+        $this->client->subscribe(self::TOP_SESSION_ENDED, 0);
     }
 
     public function subscribe_hotword_detected($callback)
     {
         $this->callback_hotword_detected = $callback;
         //$this->client->subscribe('hermes/hotword/default/detected', 0);
-        $this->client->subscribe(self::$TOP_HOTWORD_DETECTED, 0);
+        $this->client->subscribe(self::TOP_HOTWORD_DETECTED, 0);
     }
 
     /* blocking mqtt client */
