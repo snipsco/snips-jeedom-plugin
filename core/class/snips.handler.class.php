@@ -6,16 +6,22 @@ require_once dirname(__FILE__) . '/snips.class.php';
 
 class SnipsHandler
 {
-    static function logger($_str)
+    static function logger($str = '', $level = 'debug')
     {
-        $msg = '['.__CLASS__.'] '.$_str;
+        $function = debug_backtrace(false, 2)[1]['function'];
+        $msg = '['.__CLASS__.'] <'. $function .'> '.$str;
         log::add('snips', 'debug', $msg);
-        echo $msg."\n";
     }
 
     static function check_site_id_existnce($_site_id)
     {
-        self::logger('<'.__FUNCTION__.'>');
+        self::logger();
+        $obj = object::byName('Snips-Intents');
+        if (!$obj) {
+            return;
+        }
+        $object_id = $obj->getId();
+
         $dev = eqLogic::byLogicalId('Snips-TTS-'.$_site_id, 'snips');
         if (!is_object($dev)){
             $dev = new snips();
@@ -25,15 +31,15 @@ class SnipsHandler
             $dev->setIsEnable(1);
             $dev->setConfiguration('snipsType', 'TTS');
             $dev->setConfiguration('siteName', $_site_id);
-            $dev->setObject_id(object::byName('Snips-Intents')->getId());
+            $dev->setObject_id($object_id);
             $dev->save();
-            self::logger('<'.__FUNCTION__.'> created untracked snips site: '.$_site_id);
+            self::logger('Created untracked snips site: '. $_site_id);
         }
     }
 
     static function set_site_id($_site_id)
     {
-        self::logger('<'.__FUNCTION__.'>');
+        self::logger();
         self::check_site_id_existnce($_site_id);
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
         if (is_object($var)) {
@@ -44,7 +50,7 @@ class SnipsHandler
 
     static function clear_site_id()
     {
-        self::logger('<'.__FUNCTION__.'>');
+        self::logger();
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
         if (is_object($var)) {
             $var->setValue('');
@@ -54,12 +60,10 @@ class SnipsHandler
 
     static function intent_detected($hermes, $payload)
     {
-        self::logger('<'.__FUNCTION__.'>');
-
+        self::logger();
         if(!stristr($payload->{'intent'}->{'intentName'}, 'jeedom')){
             return;
         }
-        self::logger('using hermes to turn *******************************');
         $hermes->publish_end_session($payload->{'sessionId'});
         snips::findAndDoAction($payload);
         if(config::byKey('isMultiDialog', 'snips', 0)){
@@ -68,7 +72,7 @@ class SnipsHandler
     }
 
     static function session_started($hermes, $payload){
-        self::logger('<'.__FUNCTION__.'>');
+        self::logger();
         self::set_site_id($payload->{'siteId'});
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
         if (is_object($var)) {
@@ -78,7 +82,7 @@ class SnipsHandler
     }
 
     static function session_ended($hermes, $payload){
-        self::logger('<'.__FUNCTION__.'>');
+        self::logger();
         self::clear_site_id();
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
         if (is_object($var)) {
@@ -88,7 +92,7 @@ class SnipsHandler
     }
 
     static function hotword_detected($hermes, $payload){
-        self::logger('<'.__FUNCTION__.'>');
+        self::logger();
         $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
         if (is_object($var)) {
             $var->setValue($payload->{'modelId'});
