@@ -4,16 +4,38 @@ require_once dirname(__FILE__) . '/../../3rdparty/Toml.php';
 require_once dirname(__FILE__) . '/snips.hermes.class.php';
 require_once dirname(__FILE__) . '/snips.tts.class.php';
 require_once dirname(__FILE__) . '/snips.handler.class.php';
+require_once dirname(__FILE__) . '/snips.utils.php';
 // ini_set("display_errors","On");
 // error_reporting(E_ALL);
 
 class snips extends eqLogic
 {
-    public static function dump_eq_intent()
+    const NAME_OBJECT = 'Snips-Intents';
+    //const PATH_ASSISTANT_JSON = dirname(__FILE__). '/../../config_running/assistant.json';
+
+    static function logger($str = '', $level = 'debug')
+    {
+        $function = debug_backtrace(false, 2)[1]['function'];
+        $msg = '['.__CLASS__.'] <'. $function .'> '.$str;
+        log::add('snips', $level, $msg);
+    }
+
+    /* get current assistant language */
+    static function get_assistant_language()
+    {
+        $obj = object::byName(self::NAME_OBJECT);
+        if (!$obj) {
+            return false;
+        }
+        return $obj->getConfiguration('language', 'en');
+    }
+
+    /* static method, get all the intent eqLogic objects */
+    static function dump_eq_intent()
     {
         $eq_intent = array();
         $eqs = self::byType('snips');
-        foreach($eqs as $eq){
+        foreach ($eqs as $eq) {
             if ($eq->getConfiguration('Intent')) {
                 $eq_intent[] = $eq;
             }
@@ -21,7 +43,8 @@ class snips extends eqLogic
         return $eq_intent;
     }
 
-    public static function dump_eq_tts()
+    /* static method, get all the tts eqLogic objects */
+    static function dump_eq_tts()
     {
         $eq_tts = array();
         $eqs = self::byType('snips');
@@ -33,23 +56,21 @@ class snips extends eqLogic
         return $eq_tts;
     }
 
-    public static function logger($_str){
-        $msg = '['.__CLASS__.'] '.$_str;
-        log::add('snips', 'debug', $msg);
-        //echo $str."\n";
-        //$this->logger($str);
-    }
-
-    public static function dependancy_install()
+    /* start to install denpendancy */
+    static function dependancy_install()
     {
-        self::logger('['.__FUNCTION__.'] Installing dependences..');
+        self::logger('Installing dependencies..');
         log::remove(__CLASS__ . '_dep');
         $resource_path = realpath(dirname(__FILE__) . '/../../resources');
-        passthru('sudo /bin/bash ' . $resource_path . '/install.sh ' . $resource_path . ' > ' . log::getPathToLog('snips_dep') . ' 2>&1 &');
+        passthru(
+            'sudo /bin/bash '. $resource_path .'/install.sh '.
+            $resource_path .' > '. log::getPathToLog('snips_dep') .' 2>&1 &'
+        );
         return true;
     }
 
-    public static function dependancy_info()
+    /* return dependency status */
+    static function dependancy_info()
     {
         $return = array();
         $return['log'] = 'snips_dep';
@@ -64,30 +85,8 @@ class snips extends eqLogic
         return $return;
     }
 
-    /* debugging function */
-    public static function deamon_reset()
-    {
-        $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
-        if (is_object($cron)) {
-            $cron->stop();
-            $cron->remove();
-        }
-        $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
-        if (!is_object($cron)) {
-            $cron = new cron();
-            $cron->setClass('snips');
-            $cron->setFunction('deamon_hermes');
-            $cron->setEnable(1);
-            $cron->setDeamon(1);
-            $cron->setSchedule('* * * * *');
-            $cron->setTimeout('1440');
-            $cron->save();
-            self::logger('['.__FUNCTION__.'] Created snips cron: deamon_hermes');
-        }
-        snips::deamon_start();
-    }
-
-    public static function deamon_info()
+    /* return deamon status */
+    static function deamon_info()
     {
         $return = array();
         $return['log'] = '';
@@ -103,7 +102,8 @@ class snips extends eqLogic
         return $return;
     }
 
-    public static function deamon_start($_debug = false)
+    /* start hermes client in a deamon */
+    static function deamon_start($_debug = false)
     {
         self::deamon_stop();
         $deamon_info = self::deamon_info();
@@ -117,7 +117,8 @@ class snips extends eqLogic
         $cron->run();
     }
 
-    public static function deamon_stop()
+    /* stop hermes client */
+    static function deamon_stop()
     {
         $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
         if (!is_object($cron)) {
@@ -126,9 +127,10 @@ class snips extends eqLogic
         $cron->halt();
     }
 
-    public static function deamon_hermes()
+    /* create hermes client and run */
+    static function deamon_hermes()
     {
-        snips::logger('['.__FUNCTION__.'] Starting hermes deamon..');
+        snips::logger('Starting hermes deamon..');
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $H = new SnipsHermes($addr, 1883);
         $H->subscribe_intents('SnipsHandler::intent_detected');
@@ -146,20 +148,52 @@ class snips extends eqLogic
         return $H;
     }
 
-    // snips eqlogic methods
-    public function get_bindings()
+    /* delete assistant */
+    static function delete_assistant()
+    {
+        // intent [name] to jeedom [id]
+        $intent_table = array();
+
+        // slot [name] to [id]
+        $slots_table = array();
+
+        $eqLogics = eqLogic::byType('snips');
+        foreach($eqLogics as $eq) {
+            $intent_table[$eq->getHumanName()] = $eq->getId();
+            $cmds = cmd::byEqLogicId($eq->getId());
+            foreach($cmds as $cmd) {
+                $slots_table[$cmd->getHumanName()] = $cmd->getId();
+                $cmd->remove();
+            }
+            $eq->remove();
+        }
+
+        $reload_reference = array(
+            "Intents" => $intent_table,
+            "Slots" => $slots_table
+        );
+
+        // save the reference table for the next round reload
+        $file = fopen(dirname(__FILE__) . '/../../config_running/reload_reference.json', 'w');
+        $res = fwrite($file, json_encode($reload_reference));
+    }
+
+    /* get a list of bindings of this intent */
+    function get_bindings()
     {
         return SnipsBinding::dump($this->getConfiguration('bindings'));
     }
 
-    public function get_callback_scenarios()
+    /* get the callback scenario of this intent */
+    function get_callback_scenario()
     {
-        return SnipsBindingScenario::dump($this->getConfiguration('callbackScenario'));
-    }
-
-    public function get_language()
-    {
-        ;//reserved to the next update
+        $raw_array = $this->getConfiguration('callbackScenario');
+        $callback_scenario = new SnipsBindingScenario($raw_array);
+        if (!is_object($callback_scenario)) {
+            snips::logger('No callback scenario found.');
+            return false;
+        }
+        return $callback_scenario;
     }
 
     public function get_slots()
@@ -167,56 +201,21 @@ class snips extends eqLogic
         ;//reserved to the next update
     }
 
+    /* Check if this intent is using Snips binding */
     public function is_snips_config()
     {
-        ;//reserved to the next update
+        $res = $this->getConfiguration('isSnipsConfig', false);
+        return ($res === '1') ? true : false;
     }
 
+    /* Check if this intent is using Jeedom interaction */
     public function is_interaction()
     {
-        ;//reserved to the next update
+        $res = $this->getConfiguration('isInteraction', false);
+        return ($res === '1') ? true : false;
     }
 
-    public static
-
-    function getIntents()
-    {
-        $intents_file = dirname(__FILE__) . '/../../config_running/assistant.json';
-        $json_string = file_get_contents($intents_file);
-        $json_obj = json_decode($json_string, true);
-        $intents = $json_obj["intents"];
-        $intents_slots = array();
-        foreach($intents as $intent) {
-            if (strpos( strtolower($intent['name']), 'jeedom')) {
-                $slots = array();
-                foreach($intent["slots"] as $slot) {
-                    if ($slot["required"] == true) {
-                        $slots[] = $slot["name"];
-                    }
-                    else {
-                        $slots[] = $slot["name"];
-                    }
-                }
-                $intents_slots[$intent["id"]] = $slots;
-                unset($slots);
-            }
-        }
-        return json_encode($intents_slots);
-    }
-
-    public static
-
-    function getTopics()
-    {
-        $intents = json_decode(self::getIntents() , true);
-        $topics = array();
-        foreach($intents as $intent => $slot) {
-            array_push($topics, 'hermes/intent/' . $intent);
-        }
-
-        return $topics;
-    }
-
+    ///////////////////////////////////////////////////////////
     public static
 
     function recoverScenarioExpressions(){
@@ -1095,7 +1094,7 @@ class snips extends eqLogic
 
     function postSave()
     {
-        self::logger(__FUNCTION__, "post saved");
+        self::logger();
         if($this->getConfiguration('snipsType') == 'Intent'){
             $slots = $this->getConfiguration('slots');
             foreach($slots as $slot) {
