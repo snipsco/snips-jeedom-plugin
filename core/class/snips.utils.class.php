@@ -44,7 +44,7 @@ class SnipsUtils{
     }
 
     /* fetch assistant.json & snips.toml from master device */
-    static function fetch_running_config_files($usrename, $password)
+    static function fetch_running_config_files($usrename = 'pi', $password = 'raspberry')
     {
         $ip_addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         self::logger('Trying to connect to: '.$ip_addr);
@@ -86,6 +86,67 @@ class SnipsUtils{
             unset($connection);
             self::logger('Fecth resutlt : Faild code: 0');
             return 0;
+        }
+    }
+
+    /* play test sound on the specified device */
+    static function find_device($site_id){
+        $lang = object::byName('Snips-Intents')->getConfiguration('language');
+
+        switch ($lang) {
+            case 'fr':
+                $text = 'Dispositif '. $site_id .' est ici!';
+                break;
+            case 'en':
+                $text = 'Device '. $site_id .' is here!';
+                break;
+            default 'en':
+                $text = 'Device '. $site_id .' is here!';
+                break;
+        }
+
+        snips::hermes()->publish_start_session_notification($_site_id, $text);
+    }
+
+    /* external functions (should be called from scenario code block)*/
+    /* help user to realise light brightness shifting */
+    static function light_brightness_shift($json_lights)
+    {
+        $json = json_decode($json_lights, true);
+        $lights = $json['LIGHTS'];
+        $operation = $json['OPERATION'];
+        foreach ($lights as $light) {
+            $cmd = cmd::byString($light['LIGHT_BRIGHTNESS_VALUE']);
+            if (is_object($cmd)) {
+                $val_temp = $cmd->getValue();
+                $val_cache = $cmd->getCache('value', 'NULL');
+                $current_val = $val_temp ? $val_temp : $val_cache;
+            }
+
+            $change = round(
+                ($light['MAX_VALUE'] - $light['MIN_VALUE']) * $light['STEP_VALUE']
+            );
+
+            $options = array();
+            if ($operation === 'UP') {
+                $options['slider'] = $current_val + $change;
+            } else if ($operation === 'DOWN'){
+                $options['slider'] = $current_val - $change;
+            }
+
+            if ($options['slider'] < $light['MIN_VALUE']) {
+                $options['slider'] = $light['MIN_VALUE'];
+            }
+            if ($options['slider'] > $light['MAX_VALUE']) {
+                $options['slider'] = $light['MAX_VALUE'];
+            }
+            $cmdSet = cmd::byString($light['LIGHT_BRIGHTNESS_ACTION']);
+            if (is_object($cmdSet)) {
+                $cmdSet->execCmd($options);
+                self::logger('Shift ' . $cmdSet->getHumanName() . ', from -> ' . $options['slider'] . ' to ->' . $current_val);
+            }else{
+                self::logger('Can not find cmd: '. $light['LIGHT_BRIGHTNESS_ACTION']);
+            }
         }
     }
 }

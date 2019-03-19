@@ -9,7 +9,8 @@ try {
     }
 
     if (init('action') == 'reload') {
-        $res = snips::fetchAssistantJson(init('username') , init('password'));
+        //$res = snips::fetchAssistantJson(init('username') , init('password'));
+        $res = SnipsUtils::fetch_running_config_files(init('username') , init('password'))
 
         if ($res == 1) {
             $config_json = snips::exportConfigration(null, false);
@@ -23,7 +24,9 @@ try {
     }
 
     if (init('action') == 'tryToFetchDefault') {
-        $res = snips::fetchAssistantJson('pi', 'raspberry');
+        //$res = snips::fetchAssistantJson('pi', 'raspberry');
+        $res = SnipsUtils::fetch_running_config_files();
+
         snips::logger('[Ajax] <tryToFetchDefault> Result code: '.$res);
 
         if ($res == 1) {
@@ -88,6 +91,7 @@ try {
         ajax::success($snips_type);
     }
 
+    // may be useless
     if (init('action') == 'fetchAssistant') {
         snips::fetchAssistantJson();
         ajax::success();
@@ -99,7 +103,7 @@ try {
     }
 
     if (init('action') == 'findSnipsDevice') {
-        snips::findDevice(init('siteId'));
+        SnipsUtils::find_device(init('siteId'));
         ajax::success();
     }
 

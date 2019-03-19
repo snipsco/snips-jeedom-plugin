@@ -141,41 +141,11 @@ class snips extends eqLogic
     }
 
     /* start a new hermes client for calling publish related APIs */
-    static public function hermes()
+    static function hermes()
     {
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $H = new SnipsHermes($addr, 1883);
         return $H;
-    }
-
-    /* delete assistant */
-    static function delete_assistant()
-    {
-        // intent [name] to jeedom [id]
-        $intent_table = array();
-
-        // slot [name] to [id]
-        $slots_table = array();
-
-        $eqLogics = eqLogic::byType('snips');
-        foreach($eqLogics as $eq) {
-            $intent_table[$eq->getHumanName()] = $eq->getId();
-            $cmds = cmd::byEqLogicId($eq->getId());
-            foreach($cmds as $cmd) {
-                $slots_table[$cmd->getHumanName()] = $cmd->getId();
-                $cmd->remove();
-            }
-            $eq->remove();
-        }
-
-        $reload_reference = array(
-            "Intents" => $intent_table,
-            "Slots" => $slots_table
-        );
-
-        // save the reference table for the next round reload
-        $file = fopen(dirname(__FILE__) . '/../../config_running/reload_reference.json', 'w');
-        $res = fwrite($file, json_encode($reload_reference));
     }
 
     /* get a list of bindings of this intent */
@@ -700,101 +670,21 @@ class snips extends eqLogic
         }
     }
 
-    public static
-
-    function lightBrightnessShift($_jsonLights)
+    /* either delete or create a variable */
+    static function update_scenario_variable($var_name)
     {
-        $json = json_decode($_jsonLights, true);
-        $lights = $json['LIGHTS'];
-        $_up_down = $json['OPERATION'];
-        foreach ($lights as $light) {
-            $cmd = cmd::byString($light['LIGHT_BRIGHTNESS_VALUE']);
-            if (is_object($cmd))
-            if ($cmd->getValue()) $current_val = $cmd->getValue();
-            else $current_val = $cmd->getCache('value', 'NULL');
-            $options = array();
-            $change = round(($light['MAX_VALUE'] - $light['MIN_VALUE']) * $light['STEP_VALUE']);
-            if ($_up_down === 'UP') $options['slider'] = $current_val + $change;
-            else
-            if ($_up_down === 'DOWN') $options['slider'] = $current_val - $change;
-            if ($options['slider'] < $light['MIN_VALUE']) $options['slider'] = $light['MIN_VALUE'];
-            if ($options['slider'] > $light['MAX_VALUE']) $options['slider'] = $light['MAX_VALUE'];
-            $cmdSet = cmd::byString($light['LIGHT_BRIGHTNESS_ACTION']);
-            if (is_object($cmdSet)) {
-                $cmdSet->execCmd($options);
-                self::logger('['.__FUNCTION__.'] Shift action: ' . $cmdSet->getHumanName() . ', from -> ' . $options['slider'] . ' to ->' . $current_val);
-            }else{
-                self::logger('['.__FUNCTION__.'] Can not find cmd: '. $light['LIGHT_BRIGHTNESS_ACTION']);
-            }
-        }
-    }
-
-    public static
-
-    function findDevice($_site_id){
-        $lang = object::byName('Snips-Intents')->getConfiguration('language');
-        if ($lang == 'fr') {
-            $text = 'Dispositif '.$_site_id.' est ici!';
-
-        }else if ($lang == 'en') {
-            $text = 'Device '.$_site_id.' is here!';
-        }
-        self::hermes()->publish_start_session_notification($_site_id, $text);
-    }
-
-    public static
-
-    function postConfiguration(){
-        if(!config::byKey('isVarMsgSession', 'snips', 0)){
-            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+        if(!config::byKey($var_name, 'snips', 0)){
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, $var_name);
             if (is_object($var)) {
                 $var->remove();
             }
-            self::logger('['.__FUNCTION__.'] Removed variable snipsMsgSession');
+            self::logger('Removed variable '. $var_name);
         }else{
-            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, $var_name);
             if (!is_object($var)) {
                 $var = new dataStore();
-                $var->setKey('snipsMsgSession');
-                self::logger('['.__FUNCTION__.'] Created variable snipsMsgSession');
-            }
-            $var->setValue('');
-            $var->setType('scenario');
-            $var->setLink_id(-1);
-            $var->save();
-        }
-
-        if(!config::byKey('isVarMsgSiteId', 'snips', 0)){
-            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
-            if (is_object($var)) {
-                $var->remove();
-            }
-            self::logger('['.__FUNCTION__.'] Removed variable snipsMsgSiteId');
-        }else{
-            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
-            if (!is_object($var)) {
-                $var = new dataStore();
-                $var->setKey('snipsMsgSiteId');
-                self::logger('['.__FUNCTION__.'] Created variable snipsMsgSiteId');
-            }
-            $var->setValue('');
-            $var->setType('scenario');
-            $var->setLink_id(-1);
-            $var->save();
-        }
-
-        if(!config::byKey('isVarMsgHotwordId', 'snips', 0)){
-            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
-            if (is_object($var)) {
-                $var->remove();
-            }
-            self::logger('['.__FUNCTION__.'] Removed variable snipsMsgHotwordId');
-        }else{
-            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
-            if (!is_object($var)) {
-                $var = new dataStore();
-                $var->setKey('snipsMsgHotwordId');
-                self::logger('['.__FUNCTION__.'] Created variable snipsMsgHotwordId');
+                $var->setKey($var_name);
+                self::logger('Created variable '. $var_name);
             }
             $var->setValue('');
             $var->setType('scenario');
@@ -803,50 +693,63 @@ class snips extends eqLogic
         }
     }
 
-    public
+    /* after saving the confguration, update snips variable */
+    static function postConfiguration()
+    {
+        self::update_scenario_variable('snipsMsgSession');
+        self::update_scenario_variable('snipsMsgSiteId');
+        self::update_scenario_variable('snipsMsgHotwordId');
+    }
 
+    /* statistic of saved bindings */
     function preSave()
     {
-        if($this->getConfiguration('snipsType') == 'Intent'){
-            $slots = $this->getConfiguration('slots');
-            $slotSet = array();
-            foreach($slots as $slot) {
-                $slotSet[] = $slot['name'];
-            }
+        // only for intent eqobjects
+        if ($this->getConfiguration('snipsType') == 'Intent') {
+            return;
+        }
 
-            $bindings = $this->getConfiguration('bindings');
-            foreach($bindings as $key => $binding) {
-                $necessary_slots = array();
-                $conditions = $binding['condition'];
-                foreach($conditions as $condition) {
-                    if (!in_array(cmd::byId($condition['pre'])->getName() , $necessary_slots)) {
-                        $necessary_slots[] = cmd::byId($condition['pre'])->getName();
-                    }
+        $slots = $this->getConfiguration('slots');
+        $slot_set = array();
+        foreach ($slots as $slot) {
+            $slot_set[] = $slot['name'];
+        }
+
+        $bindings = $this->getConfiguration('bindings');
+        foreach ($bindings as $key => $binding) {
+            $necessary_slots = array();
+            // check each condition expression
+            $conditions = $binding['condition'];
+            foreach($conditions as $condition) {
+                $cmd_name = cmd::byId($condition['pre'])->getName();
+                if (!in_array($cmd_name, $necessary_slots)) {
+                    $necessary_slots[] = $cmd_name;
                 }
-
-                $actions = $binding['action'];
-                foreach($actions as $action) {
-                    $options = $action['options'];
-                    foreach($options as $option) {
-                        if (preg_match("/#.*#/", $option, $match_res)) {
-                            $cmd_name = cmd::byId(str_replace('#', '', $match_res[0]))->getName();
-                            if (in_array($cmd_name, $slotSet)) {
-                                if (!in_array($cmd_name, $necessary_slots)) {
-                                    $necessary_slots[] = $cmd_name;
-                                }
-                            }
+            }
+            // check each action expression
+            $actions = $binding['action'];
+            foreach($actions as $action) {
+                $options = $action['options'];
+                foreach($options as $option) {
+                    if (preg_match("/#.*#/", $option, $match_res)) {
+                        $cmd_name = cmd::byId(
+                            str_replace('#', '', $match_res[0])
+                        )->getName();
+                        if (
+                            in_array($cmd_name, $slot_set) &&
+                            !in_array($cmd_name, $necessary_slots)
+                        ) {
+                            $necessary_slots[] = $cmd_name;
                         }
                     }
                 }
-
-                if (!empty($necessary_slots)) {
-                    $bindings[$key]['nsr_slots'] = $necessary_slots;
-                }
-
-                unset($necessary_slots);
             }
-            $this->setConfiguration('bindings', $bindings);
+            // save necessary slots into binding
+            if (!empty($necessary_slots)) {
+                $bindings[$key]['nsr_slots'] = $necessary_slots;
+            }
         }
+        $this->setConfiguration('bindings', $bindings);
     }
 
     // function preInsert() {}
