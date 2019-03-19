@@ -15,7 +15,7 @@
 */
 
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
-require_once dirname(__FILE__) . '/snips.utils.php';
+require_once dirname(__FILE__) . '/snips.utils.class.php';
 
 class SnipsHermes{
 
@@ -58,9 +58,11 @@ class SnipsHermes{
     /* constructor */
     function __construct($host, $port)
     {
+        $client_id = SnipsUtils::generate_client_id();
+        
         $this->host = $host;
         $this->port = $port;
-        $this->client = new Mosquitto\Client('snips-jeedom-'.SnipsUtils\generate_client_id());
+        $this->client = new Mosquitto\Client('snips-jeedom-'. $client_id);
         $this->client->onConnect([$this, 'mqtt_on_connect']);
         $this->client->onDisconnect([$this, 'mqtt_on_disconnect']);
         $this->client->onSubscribe([$this, 'mqtt_on_subscribe']);

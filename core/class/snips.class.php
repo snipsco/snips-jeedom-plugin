@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . '/../../3rdparty/Toml.php';
 require_once dirname(__FILE__) . '/snips.hermes.class.php';
 require_once dirname(__FILE__) . '/snips.tts.class.php';
 require_once dirname(__FILE__) . '/snips.handler.class.php';
-require_once dirname(__FILE__) . '/snips.utils.php';
+require_once dirname(__FILE__) . '/snips.utils.class.php';
 // ini_set("display_errors","On");
 // error_reporting(E_ALL);
 
@@ -665,31 +665,6 @@ class snips extends eqLogic
 
     public static
 
-    function displayAvailableConfigurations()
-    {
-        $command = 'ls ' . dirname(__FILE__) . '/../../config_backup/';
-        $res = exec($command, $output, $return_var);
-        return $output;
-    }
-
-    public static
-
-    function isSnipsRunLocal()
-    {
-        $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
-        if ($addr == '127.0.0.1' || $addr == 'localhost');
-    }
-
-    public static
-
-    function tryToFetchDefault(){
-        $res = snips::fetchAssistantJson('pi', 'raspberry');
-        self::logger('['.__FUNCTION__.'] Result code: '.$res);
-        return $res;
-    }
-
-    public static
-
     function fetchAssistantJson($_usrename, $_password)
     {
         $ip_addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
@@ -830,18 +805,6 @@ class snips extends eqLogic
 
     public
 
-    function preInsert()
-    {
-    }
-
-    public
-
-    function postInsert()
-    {
-    }
-
-    public
-
     function preSave()
     {
         if($this->getConfiguration('snipsType') == 'Intent'){
@@ -886,35 +849,13 @@ class snips extends eqLogic
         }
     }
 
-    public
-
-    function postSave()
-    {
-    }
-
-    public
-
-    function preUpdate()
-    {
-    }
-
-    public
-
-    function postUpdate()
-    {
-    }
-
-    public
-
-    function preRemove()
-    {
-    }
-
-    public
-
-    function postRemove()
-    {
-    }
+    // function preInsert() {}
+    // function postInsert() {}
+    // function postSave() {}
+    // function preUpdate() {}
+    // function postUpdate() {}
+    // function preRemove() {}
+    // function postRemove() {}
 }
 
 class snipsCmd extends cmd

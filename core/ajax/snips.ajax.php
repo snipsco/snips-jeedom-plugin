@@ -23,7 +23,8 @@ try {
     }
 
     if (init('action') == 'tryToFetchDefault') {
-        $res = snips::tryToFetchDefault();
+        $res = snips::fetchAssistantJson('pi', 'raspberry');
+        snips::logger('[Ajax] <tryToFetchDefault> Result code: '.$res);
 
         if ($res == 1) {
             $config_json = snips::exportConfigration(null, false);
@@ -36,19 +37,15 @@ try {
         ajax::success($res);
     }
 
-    if (init('action') == 'isSnipsRunLocal') {
-        $res = snips::isSnipsRunLocal();
-        ajax::success($res);
-    }
-
     if (init('action') == 'exportConfigration') {
         snips::exportConfigration(init('name'));
         ajax::success();
     }
 
     if (init('action') == 'getConfigurationList') {
-        $res = snips::displayAvailableConfigurations();
-        ajax::success($res);
+        $command = 'ls ' . dirname(__FILE__) . '/../../config_backup/';
+        $res = exec($command, $output, $return_var);
+        ajax::success($output);
     }
 
     if (init('action') == 'importConfigration') {
