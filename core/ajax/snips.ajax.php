@@ -1,6 +1,7 @@
 <?php
 try {
     require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
+    require_once dirname(__FILE__) . '/../class/snips.assistant.manager.class.php';
 
     include_file('core', 'authentification', 'php');
     if (!isConnect('admin')) {
@@ -11,13 +12,11 @@ try {
         $res = snips::fetchAssistantJson(init('username') , init('password'));
 
         if ($res == 1) {
-            $configJson = snips::exportConfigration(null, false);
-            snips::deleteAssistant();
-            snips::reloadAssistant();
+            $config_json = snips::exportConfigration(null, false);
+            SnipsAssistantManager::delete_assistant();
+            SnipsAssistantManager::load_assistant();
             if (init('option') == 'mode_2') {
-                snips::logger('['.__FUNCTION__.'] option :'.init('option'). ' Type is :'.gettype(init('option')));
-                snips::logger('['.__FUNCTION__.'] configJson :'.$configJson);
-                snips::importConfigration(null, $configJson);
+                snips::importConfigration(null, $config_json);
             }
         }
         ajax::success($res);
@@ -27,13 +26,11 @@ try {
         $res = snips::tryToFetchDefault();
 
         if ($res == 1) {
-            $configJson = snips::exportConfigration(null, false);
-            snips::deleteAssistant();
-            snips::reloadAssistant();
+            $config_json = snips::exportConfigration(null, false);
+            SnipsAssistantManager::delete_assistant();
+            SnipsAssistantManager::load_assistant();
             if (init('option') == 'mode_2') {
-                snips::logger('['.__FUNCTION__.'] option :'.init('option'). ' Type is :'.gettype(init('option')));
-                snips::logger('['.__FUNCTION__.'] configJson :'.$configJson);
-                snips::importConfigration(null, $configJson);
+                snips::importConfigration(null, $config_json);
             }
         }
         ajax::success($res);
@@ -60,7 +57,7 @@ try {
     }
 
     if (init('action') == 'removeAll') {
-        snips::deleteAssistant();
+        SnipsAssistantManager::delete_assistant();
         ajax::success();
     }
 
@@ -68,9 +65,6 @@ try {
         snips::logger('['.__FUNCTION__.'] Testing Play...');
 
         $text = SnipsTts::dump(init('text'), init('vars'))->get_message();
-
-        snips::logger('['.__FUNCTION__.'] player cmd: '.init('cmd'));
-        snips::logger('['.__FUNCTION__.'] text: '.$text);
 
         $cmd = cmd::byString(init('cmd'));
         if (is_object($cmd)) {
