@@ -2,6 +2,7 @@
 try {
     require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
     require_once dirname(__FILE__) . '/../class/snips.assistant.manager.class.php';
+    require_once dirname(__FILE__) . '/../class/snips.utils.class.php';
 
     include_file('core', 'authentification', 'php');
     if (!isConnect('admin')) {
@@ -25,7 +26,7 @@ try {
     if (init('action') == 'tryToFetchDefault') {
         $res = SnipsUtils::fetch_running_config_files();
 
-        snips::logger('[Ajax] <tryToFetchDefault> Result code: '.$res);
+        SnipsUtils::logger('[Ajax] <tryToFetchDefault> Result code: '.$res);
 
         if ($res == 1) {
             $config_json = SnipsUtils::export_bindings(null, false);
@@ -60,8 +61,6 @@ try {
     }
 
     if (init('action') == 'playFeedback') {
-        snips::logger('['.__FUNCTION__.'] Testing Play...');
-
         $text = SnipsTts::dump(init('text'), init('vars'))->get_message();
 
         $cmd = cmd::byString(init('cmd'));

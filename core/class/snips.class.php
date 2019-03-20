@@ -121,7 +121,6 @@ class snips extends eqLogic
     /* create hermes client and run */
     static function deamon_hermes()
     {
-        snips::logger('Starting hermes deamon..');
         $addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         $H = new SnipsHermes($addr, 1883);
         $H->subscribe_intents('SnipsHandler::intent_detected');
@@ -151,7 +150,7 @@ class snips extends eqLogic
         $raw_array = $this->getConfiguration('callbackScenario');
         $callback_scenario = new SnipsBindingScenario($raw_array);
         if (!is_object($callback_scenario)) {
-            snips::logger('No callback scenario found.');
+            SnipsUtils::logger('No callback scenario found');
             return false;
         }
         return $callback_scenario;
