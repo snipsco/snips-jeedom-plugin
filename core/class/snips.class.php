@@ -11,7 +11,6 @@ require_once dirname(__FILE__) . '/snips.utils.class.php';
 class snips extends eqLogic
 {
     const NAME_OBJECT = 'Snips-Intents';
-    //const PATH_ASSISTANT_JSON = dirname(__FILE__). '/../../config_running/assistant.json';
 
     static function logger($str = '', $level = 'debug')
     {
@@ -74,7 +73,7 @@ class snips extends eqLogic
     {
         $return = array();
         $return['log'] = 'snips_dep';
-        $return['progress_file'] = jeedom::getTmpFolder('snips') . '/dependance';
+        $return['progress_file'] = jeedom::getTmpFolder('snips') .'/dependance';
         $return['state'] = 'nok';
         $cmd = "dpkg -l | grep mosquitto";
         exec($cmd, $output, $return_var);
@@ -88,22 +87,22 @@ class snips extends eqLogic
     /* return deamon status */
     static function deamon_info()
     {
-        $return = array();
-        $return['log'] = '';
-        $return['state'] = 'nok';
+        $res = array();
+        $res['log'] = '';
+        $res['state'] = 'nok';
         $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
         if (is_object($cron) && $cron->running()) {
-            $return['state'] = 'ok';
+            $res['state'] = 'ok';
         }
         $dependancy_info = self::dependancy_info();
         if ($dependancy_info['state'] == 'ok') {
-            $return['launchable'] = 'ok';
+            $res['launchable'] = 'ok';
         }
-        return $return;
+        return $res;
     }
 
     /* start hermes client in a deamon */
-    static function deamon_start($_debug = false)
+    static function deamon_start()
     {
         self::deamon_stop();
         $deamon_info = self::deamon_info();
@@ -164,11 +163,6 @@ class snips extends eqLogic
             return false;
         }
         return $callback_scenario;
-    }
-
-    public function get_slots()
-    {
-        ;//reserved to the next update
     }
 
     /* Check if this intent is using Snips binding */
@@ -254,34 +248,40 @@ class snips extends eqLogic
 }
 
 class snipsCmd extends cmd
-
 {
-    public function execute($_options = array())
+    function execute($options = array())
     {
         $eqlogic = $this->getEqLogic();
         switch ($this->getLogicalId()) {
             case 'say':
-                $this->snips_say($_options);
+                $this->snips_say($options);
                 break;
             case 'ask':
-                $this->snips_ask($_options);
+                $this->snips_ask($options);
                 break;
         }
     }
 
-    public function snips_say($_options = array())
+    function snips_say($options = array())
     {
-        snips::logger('['.__FUNCTION__.'] cmd: say, text:'.$_options['message']);
-        snips::hermes()->publish_start_session_notification($this->getConfiguration('siteId'), $_options['message']);
+        SnipsUtils::logger('cmd: say, text: '.$options['message']);
+        snips::hermes()->publish_start_session_notification(
+            $this->getConfiguration('siteId'),
+            $options['message']
+        );
     }
 
-    public function snips_ask()
+    function snips_ask()
     {
-        snips::logger('['.__FUNCTION__.'] cmd: ask');
-        preg_match_all("/(\[.*?\])/", $_options['answer'][0], $match_intent);
-        $_ans_intent = str_replace('[', '', $match_intent[0][0]);
-        $_ans_intent = str_replace(']', '', $_ans_intent);
-        snips::hermes()->publish_start_session_action($this->getConfiguration('siteId'), $_options['message'], null, array($_ans_intent));
-        //snips::startRequest($_ans_intent, $_options['message'], $site_id);
+        SnipsUtils::logger('cmd: ask');
+        preg_match_all("/(\[.*?\])/", $options['answer'][0], $match_intent);
+        $ans_intent = str_replace('[', '', $match_intent[0][0]);
+        $ans_intent = str_replace(']', '', $ans_intent);
+        snips::hermes()->publish_start_session_action(
+            $this->getConfiguration('siteId'),
+            $options['message'],
+            null,
+            array($ans_intent)
+        );
     }
 }
