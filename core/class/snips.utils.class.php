@@ -110,7 +110,7 @@ class SnipsUtils
                 break;
         }
 
-        snips::hermes()->publish_start_session_notification($_site_id, $text);
+        snips::hermes()->publish_start_session_notification($site_id, $text);
     }
 
     /* remap percentage to a value */
