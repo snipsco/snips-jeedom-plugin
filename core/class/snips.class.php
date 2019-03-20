@@ -12,13 +12,6 @@ class snips extends eqLogic
 {
     const NAME_OBJECT = 'Snips-Intents';
 
-    static function logger($str = '', $level = 'debug')
-    {
-        $function = debug_backtrace(false, 2)[1]['function'];
-        $msg = '['.__CLASS__.'] <'. $function .'> '.$str;
-        log::add('snips', $level, $msg);
-    }
-
     /* get current assistant language */
     static function get_assistant_language()
     {
@@ -58,7 +51,6 @@ class snips extends eqLogic
     /* start to install denpendancy */
     static function dependancy_install()
     {
-        self::logger('Installing dependencies..');
         log::remove(__CLASS__ . '_dep');
         $resource_path = realpath(dirname(__FILE__) . '/../../resources');
         passthru(
