@@ -109,7 +109,7 @@ function snips_remove() {
 
     //log::add('snips','info','Suppression extension');
     $resource_path = realpath(dirname(__FILE__) . '/../resources');
-    passthru('sudo /bin/bash ' . $resource_path . '/remove.sh ' . $resource_path . ' > ' . log::getPathToLog('SNIPS_dep') . ' 2>&1 &');
+    passthru('sudo /bin/bash ' . $resource_path . '/remove.sh ' . $resource_path . ' > ' . log::getPathToLog('snips_dep') . ' 2>&1 &');
     return true;
 }
 ?>

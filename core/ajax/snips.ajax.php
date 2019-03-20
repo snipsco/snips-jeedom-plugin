@@ -10,7 +10,7 @@ try {
 
     if (init('action') == 'reload') {
         //$res = snips::fetchAssistantJson(init('username') , init('password'));
-        $res = SnipsUtils::fetch_running_config_files(init('username') , init('password'))
+        $res = SnipsUtils::fetch_running_config_files(init('username') , init('password'));
 
         if ($res == 1) {
             $config_json = snips::exportConfigration(null, false);

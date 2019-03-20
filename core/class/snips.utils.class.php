@@ -100,7 +100,7 @@ class SnipsUtils{
             case 'en':
                 $text = 'Device '. $site_id .' is here!';
                 break;
-            default 'en':
+            default:
                 $text = 'Device '. $site_id .' is here!';
                 break;
         }
