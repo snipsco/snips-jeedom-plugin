@@ -59,14 +59,13 @@ class SnipsHermes{
     function __construct($host, $port)
     {
         $client_id = SnipsUtils::generate_client_id();
-        
         $this->host = $host;
         $this->port = $port;
         $this->client = new Mosquitto\Client('snips-jeedom-'. $client_id);
         $this->client->onConnect([$this, 'mqtt_on_connect']);
         $this->client->onDisconnect([$this, 'mqtt_on_disconnect']);
         $this->client->onSubscribe([$this, 'mqtt_on_subscribe']);
-        $this->client->onLog([$this, 'mqtt_on_log']);
+        //$this->client->onLog([$this, 'mqtt_on_log']);
         $this->client->onMessage([$this, 'mqtt_on_message']);
         $this->client->connect($this->host, $this->port, 60);
     }
@@ -267,7 +266,7 @@ class SnipsHermes{
 
     public function mqtt_on_message($message)
     {
-        self::logger('Received message. Topic:'. $message->topic);
+        //self::logger('Received message. Topic:'. $message->topic);
         $payload_array = json_decode($message->payload);
 
         switch ($message->topic) {
