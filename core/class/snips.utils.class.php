@@ -113,6 +113,18 @@ class SnipsUtils
         snips::hermes()->publish_start_session_notification($_site_id, $text);
     }
 
+    /* remap percentage to a value */
+    static function remap_percentage_to_value($low_offset, $high_offset, $percentage)
+    {
+        $real_value = ($high_offset - $low_offset) * ($percentage / 100);
+        if ($real_value > $high_offset) {
+            $real_value = $high_offset;
+        }
+        if ($real_value < $low_offset) {
+            $real_value = $low_offset;
+        }
+        return $real_value;
+    }
     /* external functions (should be called from scenario code block)*/
     /* help user to realise light brightness shifting */
     static function light_brightness_shift($json_lights)
