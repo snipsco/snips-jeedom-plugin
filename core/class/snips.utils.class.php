@@ -168,6 +168,99 @@ class SnipsUtils
             $var->save();
         }
     }
+
+    /* export bindings to a file or json string */
+    static function export_bindings($name, $is_output = true)
+    {
+        $binding_conf = array();
+        $eqs = eqLogic::byType('snips');
+        foreach ($eqs as $eq) {
+            $org_bindings = $eq->getConfiguration('bindings');
+            $json_string = json_encode($org_bindings);
+
+            preg_match_all('/#[^#]*[0-9]+#/', $json_string, $matches);
+            $human_cmd = cmd::cmdToHumanReadable($matches[0]);
+            foreach ($human_cmd as $key => $cmd_text) {
+                $json_string = str_replace(
+                    $matches[0][$key],
+                    $cmd_text,
+                    $json_string
+                );
+            }
+
+            preg_match_all(
+                '/("pre":")[^("pre":")]*[0-9]+"/',
+                $json_string,
+                $matches_c
+            );
+            $matches_c1 = $matches_c;
+            foreach ($matches_c[0] as $key => $value) {
+                $matches_c[0][$key] = str_replace('"pre":"', '#', $value);
+                $matches_c[0][$key] = str_replace('"', '#', $matches_c[0][$key]);
+            }
+
+            $humand_cond = cmd::cmdToHumanReadable($matches_c[0]);
+            foreach ($humand_cond as $key => $cmd_text) {
+                $json_string = str_replace(
+                    $matches_c1[0][$key],
+                    '"pre":"'. $cmd_text .'"',
+                    $json_string
+                );
+            }
+
+            $aft_bindings = json_decode($json_string);
+            $binding_conf[$eq->getName()] = $aft_bindings;
+        }
+
+        if ($is_output) {
+            $file = fopen(
+                dirname(__FILE__) .'/../../config_backup/'. $name .'.json',
+                'w'
+            );
+            $res = fwrite($file, json_encode($binding_conf));
+            self::logger($res ? 'Success' : 'Faild');
+        } else {
+            return json_encode($binding_conf);
+        }
+    }
+
+    /* import bindings from file or json string */
+    static function import_bindings($file_name = null, $config_json = null)
+    {
+        if (isset($config_json) && !isset($file_name)) {
+            self::logger('Internally reload config info.');
+            $json_string = $config_json;
+        }else if (!isset($config_json) && isset($file_name)) {
+            self::logger('Import config file: ' . $file_name);
+            $json_string = file_get_contents(
+                dirname(__FILE__) .'/../../config_backup/'. $file_name
+            );
+        }
+
+        preg_match_all('/("pre":")(#.*?#)(")/', $json_string, $matches);
+        $cmd_ids = cmd::humanReadableToCmd($matches[2]);
+
+        foreach($cmd_ids as $key => $cmd_id) {
+            $cmd_id = str_replace('#', '', $cmd_id);
+            $json_string = str_replace(
+                '"pre":"'.$matches[2][$key].'"',
+                '"pre":"'.$cmd_id.'"',
+                $json_string
+            );
+        }
+
+        $data = json_decode($json_string, true);
+        $eqs = eqLogic::byType('snips');
+        foreach($eqs as $eq) {
+            if (
+                $data[$eq->getName()] != '' &&
+                isset($data[$eq->getName()])
+            ) {
+                $eq->setConfiguration('bindings', $data[$eq->getName() ]);
+                $eq->save(true);
+            }
+        }
+    }
     /* external functions (should be called from scenario code block)*/
     /* help user to realise light brightness shifting */
     static function light_brightness_shift($json_lights)
