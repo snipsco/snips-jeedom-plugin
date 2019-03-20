@@ -2,10 +2,14 @@
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 class SnipsUtils{
+class SnipsUtils
+{
+    /* logger */
     static function logger($str = '', $level = 'debug')
     {
-        $function = debug_backtrace(false, 2)[1]['function'];
-        $msg = '['.__CLASS__.'] <'. $function .'> '.$str;
+        $function_name = debug_backtrace(false, 2)[1]['function'];
+        $class_name = debug_backtrace(false, 2)[1]['class'];
+        $msg = '['.$class_name.'] <'. $function_name .'> '.$str;
         log::add('snips', $level, $msg);
     }
 
