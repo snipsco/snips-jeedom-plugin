@@ -293,6 +293,80 @@ class SnipsUtils
         }
         return $res;
     }
+
+    /* set received slot value to cmd object */
+    static function set_slot_cmd($slots_values, $intent, $options = null)
+    {
+        self::logger();
+        $eq = eqLogic::byLogicalId($intent, 'snips');
+
+        if (!is_object($eq)) {
+            self::logger('no entiry:' . $intent);
+            return;
+        }
+
+        foreach ($slots_values as $slot => $value) {
+            self::logger('slots name is :' . $slot);
+            $cmd = $eq->getCmd(null, $slot);
+            if (is_object($cmd)) {
+                if ($options) {
+                    $slot_type = $cmd->getConfiguration('entityId');
+                    if ($slot_type == 'snips/percentage') {
+                        $org = $value;
+                        //change to utils
+                        //$value = snips::percentageRemap($options['LT'], $options['HT'], $value);
+                        $value = SnipsUtils::remap_percentage_to_value(
+                            $options['LT'],
+                            $options['HT'],
+                            $value
+                        );
+                        $cmd->setConfiguration('orgVal', $org);
+                        self::logger('percentage converted to :' . $value);
+                    }
+                }
+                $eq->checkAndUpdateCmd($cmd, $value);
+                $cmd->setValue($value);
+                $cmd->save();
+            }
+        }
+    }
+
+    /* reset cmd object value to empty */
+    static function reset_slots_cmd($slots = false, $intent = false)
+    {
+        self::logger();
+        if ($slots == false && $intent == false) {
+            // clear cmd value for all the intents
+            $eqs = eqLogic::byType('snips');
+            foreach ($eqs as $eq) {
+                $cmds = $eq->getCmd();
+                foreach ($cmds as $cmd) {
+                    $cmd->setCache('value', null);
+                    $cmd->setValue(null);
+                    $cmd->setConfiguration('orgVal', null);
+                    $cmd->save();
+                }
+            }
+
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
+            if (is_object($var)) {
+                $var->setValue();
+                $var->save();
+                self::logger('set '.$var->getValue().' => snipsMsgSiteId');
+            }
+        } else {
+            // clear cmd value for a specified intent
+            $eq = eqLogic::byLogicalId($intent, 'snips');
+            foreach ($slots as $slot) {
+                $cmd = $eq->getCmd(null, $slot);
+                $cmd->setCache('value');
+                $cmd->setValue(null);
+                $cmd->setConfiguration('orgVal', null);
+                $cmd->save();
+            }
+        }
+    }
+
     /* external functions (should be called from scenario code block)*/
     /* help user to realise light brightness shifting */
     static function light_brightness_shift($json_lights)
