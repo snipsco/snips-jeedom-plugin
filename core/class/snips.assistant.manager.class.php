@@ -3,32 +3,25 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 require_once dirname(__FILE__) . '/snips.class.php';
 require_once dirname(__FILE__) . '/../../3rdparty/Toml.php';
 
-class SnipsAssistantManager{
-
-    static function logger($str = '', $level = 'debug')
-    {
-        $function = debug_backtrace(false, 2)[1]['function'];
-        $msg = '['.__CLASS__.'] <'. $function .'> '.$str;
-        log::add('snips', $level, $msg);
-    }
-
+class SnipsAssistantManager
+{
     /* create snips-intent object */
     static function create_snips_object($assistant)
     {
         // since 3.3.3, use jeeObject instead of object as class name
         if (version_compare(jeedom::version(), '3.3.3', '>=')) {
             $obj_field = 'jeeObject';
-            self::logger('Jeedom >= 3.3.3');
+            SnipsUtils::logger('Jeedom >= 3.3.3');
         }else{
             $obj_field = 'object';
-            self::logger('Jeedom <= 3.3.3');
+            SnipsUtils::logger('Jeedom <= 3.3.3');
         }
 
         $obj = object::byName('Snips-Intents');
         if (!isset($obj) || !is_object($obj)) {
             $obj = new $obj_field();
             $obj->setName('Snips-Intents');
-            self::logger('Created object: Snips-Intents');
+            SnipsUtils::logger('Created object: Snips-Intents');
         }
         $obj->setIsVisible(1);
         $obj->setConfiguration('id', $assistant["id"]);
@@ -51,7 +44,7 @@ class SnipsAssistantManager{
                     $elogic = new snips();
                     $elogic->setLogicalId($intent['id']);
                     $elogic->setName($intent['name']);
-                    self::logger('Created intent entity: '.$intent['name']);
+                    SnipsUtils::logger('Created intent entity: '.$intent['name']);
                 }
                 $elogic->setEqType_name('snips');
                 $elogic->setIsEnable(1);
@@ -73,7 +66,7 @@ class SnipsAssistantManager{
         foreach ($raw_slots as $slot) {
             $slot_cmd = $eq->getCmd(null, $slot['name']);
             if (!is_object($slot_cmd)) {
-                self::logger('Created slot cmd: '.$slot['name']);
+                SnipsUtils::logger('Created slot cmd: '.$slot['name']);
                 $slot_cmd = new snipsCmd();
             }
             $slot_cmd->setName($slot['name']);
@@ -92,7 +85,7 @@ class SnipsAssistantManager{
     /* load an assistant from assistant.json  */
     static function load_assistant()
     {
-        self::logger('Assistant is being reloaded!');
+        SnipsUtils::logger('Assistant is being reloaded!');
         $assistant_file = dirname(__FILE__) . '/../../config_running/assistant.json';
         $json_string = file_get_contents($assistant_file);
         $assistant = json_decode($json_string, true);
@@ -104,7 +97,7 @@ class SnipsAssistantManager{
         self::load_snips_devices();
 
         self::recover_cenario_expressions();
-        self::logger('Assistant loaded, restarting deamon');
+        SnipsUtils::logger('Assistant loaded, restarting deamon');
         snips::deamon_start();
     }
 
@@ -148,7 +141,7 @@ class SnipsAssistantManager{
             $elogic = new snips();
             $elogic->setName('Snips-TTS-'.$site_id);
             $elogic->setLogicalId('Snips-TTS-'.$site_id);
-            self::logger('Created TTS device: Snips-TTS-'. $site_id);
+            SnipsUtils::logger('Created TTS device: Snips-TTS-'. $site_id);
         }
         $elogic->setEqType_name('snips');
         $elogic->setIsEnable(1);
@@ -167,7 +160,7 @@ class SnipsAssistantManager{
     {
         $tts_cmd = $eq->getCmd(null, 'say');
         if (!is_object($tts_cmd)) {
-            self::logger();
+            SnipsUtils::logger();
             $tts_cmd = new snipsCmd();
             $tts_cmd->setName('say');
             $tts_cmd->setLogicalId('say');
@@ -186,7 +179,7 @@ class SnipsAssistantManager{
     {
         $ask_cmd = $eq->getCmd(null, 'ask');
         if (!is_object($ask_cmd)) {
-            self::logger();
+            SnipsUtils::logger();
             $ask_cmd = new snipsCmd();
             $ask_cmd->setName('ask');
             $ask_cmd->setLogicalId('ask');
@@ -260,7 +253,7 @@ class SnipsAssistantManager{
         $slots_table = $reference['Slots'];
         $slots_table_curr = self::get_slots_table();
 
-        self::logger('slots_table_curr'.json_encode($slots_table_curr));
+        SnipsUtils::logger('slots_table_curr'.json_encode($slots_table_curr));
 
         $expressions = scenarioExpression::all();
 
@@ -281,7 +274,7 @@ class SnipsAssistantManager{
                             '#'. $slots_string. '#',
                             $old_expression_content
                         );
-                        self::logger('Old command entity: '.$slots_string.' with id: '.$id);
+                        SnipsUtils::logger('Old command entity: '.$slots_string.' with id: '.$id);
                         $expression->setExpression($new_expression);
                     }
                 }
@@ -296,7 +289,7 @@ class SnipsAssistantManager{
                             $option_name,
                             '#' .$slot_cmd_string. '#'
                         );
-                        self::logger('found option: '.$option_name. ' change to '.$slot_cmd_string);
+                        SnipsUtils::logger('found option: '.$option_name. ' change to '.$slot_cmd_string);
                     }
                 }
             }
