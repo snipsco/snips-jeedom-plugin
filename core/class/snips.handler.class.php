@@ -73,30 +73,42 @@ class SnipsHandler
 
     static function session_started($hermes, $payload){
         self::logger();
-        self::set_site_id($payload->{'siteId'});
-        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
-        if (is_object($var)) {
-            $var->setValue($payload->{'sessionId'});
-            $var->save();
-        }
+        SnipsUtils::set_scenario_variable(
+            'snipsMsgSiteId',
+            $payload->{'siteId'}
+        );
+        SnipsUtils::set_scenario_variable(
+            'snipsMsgSession',
+            $payload->{'sessionId'}
+        );
+        // $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+        // if (is_object($var)) {
+        //     $var->setValue($payload->{'sessionId'});
+        //     $var->save();
+        // }
     }
 
     static function session_ended($hermes, $payload){
         self::logger();
-        self::clear_site_id();
-        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
-        if (is_object($var)) {
-            $var->setValue('');
-            $var->save();
-        }
+        SnipsUtils::reset_scenario_variable('snipsMsgSiteId');
+        SnipsUtils::reset_scenario_variable('snipsMsgSession');
+        // $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
+        // if (is_object($var)) {
+        //     $var->setValue('');
+        //     $var->save();
+        // }
     }
 
     static function hotword_detected($hermes, $payload){
         self::logger();
-        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
-        if (is_object($var)) {
-            $var->setValue($payload->{'modelId'});
-            $var->save();
-        }
+        SnipsUtils::set_scenario_variable(
+            'snipsMsgHotwordId',
+            $payload->{'modelId'}
+        );
+        // $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
+        // if (is_object($var)) {
+        //     $var->setValue($payload->{'modelId'});
+        //     $var->save();
+        // }
     }
 }
