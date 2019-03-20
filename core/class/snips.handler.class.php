@@ -73,9 +73,9 @@ class SnipsHandler
             $payload->{'intent'}->{'intentName'}
         );
 
-        $obj_bindings = SnipsBinding::dump(
-            $intentEq->getConfiguration('bindings')
-        );
+        // get all the bindings belong to detected intent
+        $obj_bindings = $intentEq->get_bindings();
+
         // find bindings
         $good_bindings = SnipsBinding::get_bindings_match_condition(
             $obj_bindings,
