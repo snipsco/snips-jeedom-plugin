@@ -1,8 +1,9 @@
 <?php
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
-//require_once dirname(__FILE__) . '/../../../core/class/cron.class.php';
 require_once dirname(__FILE__) . '/snips.class.php';
+require_once dirname(__FILE__) . '/snips.binding.class.php';
+require_once dirname(__FILE__) . '/snips.utils.class.php';
 
 class SnipsHandler
 {
@@ -37,37 +38,69 @@ class SnipsHandler
         }
     }
 
-    static function set_site_id($_site_id)
-    {
-        self::logger();
-        self::check_site_id_existnce($_site_id);
-        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
-        if (is_object($var)) {
-            $var->setValue($_site_id);
-            $var->save();
-        }
-    }
-
-    static function clear_site_id()
-    {
-        self::logger();
-        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
-        if (is_object($var)) {
-            $var->setValue('');
-            $var->save();
-        }
-    }
-
     static function intent_detected($hermes, $payload)
     {
-        self::logger();
-        if(!stristr($payload->{'intent'}->{'intentName'}, 'jeedom')){
+        if (!stristr($payload->{'intent'}->{'intentName'}, 'jeedom')) {
+            // not jeedom intent, no response
+            return;
+        } else {
+            // jeedom intent, terminate the session to prevent block
+            $hermes->publish_end_session($payload->{'sessionId'});
+        }
+
+        self::logger('found intent name is :'. $payload->{'intent'}->{'intentName'});
+        $intentEq = eqLogic::byLogicalId(
+            $payload->{'intent'}->{'intentName'},
+            'snips'
+        );
+
+        if ($intentEq->getConfiguration('isInteraction')) {
+            // jeedom interaction, forward input then return
+            $res = interactQuery::tryToReply($payload->{'input'});
+            $hermes->publish_start_session_notification(
+                $payload->{'siteId'},
+                $res['reply']
+            );
             return;
         }
-        $hermes->publish_end_session($payload->{'sessionId'});
-        snips::findAndDoAction($payload);
+
+        // get all the usable values
+        $slots_values = SnipsUtils::extract_slots_value($payload->{'slots'});
+
+        // set all the slots, find binding will use
+        SnipsUtils::set_slot_cmd(
+            $slots_values,
+            $payload->{'intent'}->{'intentName'}
+        );
+
+        $obj_bindings = SnipsBinding::dump(
+            $intentEq->getConfiguration('bindings')
+        );
+        // find bindings
+        $good_bindings = SnipsBinding::get_bindings_match_condition(
+            $obj_bindings,
+            $slots_values
+        );
+
+        // execute all the actions for each good binding
+        // reply message on the site where the message is received
+        foreach ($good_bindings as $binding) {
+            $binding->execute_all();
+            $hermes->publish_start_session_notification(
+                $payload->{'siteId'},
+                $binding->get_tts_message()
+            );
+        }
+
+        // sync with execution
+        sleep(1);
+
+        // reset all the slots
+        SnipsUtils::reset_slots_cmd();
+
+        // if multi-turn dialogue is enabled, turn on a new session
         if(config::byKey('isMultiDialog', 'snips', 0)){
-            snips::hermes()->publish_start_session_action($_payload->{'siteId'}, null, null, null, true);
+            $hermes->publish_start_session_action($payload->{'siteId'});
         }
     }
 
