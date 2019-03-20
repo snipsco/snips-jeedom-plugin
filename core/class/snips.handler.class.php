@@ -114,22 +114,12 @@ class SnipsHandler
             'snipsMsgSession',
             $payload->{'sessionId'}
         );
-        // $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
-        // if (is_object($var)) {
-        //     $var->setValue($payload->{'sessionId'});
-        //     $var->save();
-        // }
     }
 
     static function session_ended($hermes, $payload){
         self::logger();
         SnipsUtils::reset_scenario_variable('snipsMsgSiteId');
         SnipsUtils::reset_scenario_variable('snipsMsgSession');
-        // $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSession');
-        // if (is_object($var)) {
-        //     $var->setValue('');
-        //     $var->save();
-        // }
     }
 
     static function hotword_detected($hermes, $payload){
@@ -138,10 +128,5 @@ class SnipsHandler
             'snipsMsgHotwordId',
             $payload->{'modelId'}
         );
-        // $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgHotwordId');
-        // if (is_object($var)) {
-        //     $var->setValue($payload->{'modelId'});
-        //     $var->save();
-        // }
     }
 }

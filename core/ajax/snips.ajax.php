@@ -9,39 +9,37 @@ try {
     }
 
     if (init('action') == 'reload') {
-        //$res = snips::fetchAssistantJson(init('username') , init('password'));
         $res = SnipsUtils::fetch_running_config_files(init('username') , init('password'));
 
         if ($res == 1) {
-            $config_json = snips::exportConfigration(null, false);
+            $config_json = SnipsUtils::export_bindings(null, false);
             SnipsAssistantManager::delete_assistant();
             SnipsAssistantManager::load_assistant();
             if (init('option') == 'mode_2') {
-                snips::importConfigration(null, $config_json);
+                SnipsUtils::import_bindings(null, $config_json);
             }
         }
         ajax::success($res);
     }
 
     if (init('action') == 'tryToFetchDefault') {
-        //$res = snips::fetchAssistantJson('pi', 'raspberry');
         $res = SnipsUtils::fetch_running_config_files();
 
         snips::logger('[Ajax] <tryToFetchDefault> Result code: '.$res);
 
         if ($res == 1) {
-            $config_json = snips::exportConfigration(null, false);
+            $config_json = SnipsUtils::export_bindings(null, false);
             SnipsAssistantManager::delete_assistant();
             SnipsAssistantManager::load_assistant();
             if (init('option') == 'mode_2') {
-                snips::importConfigration(null, $config_json);
+                SnipsUtils::import_bindings(null, $config_json);
             }
         }
         ajax::success($res);
     }
 
     if (init('action') == 'exportConfigration') {
-        snips::exportConfigration(init('name'));
+        SnipsUtils::export_bindings(init('name'));
         ajax::success();
     }
 
@@ -52,7 +50,7 @@ try {
     }
 
     if (init('action') == 'importConfigration') {
-        snips::importConfigration(init('configFileName'));
+        SnipsUtils::import_bindings(init('configFileName'));
         ajax::success();
     }
 
@@ -75,31 +73,10 @@ try {
         ajax::success();
     }
 
-    if (init('action') == 'resetMqtt') {
-        snips::resetMqtt();
-        ajax::success();
-    }
-
-    if (init('action') == 'resetSlotsCmd') {
-        snips::resetSlotsCmd();
-        ajax::success();
-    }
-
     if (init('action') == 'getSnipsType') {
         $cmd = cmd::byId(init('cmd'));
         $snips_type = $cmd->getConfiguration('entityId');
         ajax::success($snips_type);
-    }
-
-    // may be useless
-    if (init('action') == 'fetchAssistant') {
-        snips::fetchAssistantJson();
-        ajax::success();
-    }
-
-    if (init('action') == 'getMasterDevices') {
-        $res = config::byKey('masterSite', 'snips', 'default');
-        ajax::success($res);
     }
 
     if (init('action') == 'findSnipsDevice') {
