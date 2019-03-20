@@ -7,16 +7,10 @@ require_once dirname(__FILE__) . '/snips.utils.class.php';
 
 class SnipsHandler
 {
-    static function logger($str = '', $level = 'debug')
-    {
-        $function = debug_backtrace(false, 2)[1]['function'];
-        $msg = '['.__CLASS__.'] <'. $function .'> '.$str;
-        log::add('snips', 'debug', $msg);
-    }
-
+    /* check if this site is registered in the system */
     static function check_site_id_existnce($_site_id)
     {
-        self::logger();
+        SnipsUtils::logger();
         $obj = object::byName('Snips-Intents');
         if (!$obj) {
             return;
@@ -34,10 +28,11 @@ class SnipsHandler
             $dev->setConfiguration('siteName', $_site_id);
             $dev->setObject_id($object_id);
             $dev->save();
-            self::logger('Created untracked snips site: '. $_site_id);
+            SnipsUtils::logger('Created untracked snips site: '. $_site_id);
         }
     }
 
+    /* intent detected handler */
     static function intent_detected($hermes, $payload)
     {
         if (!stristr($payload->{'intent'}->{'intentName'}, 'jeedom')) {
@@ -48,7 +43,7 @@ class SnipsHandler
             $hermes->publish_end_session($payload->{'sessionId'});
         }
 
-        self::logger('found intent name is :'. $payload->{'intent'}->{'intentName'});
+        SnipsUtils::logger('found intent name is :'. $payload->{'intent'}->{'intentName'});
         $intentEq = eqLogic::byLogicalId(
             $payload->{'intent'}->{'intentName'},
             'snips'
@@ -104,8 +99,9 @@ class SnipsHandler
         }
     }
 
+    /* session started handler */
     static function session_started($hermes, $payload){
-        self::logger();
+        SnipsUtils::logger();
         SnipsUtils::set_scenario_variable(
             'snipsMsgSiteId',
             $payload->{'siteId'}
@@ -116,14 +112,16 @@ class SnipsHandler
         );
     }
 
+    /* session ended handler */
     static function session_ended($hermes, $payload){
-        self::logger();
+        SnipsUtils::logger();
         SnipsUtils::reset_scenario_variable('snipsMsgSiteId');
         SnipsUtils::reset_scenario_variable('snipsMsgSession');
     }
 
+    /* hotword detected handler */
     static function hotword_detected($hermes, $payload){
-        self::logger();
+        SnipsUtils::logger();
         SnipsUtils::set_scenario_variable(
             'snipsMsgHotwordId',
             $payload->{'modelId'}
