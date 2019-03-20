@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 class SnipsBindingCondition
 {
@@ -6,35 +7,42 @@ class SnipsBindingCondition
     private $relation;
     private $aft;
 
-    static function dump($_conditions_raw = array())
+    static function dump($conditions_raw = array())
     {
         $conditions = array();
-        foreach($_conditions_raw as $condition_raw){
+        foreach($conditions_raw as $condition_raw){
             $condition[] = new self($condition_raw);
         }
         return $conditions;
     }
 
-    function __construct($_condition = array())
+    function __construct($condition = array())
     {
-        $this->pre = $_condition['pre'];
-        $this->relation = $_condition['relation'];
-        $this->aft = $_condition['aft'];
+        // slot cmd id
+        $this->pre = $condition['pre'];
+        $this->relation = $condition['relation'];
+
+        // slot cmd value
+        $this->aft = $condition['aft'];
     }
 
-    public function is_true()
+    public function is_true($slots)
     {
-        if('=' == $this->condition_relation)
-            return $this->if_equal();
+        switch ($this->condition_relation) {
+            case '=':
+                return $this->is_equal();
+            default:
+                return false;
+        }
     }
 
     /* relations to compare */
-    private function if_equal()
+    private function is_equal()
     {
-        $pv = $this->get_pre_value();
-        $av = $this->get_aft_value();
+        $value_received = $this->get_pre_value();
+        $value_set = $this->get_aft_value();
 
-        return in_array($pv, $av);
+        return in_array($value_received, $value_set);
     }
 
     /* get the numeric values */
@@ -48,6 +56,7 @@ class SnipsBindingCondition
             return $cmd->getCache('value', 'NULL');
     }
 
+    /* get split synonymes to an array */
     private function get_aft_value()
     {
         /* remove speace, all lower case */
