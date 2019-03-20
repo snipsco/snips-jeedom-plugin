@@ -261,6 +261,38 @@ class SnipsUtils
             }
         }
     }
+
+    /* convert raw slots to slot_values array */
+    static function extract_slots_value($payload_slots_object)
+    {
+        self::logger();
+        $res = array();
+
+        foreach ($payload_slots_object as $slot) {
+            switch ($slot->{'entity'}) {
+                case 'snips/duration':
+                    $total_seconds = 0;
+                    $total_seconds += $slot->{'value'}->{'weeks'} * 604800;
+                    $total_seconds += $slot->{'value'}->{'days'} * 86400;
+                    $total_seconds += $slot->{'value'}->{'hours'} * 3600;
+                    $total_seconds += $slot->{'value'}->{'minutes'} * 60;
+                    $total_seconds += $slot->{'value'}->{'seconds'};
+                    $value = (string)$total_seconds;
+                    break;
+                default:
+                    $value = (string)$slot->{'value'}->{'value'};
+                    break;
+            }
+
+            // multi-slots value is separated by '&&'
+            if (array_key_exists($slot->{'slotName'}, $res)) {
+                $res[$slot->{'slotName'}] .= '&&'.$value;
+            } else {
+                $res[$slot->{'slotName'}] = $value;
+            }
+        }
+        return $res;
+    }
     /* external functions (should be called from scenario code block)*/
     /* help user to realise light brightness shifting */
     static function light_brightness_shift($json_lights)
