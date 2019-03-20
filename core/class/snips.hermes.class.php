@@ -39,20 +39,11 @@ class SnipsHermes{
     private $callback_session_started;
     private $callback_session_ended;
 
-    /* static methods */
-    static public function logger($str = '', $level = 'debug')
-    {
-        $function = debug_backtrace(false, 2)[1]['function'];
-        $msg = '['.__CLASS__.'] <'. $function .'> '.$str;
-        // Using jeedom logger
-        log::add('snips', $level, $msg);
-    }
-
     /* private method */
     private function mqtt_publish($topic, $payload)
     {
         $this->client->publish($topic, $payload);
-        self::logger('Published message: '. $payload .' to topic: '. $topic);
+        SnipsUtils::logger('Published message: '. $payload .' to topic: '. $topic);
     }
 
     /* constructor */
@@ -115,7 +106,7 @@ class SnipsHermes{
             $this->client->loopForever();
         }
         catch (Exception $e) {
-            self::logger('Connection exception: '. $e->getMessage());
+            SnipsUtils::logger('Connection exception: '. $e->getMessage());
         }
     }
 
@@ -239,19 +230,19 @@ class SnipsHermes{
     /* mqtt callbacks */
     public function mqtt_on_connect($r, $message)
     {
-        self::logger('Connected to the broker with code: '. $r .' message: '. $message);
+        SnipsUtils::logger('Connected to the broker with code: '. $r .' message: '. $message);
         $this->connected = true;
     }
 
     public function mqtt_on_disconnect($r)
     {
-        self::logger('Disconnected from the broker with code: '. $r);
+        SnipsUtils::logger('Disconnected from the broker with code: '. $r);
         $this->connected = false;
     }
 
     public function mqtt_on_subscribe($r)
     {
-        self::logger('Subscribeed with code '. $r);
+        SnipsUtils::logger('Subscribeed with code '. $r);
     }
 
     public function mqtt_on_log($r, $str)
@@ -260,13 +251,13 @@ class SnipsHermes{
             strpos($str, 'PINGREQ') === false &&
             strpos($str, 'PINGRESP') === false
         ) {
-            self::logger('Log code: '. $r .' : '. $str);
+            SnipsUtils::logger('Log code: '. $r .' : '. $str);
         }
     }
 
     public function mqtt_on_message($message)
     {
-        //self::logger('Received message. Topic:'. $message->topic);
+        //SnipsUtils::logger('Received message. Topic:'. $message->topic);
         $payload_array = json_decode($message->payload);
 
         switch ($message->topic) {
@@ -288,7 +279,7 @@ class SnipsHermes{
             $callback($this, json_decode($message->payload));
         }
         catch (Exception $e) {
-            self::logger('Callback execution: '. $e->getMessage(), 'error');
+            SnipsUtils::logger('Callback execution: '. $e->getMessage(), 'error');
         }
     }
 }
