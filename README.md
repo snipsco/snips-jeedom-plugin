@@ -1,16 +1,16 @@
-<img align="right" src="/snips/plugin_info/snips_icon.png" width="180">
+<img align="right" src="/plugin_info/snips_icon.png" width="150">
+
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/snipsco/snips-jeedom-plugin/blob/master/LICENSE)
+[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/snipsco/snips-jeedom-plugin/blob/master/CHANGE_LOG.md)
+
+# snips-jeedom-plugin
+
+The Snips Voice Platform allows anyone to integrate AI powered voice interaction in their devices with ease. The end-to-end pipeline - Hotword detection, Automatic Speech Recognition (ASR) and Natural Language Understanding (NLU) - runs fully on device, powered by state of the art deep learning. By using Snips, you can avoid cloud provider costs, cloud latency, and protect user's privacy.
 
 ## User Guide
 
 Please reach ***[Snips Dev Center](https://snips.gitbook.io/)*** for the user documentation.
 - ***[English Version](https://docs.snips.ai/articles/raspberrypi/jeedom/en)***
-
-## snips-jeedom-plugin
-
-![Version](https://img.shields.io/badge/snips--jeedom--plugin-v1.6.0-blue.svg)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/snipsco/snips-skill-respeaker/blob/master/LICENSE)
-
-The Snips Voice Platform allows anyone to integrate AI powered voice interaction in their devices with ease. The end-to-end pipeline - Hotword detection, Automatic Speech Recognition (ASR) and Natural Language Understanding (NLU) - runs fully on device, powered by state of the art deep learning. By using Snips, you can avoid cloud provider costs, cloud latency, and protect user's privacy.
 
 ## Installation
 
