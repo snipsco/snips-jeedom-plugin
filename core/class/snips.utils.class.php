@@ -125,6 +125,29 @@ class SnipsUtils
         }
         return $real_value;
     }
+
+    /* either delete or create a variable */
+    static function update_scenario_variable($var_name)
+    {
+        if(!config::byKey($var_name, 'snips', 0)){
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, $var_name);
+            if (is_object($var)) {
+                $var->remove();
+            }
+            self::logger('Removed variable '. $var_name);
+        }else{
+            $var = dataStore::byTypeLinkIdKey('scenario', -1, $var_name);
+            if (!is_object($var)) {
+                $var = new dataStore();
+                $var->setKey($var_name);
+                self::logger('Created variable '. $var_name);
+            }
+            $var->setValue('');
+            $var->setType('scenario');
+            $var->setLink_id(-1);
+            $var->save();
+        }
+    }
     /* external functions (should be called from scenario code block)*/
     /* help user to realise light brightness shifting */
     static function light_brightness_shift($json_lights)
