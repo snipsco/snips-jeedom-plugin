@@ -126,7 +126,7 @@ class SnipsHermes{
         $session_init_text = null,
         $session_init_can_be_enqueued = null,
         $session_init_intent_filter = null,
-        $session_init_send_intent_not_recognized = null,
+        $session_init_send_intent_not_recognized = true,
         $custom_data = null
     ) {
         $payload = array();
