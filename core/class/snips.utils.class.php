@@ -1,7 +1,6 @@
 <?php
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
-class SnipsUtils{
 class SnipsUtils
 {
     /* logger */
@@ -48,8 +47,10 @@ class SnipsUtils
     }
 
     /* fetch assistant.json & snips.toml from master device */
-    static function fetch_running_config_files($usrename = 'pi', $password = 'raspberry')
-    {
+    static function fetch_running_config_files(
+        $usrename = 'pi',
+        $password = 'raspberry'
+    ) {
         $ip_addr = config::byKey('mqttAddr', 'snips', '127.0.0.1');
         self::logger('Trying to connect to: '.$ip_addr);
 
