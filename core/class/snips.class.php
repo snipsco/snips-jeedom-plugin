@@ -141,7 +141,10 @@ class snips extends eqLogic
     /* get a list of bindings of this intent */
     function get_bindings()
     {
-        return SnipsBinding::dump($this->getConfiguration('bindings'));
+        return SnipsBinding::dump(
+            $this->getConfiguration('bindings'),
+            $this->name
+        );
     }
 
     /* get the callback scenario of this intent */

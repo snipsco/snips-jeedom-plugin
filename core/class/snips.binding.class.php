@@ -6,6 +6,8 @@ require_once dirname(__FILE__) . '/snips.binding.action.class.php';
 
 class SnipsBinding
 {
+    private $intent;
+
     public $name;
     public $enable;
 
@@ -20,13 +22,30 @@ class SnipsBinding
     private $nsr_slots = array();
 
     /* generate a list of binding objects by raw configuration array */
-    static function dump($bindings_raw = array())
+    static function dump($bindings_raw = array(), $intent)
     {
         $bindings = array();
         foreach($bindings_raw as $key => $binding_raw){
-            $bindings[] = new self($binding_raw);
+            $bindings[] = new self($binding_raw, $intent);
         }
         return $bindings;
+    }
+
+    function __construct($binding_raw, $intent)
+    {
+        $this->intent = $intent;
+        
+        $this->name = $binding_raw['name'];
+        $this->enable = $binding_raw['enable'] == '0' ? false : true;
+
+        $this->tts_player = $binding_raw['ttsPlayer'];
+        $this->tts_message = $binding_raw['ttsMessage'];
+        $this->tts_vars = $binding_raw['ttsVar'];
+
+        $this->conditions = SnipsBindingCondition::dump($binding_raw['condition']);
+        $this->actions = SnipsBindingAction::dump($binding_raw['action']);
+
+        $this->nsr_slots = $binding_raw['nsr_slots'];
     }
 
     /* select some bindings from the given list which can pass condtiion */
@@ -67,21 +86,6 @@ class SnipsBinding
             }
         }
         return $res;
-    }
-
-    function __construct($binding_raw)
-    {
-        $this->name = $binding_raw['name'];
-        $this->enable = $binding_raw['enable'] == '0' ? false : true;
-
-        $this->tts_player = $binding_raw['ttsPlayer'];
-        $this->tts_message = $binding_raw['ttsMessage'];
-        $this->tts_vars = $binding_raw['ttsVar'];
-
-        $this->conditions = SnipsBindingCondition::dump($binding_raw['condition']);
-        $this->actions = SnipsBindingAction::dump($binding_raw['action']);
-
-        $this->nsr_slots = $binding_raw['nsr_slots'];
     }
 
     /* generate tts message */
