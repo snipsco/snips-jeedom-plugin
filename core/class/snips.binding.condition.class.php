@@ -11,7 +11,7 @@ class SnipsBindingCondition
     {
         $conditions = array();
         foreach($conditions_raw as $condition_raw){
-            $condition[] = new self($condition_raw);
+            $conditions[] = new self($condition_raw);
         }
         return $conditions;
     }
@@ -28,7 +28,7 @@ class SnipsBindingCondition
 
     public function is_true($slots)
     {
-        switch ($this->condition_relation) {
+        switch ($this->relation) {
             case '=':
                 return $this->is_equal();
             default:
