@@ -1,28 +1,26 @@
 <?php
-include_file('core', 'authentification', 'php');
-if (!isConnect('admin')) {
-	throw new Exception('{{401 - Unauthorized}}');
-}
-$plugin = plugin::byId('snips');
-sendVarToJS('eqType', $plugin->getId());
-$eqLogics = eqLogic::byType($plugin->getId());
-$scenarios = scenario::all();
+    include_file('core', 'authentification', 'php');
+    if (!isConnect('admin')) {
+    	throw new Exception('{{401 - Unauthorized}}');
+    }
+    $plugin = plugin::byId('snips');
+    sendVarToJS('eqType', $plugin->getId());
+    $eqLogics = eqLogic::byType($plugin->getId());
+    $scenarios = scenario::all();
 ?>
 
 <div class="row row-overflow">
     <div class="col-lg-2 col-md-3 col-sm-4">
         <div class="bs-sidebar">
             <ul id="ul_eqLogic" class="nav nav-list bs-sidenav">
-                
+
                 <li class="filter" style="margin-bottom: 5px;"><input class="filter form-control input-sm" placeholder="{{Search}}" style="width: 100%"/></li>
-                  <?php
-                  foreach ($eqLogics as $eqLogic) {
-                      if ($eqLogic->getConfiguration('snipsType') == 'Intent') {
-                        $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-                        echo '<li class="cursor li_eqLogic" data-eqLogic_id="' . $eqLogic->getId() . '" style="' . $opacity .'"><a>' . $eqLogic->getHumanName(true) . '</a></li>';
-                      }
-                  }
-                  ?>
+<?php
+$intent_eqs = snips::dump_eq_intent();
+foreach ($intent_eqs as $intent_eq) {
+      echo '<li class="cursor li_eqLogic" data-eqLogic_id="' . $intent_eq->getId() . '" style="' . $opacity .'"><a>' . $intent_eq->getHumanName(true) . '</a></li>';
+}
+?>
            </ul>
        </div>
    </div>
@@ -50,7 +48,7 @@ $scenarios = scenario::all();
         <br>
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">{{Import Binding}}</span>
       </div>
-      
+
       <!-- <div class="cursor eqLogicAction resetMqtt" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
         <img src="/plugins/snips/3rdparty/icons/link.png" height="95px" width="95px" />
         <br>
@@ -64,87 +62,83 @@ $scenarios = scenario::all();
 
         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">{{Configuration}}</span>
       </div>
-  </div> 
+  </div>
 
   <legend><i class="fa fa-bullhorn"></i> {{Snips Devices}}</legend>
 
   <div class="eqLogicThumbnailContainer">
-
-    <?php
-      if (!$eqLogics) {
-          echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">{{Please load assistant}}</span></center>';
-      }else{
-        foreach ($eqLogics as $eqLogic) {
-          if ($eqLogic->getConfiguration('snipsType') == 'TTS') {
-
-            $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
+<?php
+    if (!$eqLogics) {
+        echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">{{Please load assistant}}</span></center>';
+    }else{
+        $tts_eqs = snips::dump_eq_tts();
+        foreach ($tts_eqs as $tts_eq) {
+            $opacity = ($tts_eq->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
             $master = config::byKey('masterSite', 'snips', 'default');
-            $icon = ($master == $eqLogic->getConfiguration('siteName')) ? 'master': 'satellite';
+            $icon = ($master == $tts_eq->getConfiguration('siteName')) ? 'master': 'satellite';
 
-            echo '<div class="cursor testSite" data-site="'.$eqLogic->getConfiguration('siteName').'" data-eqLogic_id="' . $eqLogic->getId() . '" style="text-align: center; background-color : #ffffff; height : 160px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
+            echo '<div class="cursor testSite" data-site="'.$tts_eq->getConfiguration('siteName').'" data-eqLogic_id="' . $tts_eq->getId() . '" style="text-align: center; background-color : #ffffff; height : 160px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
             echo '<img src="/plugins/snips/3rdparty/icons/'.$icon.'.png" height="95px" width="95px" />';
             echo "<br>";
 
-            echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="badge">'.$eqLogic->getConfiguration('siteName').'</span></span>';
+            echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><span class="badge">'.$tts_eq->getConfiguration('siteName').'</span></span>';
             echo '</div>';
-            
-          }
         }
-      }
-  ?>
+    }
+?>
   </div>
 
   <legend><i class="fa fa-bolt"></i> {{Intents (Response by Jeedom)}}</legend>
   <div class="eqLogicThumbnailContainer" >
 
-    <?php
-      if (!$eqLogics) {
-          echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">Please load assistant</span></center>';
-      }else{
-        foreach ($eqLogics as $eqLogic) {
-          if ($eqLogic->getConfiguration('snipsType') == 'Intent') {
-            $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-            echo '<span class="panel panel-info eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $eqLogic->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
-            echo '<li class="panel-heading" style="padding: 5px 5px;list-style:none;"><strong style="font-size: 1em;">'. $eqLogic->getName() .'</strong></li>';
+<?php
+    if (!$eqLogics) {
+        echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">Please load assistant</span></center>';
+    } else {
+        $intent_eqs = snips::dump_eq_intent();
+
+        foreach ($intent_eqs as $intent_eq) {
+            $opacity = ($intent_eq->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
+            echo '<span class="panel panel-info eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $intent_eq->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
+            echo '<li class="panel-heading" style="padding: 5px 5px;list-style:none;"><strong style="font-size: 1em;">'. $intent_eq->getName() .'</strong></li>';
             echo '<li class="panel-body" style="padding: 0px;list-style:none;">';
 
             echo '<ul class="list-group" style="margin: 0;">';
 
             //echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.$eqLogic->getConfiguration('language').'</span>{{Language}}</li>';
 
-            if ($eqLogic->getConfiguration('callbackScenario')['scenario'] > 0) {
+            if ($intent_eq->getConfiguration('callbackScenario')['scenario'] > 0) {
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;"> {{Yes}}</span>{{Callback Scenario}}</li>';
             }else{
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;"> {{No}}</span>{{Callback Scenario}}</li>';
             }
-            
 
-            if (count($eqLogic->getConfiguration('slots'))) {
-              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">'.count($eqLogic->getConfiguration('slots')).'</span>Slots</li>';
+
+            if (count($intent_eq->getConfiguration('slots'))) {
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">'.count($intent_eq->getConfiguration('slots')).'</span>Slots</li>';
             }else{
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;">0</span>Slots</li>';
             }
-              
 
-            if ($eqLogic->getConfiguration('bindings')) {
-              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">'.count($eqLogic->getConfiguration('bindings')).'</span>{{Bindings}}</li>';
+
+            if ($intent_eq->getConfiguration('bindings')) {
+              echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">'.count($intent_eq->getConfiguration('bindings')).'</span>{{Bindings}}</li>';
             }else{
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;">0</span>{{Bindings}}</li>';
             }
 
-            if ($eqLogic->getConfiguration('isSnipsConfig')) {
+            if ($intent_eq->getConfiguration('isSnipsConfig')) {
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;">{{Snips Binding}}</span>{{Reaction}}</li>';
-            }else if($eqLogic->getConfiguration('isInteraction')){
+            }else if($intent_eq->getConfiguration('isInteraction')){
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #f0ad4e;">{{Interaction}}</span>{{Reaction}}</li>';
             }else{
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #c9302c;">{{Not set}}</span>{{Reaction}}</li>';
             }
             echo '</ul>';
             echo '</li></span>';
-          }
         }
       }
-    ?>
+?>
   </div>
 </div>
 
@@ -182,7 +176,7 @@ $scenarios = scenario::all();
                 </div>
 
             </div>
-            
+
             <div class="form-group">
 
                 <label class="col-sm-1 control-label">{{Status}}</label>
@@ -217,7 +211,7 @@ $scenarios = scenario::all();
         <legend>{{Callback Scenario}}</legend>
             <div class="form-group">
                 <label class="col-sm-1 control-label">{{Scenario}}</label>
-                <div class="col-sm-4"> 
+                <div class="col-sm-4">
                     <select class="eqLogicAttr form-control input-sm" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="scenario">
                         <option value="-1">{{None}}</option>
                         <?php
@@ -242,7 +236,7 @@ $scenarios = scenario::all();
 
                 <label class="col-sm-1 control-label">{{Tags}}</label>
                 <div class="col-sm-2">
-                    <textarea class="eqLogicAttr" style="height: 30px;width: 236px;" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="user_tags"></textarea> 
+                    <textarea class="eqLogicAttr" style="height: 30px;width: 236px;" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="user_tags"></textarea>
                 </div>
 
                 <div class="col-sm-4"></div>
@@ -268,7 +262,7 @@ $scenarios = scenario::all();
         <div class="panel-heading btn btn-default" id="bt_addNewBinding" style="width: 100%; border: 1.5px dashed #ddd; box-shadow: 0 1px 1px rgba(0,0,0,.05); background-color:#fff;"><i class="fa fa-plus-circle"></i> {{Attach a new binding}}</div>
 
         <div id="div_bindings" style="padding-top: 10px;">
-          
+
         </div>
 </fieldset>
 </form>
