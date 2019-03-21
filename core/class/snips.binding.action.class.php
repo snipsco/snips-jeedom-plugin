@@ -29,6 +29,7 @@ class SnipsBindingAction
     /* execute action */
     function execute()
     {
+        // exception: scenario
         if ($this->cmd == 'scenario') {
             $intentEq = eqLogic::byLogicalId(
                 $this->intent,
@@ -39,6 +40,33 @@ class SnipsBindingAction
                 $this->options['action'],
                 $this->options['tags']
             )->execute();
+        }
+
+        // exception: percentage remapping
+        if (
+            key_exists('LT', $this->options) ||
+            key_exists('HT', $this->options)
+        ) {
+            $intentEq = eqLogic::byLogicalId(
+                $this->intent,
+                'snips'
+            );
+            $cmds = $intentEq->getCmd();
+            foreach ($cmds as $cmd) {
+                $slot_type = $cmd->getConfiguration('entityId');
+                if ($slot_type == 'snips/percentage') {
+                    $org = $cmd->getValue();
+                    $real_value = SnipsUtils::remap_percentage_to_value(
+                        $this->options['LT'],
+                        $this->options['HT'],
+                        $org
+                    );
+                    $cmd->setConfiguration('orgVal', $org);
+                    $intentEq->checkAndUpdateCmd($cmd, $real_value);
+                    $cmd->setValue($real_value);
+                    $cmd->save();
+                }
+            }
         }
 
         return scenarioExpression::createAndExec(

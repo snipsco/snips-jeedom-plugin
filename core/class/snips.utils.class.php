@@ -295,7 +295,7 @@ class SnipsUtils
     }
 
     /* set received slot value to cmd object */
-    static function set_slot_cmd($slots_values, $intent, $options = null)
+    static function set_slot_cmd($slots_values, $intent)
     {
         self::logger();
         $eq = eqLogic::byLogicalId($intent, 'snips');
@@ -309,21 +309,6 @@ class SnipsUtils
             self::logger('slots name is :' . $slot);
             $cmd = $eq->getCmd(null, $slot);
             if (is_object($cmd)) {
-                if ($options) {
-                    $slot_type = $cmd->getConfiguration('entityId');
-                    if ($slot_type == 'snips/percentage') {
-                        $org = $value;
-                        //change to utils
-                        //$value = snips::percentageRemap($options['LT'], $options['HT'], $value);
-                        $value = SnipsUtils::remap_percentage_to_value(
-                            $options['LT'],
-                            $options['HT'],
-                            $value
-                        );
-                        $cmd->setConfiguration('orgVal', $org);
-                        self::logger('percentage converted to :' . $value);
-                    }
-                }
                 $eq->checkAndUpdateCmd($cmd, $value);
                 $cmd->setValue($value);
                 $cmd->save();
