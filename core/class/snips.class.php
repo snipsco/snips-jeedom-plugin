@@ -24,6 +24,29 @@ class snips extends eqLogic
         return $obj->getConfiguration('language', 'en');
     }
 
+    /* set the payload and slots_value to database */
+    static function set_run_variable($payload_raw, $slots_values)
+    {
+        config::save('run_payload', $payload_raw, 'snips');
+        config::save('run_slots_values', $slots_values, 'snips');
+    }
+
+    /* get the payload and slots_value from database */
+    static function get_run_variable()
+    {
+        $res = array();
+        $res['payload'] = config::byKey('run_payload', 'snips');
+        $res['slots_values'] = config::byKey('run_slots_values', 'snips');
+        return $res;
+    }
+
+    /* reset the payload and slots_value */
+    static function reset_run_variable()
+    {
+        config::save('run_payload', '', 'snips');
+        config::save('run_slots_values', '', 'snips');
+    }
+
     /* static method, get all the intent eqLogic objects */
     static function dump_eq_intent()
     {

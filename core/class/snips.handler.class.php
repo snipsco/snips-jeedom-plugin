@@ -45,6 +45,8 @@ class SnipsHandler
         }
 
         SnipsUtils::logger('found intent name is :'. $payload->{'intent'}->{'intentName'});
+
+        // get the intent eq object
         $intentEq = eqLogic::byLogicalId(
             $payload->{'intent'}->{'intentName'},
             'snips'
@@ -63,11 +65,20 @@ class SnipsHandler
         // get all the usable values
         $slots_values = SnipsUtils::extract_slots_value($payload->{'slots'});
 
+        // save runtime variables
+        snips::set_run_variable($payload, $slots_values);
+
         // set all the slots, find binding will use
         SnipsUtils::set_slot_cmd(
             $slots_values,
             $payload->{'intent'}->{'intentName'}
         );
+
+        // execute callback scenario
+        $callback_scenario = $intentEq->get_callback_scenario();
+        if ($callback_scenario) {
+            $callback_scenario->execute();
+        }
 
         // get all the bindings belong to detected intent
         $obj_bindings = $intentEq->get_bindings();
@@ -90,6 +101,9 @@ class SnipsHandler
 
         // sync with execution
         sleep(1);
+
+        // reset saved runtime variables
+        snips::reset_run_variable();
 
         // reset all the slots
         SnipsUtils::reset_slots_cmd();
