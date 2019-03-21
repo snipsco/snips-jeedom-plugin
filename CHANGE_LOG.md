@@ -8,7 +8,7 @@
 ### Changed
 
 - Re-constructed code organization
-- Support `confidenceScore`
+- Passing `#confidenceScore#` instead of `#probability#`, 
 
 ### Removed
 

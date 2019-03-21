@@ -15,7 +15,7 @@ class SnipsBindingScenario
     private $isTagSlots;
     private $isTagSiteId;
     private $isTagQuery;
-    private $isTagProbability;
+    private $isTagConfidenceScore;
 
     function __construct($scenario = array())
     {
@@ -30,7 +30,7 @@ class SnipsBindingScenario
         $this->isTagSlots = $scenario['isTagSlots'];
         $this->isTagSiteId = $scenario['isTagSiteId'];
         $this->isTagQuery = $scenario['isTagQuery'];
-        $this->isTagProbability = $scenario['isTagProbability'];
+        $this->isTagConfidenceScore = $scenario['isTagConfidenceScore'];
         SnipsUtils::logger('construction done');
     }
 
@@ -78,8 +78,8 @@ class SnipsBindingScenario
             $tags['#query#'] = $payload['input'];
         }
 
-        if ($this->isTagProbability) {
-            $tags['#probability#'] = $payload['intent']['confidenceScore'];
+        if ($this->isTagConfidenceScore) {
+            $tags['#confidenceScore#'] = $payload['intent']['confidenceScore'];
         }
 
         if ($this->isTagSlots) {

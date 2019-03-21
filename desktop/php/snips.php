@@ -256,7 +256,7 @@ $scenarios = scenario::all();
                     <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagSlots"> {{#slots#}}</span>
                     <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagSiteId"> {{#siteId#}}</span>
                     <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagQuery"> {{#query#}}</span>
-                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagProbability"> {{#probability#}}</span>
+                    <span class="callbackScenarioTags"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="callbackScenario" data-l3key="isTagConfidenceScore"> {{#confidenceScore#}}</span>
                 </div>
             </div>
 
