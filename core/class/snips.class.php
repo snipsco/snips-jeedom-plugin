@@ -53,7 +53,7 @@ class snips extends eqLogic
         $eq_intent = array();
         $eqs = self::byType('snips');
         foreach ($eqs as $eq) {
-            if ($eq->getConfiguration('Intent')) {
+            if ($eq->getConfiguration('snipsType') == 'Intent') {
                 $eq_intent[] = $eq;
             }
         }
@@ -66,8 +66,8 @@ class snips extends eqLogic
         $eq_tts = array();
         $eqs = self::byType('snips');
         foreach($eqs as $eq){
-            if ($eq->getConfiguration('TTS')) {
-                $eq_TTS[] = $eq;
+            if ($eq->getConfiguration('snipsType') == 'TTS') {
+                $eq_tts[] = $eq;
             }
         }
         return $eq_tts;
