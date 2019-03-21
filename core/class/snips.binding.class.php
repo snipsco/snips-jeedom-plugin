@@ -42,8 +42,13 @@ class SnipsBinding
         $this->tts_message = $binding_raw['ttsMessage'];
         $this->tts_vars = $binding_raw['ttsVar'];
 
-        $this->conditions = SnipsBindingCondition::dump($binding_raw['condition']);
-        $this->actions = SnipsBindingAction::dump($binding_raw['action']);
+        $this->conditions = SnipsBindingCondition::dump(
+            $binding_raw['condition']
+        );
+        $this->actions = SnipsBindingAction::dump(
+            $binding_raw['action'],
+            $intent
+        );
 
         $this->nsr_slots = $binding_raw['nsr_slots'];
     }

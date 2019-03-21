@@ -3,20 +3,22 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 class SnipsBindingAction
 {
+    private $intent;
     private $cmd;
     private $options = array();
 
-    static function dump($actions_raw = array())
+    static function dump($actions_raw = array(), $intent)
     {
         $actions = array();
         foreach($actions_raw as $action_raw){
-            $actions[] = new self($action_raw);
+            $actions[] = new self($action_raw, $intent);
         }
         return $actions;
     }
 
-    function __construct($action = array())
+    function __construct($action = array(), $intent)
     {
+        $this->intent = $intent;
         $this->cmd = $action['cmd'];
         $this->options = $action['options'];
     }
