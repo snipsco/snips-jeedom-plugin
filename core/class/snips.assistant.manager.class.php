@@ -2,6 +2,7 @@
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 require_once dirname(__FILE__) . '/snips.class.php';
 require_once dirname(__FILE__) . '/../../3rdparty/Toml.php';
+require_once dirname(__FILE__) . '/snips.utils.class.php';
 
 class SnipsAssistantManager
 {
@@ -136,23 +137,30 @@ class SnipsAssistantManager
 
     /* create snips tts eq object */
     static function create_snips_device($site_id, $lang){
+        $obj = object::byName('Snips-Intents');
+        if (!$obj || !$site_id) {
+            return;
+        }
+        $object_id = $obj->getId();
+
         $elogic = snips::byLogicalId('Snips-TTS-'.$site_id, 'snips');
         if (!is_object($elogic)) {
             $elogic = new snips();
             $elogic->setName('Snips-TTS-'.$site_id);
             $elogic->setLogicalId('Snips-TTS-'.$site_id);
             SnipsUtils::logger('Created TTS device: Snips-TTS-'. $site_id);
-        }
-        $elogic->setEqType_name('snips');
-        $elogic->setIsEnable(1);
-        $elogic->setConfiguration('snipsType', 'TTS');
-        $elogic->setConfiguration('language', $lang);
-        $elogic->setConfiguration('siteName', $site_id);
-        $elogic->setObject_id(object::byName('Snips-Intents')->getId());
-        $elogic->save();
 
-        self::create_tts_cmd_say($elogic);
-        self::create_tts_cmd_ask($elogic);
+            $elogic->setEqType_name('snips');
+            $elogic->setIsEnable(1);
+            $elogic->setConfiguration('snipsType', 'TTS');
+            $elogic->setConfiguration('language', $lang);
+            $elogic->setConfiguration('siteName', $site_id);
+            $elogic->setObject_id($object_id);
+            $elogic->save();
+
+            self::create_tts_cmd_say($elogic);
+            self::create_tts_cmd_ask($elogic);
+        }
     }
 
     /* create say command */
