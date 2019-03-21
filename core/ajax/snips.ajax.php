@@ -88,6 +88,11 @@ try {
         ajax::success();
     }
 
+    if (init('action') == 'getMasterDevices') {
+        $res = config::byKey('masterSite', 'snips', 'default');
+        ajax::success($res);
+    }
+
     throw new Exception(__('No method corresponding to : ', __FILE__) . init('action'));
 }
 
