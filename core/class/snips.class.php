@@ -173,15 +173,23 @@ class snips extends eqLogic
     }
 
     /* get the callback scenario of this intent */
-    function get_callback_scenario()
-    {
+    function get_callback_scenario(
+        $scenario_id = null,
+        $scenario_action = null,
+        $scenario_tags = null
+    ) {
         $raw_array = $this->getConfiguration('callbackScenario');
-        $callback_scenario = new SnipsBindingScenario($raw_array);
-        if (!is_object($callback_scenario)) {
+        if ($scenario_id && $scenario_action) {
+            // using callback scenario config options, create new
+            $raw_array['scenario'] =  $scenario_id;
+            $raw_array['action'] = $scenario_action;
+            $raw_array['user_tags'] = $user_tags;
+        }
+        if (!$raw_array['scenario']) {
             SnipsUtils::logger('No callback scenario found');
             return false;
         }
-        return $callback_scenario;
+        return new SnipsBindingScenario($raw_array);
     }
 
     /* Check if this intent is using Snips binding */

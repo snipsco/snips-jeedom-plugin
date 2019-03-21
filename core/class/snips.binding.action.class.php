@@ -1,5 +1,8 @@
 <?php
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
+require_once dirname(__FILE__) . '/snips.binding.scenario.class.php';
+require_once dirname(__FILE__) . '/snips.class.php';
+require_once dirname(__FILE__) . '/snips.utils.class.php';
 
 class SnipsBindingAction
 {
@@ -23,19 +26,25 @@ class SnipsBindingAction
         $this->options = $action['options'];
     }
 
-    public function execute()
+    /* execute action */
+    function execute()
     {
-        $res = scenarioExpression::createAndExec(
+        if ($this->cmd == 'scenario') {
+            $intentEq = eqLogic::byLogicalId(
+                $this->intent,
+                'snips'
+            );
+            return $intentEq->get_callback_scenario(
+                $this->options['scenario_id'],
+                $this->options['action'],
+                $this->options['tags']
+            )->execute();
+        }
+
+        return scenarioExpression::createAndExec(
             'action',
             $this->cmd,
             $this->options
         );
-
-        return $res;
-    }
-
-    static function get_scenario_tags($_tags = array())
-    {
-        ;//reserved to the next update
     }
 }
