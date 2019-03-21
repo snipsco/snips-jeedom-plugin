@@ -5,6 +5,8 @@ require_once dirname(__FILE__) . '/snips.hermes.class.php';
 require_once dirname(__FILE__) . '/snips.tts.class.php';
 require_once dirname(__FILE__) . '/snips.handler.class.php';
 require_once dirname(__FILE__) . '/snips.utils.class.php';
+require_once dirname(__FILE__) . '/snips.binding.scenario.class.php';
+
 // ini_set("display_errors","On");
 // error_reporting(E_ALL);
 

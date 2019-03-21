@@ -4,6 +4,7 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 require_once dirname(__FILE__) . '/snips.class.php';
 require_once dirname(__FILE__) . '/snips.binding.class.php';
 require_once dirname(__FILE__) . '/snips.utils.class.php';
+require_once dirname(__FILE__) . '/snips.binding.scenario.class.php';
 
 class SnipsHandler
 {
