@@ -18,9 +18,11 @@ Please reach ***[Snips Dev Center](https://snips.gitbook.io/)*** for the user gu
 
 ### From Jeedom Plugin Market
 
+<p align="center">
+    <img src="docs/snips_jeedom_market.png" width="650">
+</p>
 
 ### Manual Installation
-
 
 **Step 1**
 
