@@ -36,10 +36,11 @@ function snips_postSaveConfiguration(){
 <form class="form-horizontal">
     <fieldset>
         <div class="form-group">
-            <label class="col-lg-4 control-label" >{{IP address of the master snips device}}</label>
+            <label class="col-lg-4 control-label" >{{Host}}</label>
             <div class="col-lg-4">
                 <input class="configKey form-control" data-l1key="mqttAddr" placeholder="127.0.0.1"/>
             </div>
+            <div class="alert alert-info col-lg-3" role="alert">{{IP address / hostname of the master Snips device.}}</div>
         </div>
 
         <div class="form-group">
@@ -47,7 +48,7 @@ function snips_postSaveConfiguration(){
             <div class="col-lg-4">
                 <textarea class="configKey form-control" data-l1key="defaultTTS" placeholder="Sorry I don't understand"></textarea>
             </div>
-            <div class="alert alert-info col-lg-3" role="alert">{{Use <kbd>[A|B|C]</kbd> formate to make dynamic sentences}}</div>
+            <div class="alert alert-info col-lg-3" role="alert">{{Use <kbd>[A|B|C]</kbd> formate to make dynamic sentences.}}</div>
         </div>
 
         <div class="form-group">
