@@ -27,6 +27,7 @@ function snips_install() {
         config::save('defaultTTS', 'Sorry, I cant find any actions!', 'snips');
     }
 
+    config::save('dynamicSnipsTTS',1,'snips');
     config::save('isVarMsgSession',0,'snips');
     config::save('isVarMsgSiteId',0,'snips');
     config::save('isVarMsgHotwordId',0,'snips');
@@ -50,6 +51,9 @@ function snips_update() {
         $cron->setTimeout('1440');
         $cron->save();
     }
+
+
+    config::save('dynamicSnipsTTS',1,'snips');
 
     if (config::byKey('isVarMsgSession', 'snips', "NULL") == "NULL") {
         config::save('isVarMsgSession',0,'snips');
