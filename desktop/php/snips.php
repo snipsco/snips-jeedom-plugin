@@ -18,7 +18,7 @@
 <?php
 $intent_eqs = snips::dump_eq_intent();
 foreach ($intent_eqs as $intent_eq) {
-      echo '<li class="cursor li_eqLogic" data-eqLogic_id="' . $intent_eq->getId() . '" style="' . $opacity .'"><a>' . $intent_eq->getHumanName(true) . '</a></li>';
+    echo '<li class="cursor li_eqLogic" data-eqLogic_id="' . $intent_eq->getId() . '" style="' . $opacity .'"><a>' . $intent_eq->getHumanName(true) . '</a></li>';
 }
 ?>
            </ul>
