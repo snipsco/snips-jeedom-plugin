@@ -11,7 +11,8 @@ This plugin comes with an user-friendly visual interface, which allows Jeedom us
 
 ## User Guide
 
-Please reach ***[Snips Dev Center](https://snips.gitbook.io/)*** for the user guidebook.
+Please reach ***[Snips Dev Center](https://docs.snips.ai/)*** for the user documentation.
+
 - ***[English Version](https://docs.snips.ai/articles/raspberrypi/jeedom/en)***
 
 ## Installation
