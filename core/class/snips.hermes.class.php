@@ -58,7 +58,13 @@ class SnipsHermes{
         $this->client->onSubscribe([$this, 'mqtt_on_subscribe']);
         //$this->client->onLog([$this, 'mqtt_on_log']);
         $this->client->onMessage([$this, 'mqtt_on_message']);
-        $this->client->connect($this->host, $this->port, 60);
+        try {
+            SnipsUtils::logger('trying to connect: '. $this->host .':'. $this->port, 'info');
+            $this->client->connect($this->host, $this->port, 60);
+        } catch (Exception $e) {
+            SnipsUtils::logger('can\'t setp up the connection!');
+            throw new Exception(__('IP address of the master snips device maybe wrong', __FILE__));
+        }
     }
 
     /* deconstructor */
@@ -106,7 +112,7 @@ class SnipsHermes{
             $this->client->loopForever();
         }
         catch (Exception $e) {
-            SnipsUtils::logger('Connection exception: '. $e->getMessage());
+            throw new Exception(__('mqtt blocking error', __FILE__));
         }
     }
 
