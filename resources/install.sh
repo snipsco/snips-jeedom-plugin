@@ -16,11 +16,17 @@ echo "[*] Checking necessary working directories."
 if [ ! -d "${SHELL_FOLDER}/../config_running" ]; then
     echo "[*] Creating config_running folder.."
     mkdir ${SHELL_FOLDER}/../config_running
+    chmod +775 ${SHELL_FOLDER}/../config_running
+    chown www-data ${SHELL_FOLDER}/../config_running
+    chgrp www-data ${SHELL_FOLDER}/../config_running
 fi
 
 if [ ! -d "${SHELL_FOLDER}/../config_backup" ]; then
     echo "[*] Creating config_backup folder.."
     mkdir ${SHELL_FOLDER}/../config_backup
+    chmod +775 ${SHELL_FOLDER}/../config_backup
+    chown www-data ${SHELL_FOLDER}/../config_backup
+    chgrp www-data ${SHELL_FOLDER}/../config_backup
 fi
 echo 5 > ${PROGRESS_FILE}
 
