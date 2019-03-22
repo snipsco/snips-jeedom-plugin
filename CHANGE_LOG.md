@@ -1,126 +1,185 @@
-## Version: 2018-11-07 17:53:59
+## Update `0.1.0` - 22/03/2019
 
-### Added
-- Callback scenario for each intent
-- Variable: snipsMsgHotwordId. This variable will be assigned with the detected hotword id
+**New Feature**
 
-### Changed
-- Display callback scenario status instead of language
-- Intent card is shown in the different color setup
+- Support dependency installation progress bar.
 
-### Removed
-- Tag passing config items on the configuration page 
+**Changes**
 
-## Version: 2018-09-21 19:12:12 [Beta]
+- Re-constructed source code, they are now collaborating in a more logical way.
+- Callback scenario passes `#confidenceScore#` instead of `#probability#`.
 
-### Added
-- Added config options for snips-used variables/ tags
+**Known Issue**
 
-### Fix
-- Support snips/built-in type `duration` (Thanks to Kiboost)
-
-## Version: 2018-09-03 17:49:57
-
-### Added
-- Added satellite test button
-
-### Improved
-- Passing tags as original format
+- Temporarily disabled playing tts on the third part device. (New plugin structure doesn't support this feature yet)
 
 
-## `Version: 2018-08-29 12:21:31`
+## Update `0.0.16` - 24/01/2019
 
-### Improved
-- Support french interface translation
-- Pass all necessary infos as tags when snips plugin trigger an scenario
+**New Features**
 
-### Changed
-- Removed [Reset MQTT] option
-
-### Fixed
-- Losing request command in scenario ask command
-
-## `Version: 2018-08-24 18:16:52`
-
-### Added
-- Support 'ask' command
-- Automatic snips tts reply (Find the detail in the configuration page of the plugin)
-
-### Improved
-- Adapt to [dart sobre] black theme
-- Support tts play for 'scenario_return'
-
-### Changed
-- Adapt jeedom grammar for tts message (use [] to contain the list and use | to separate)
-
-### Fixed
-- ListEquipmentCmd button fills value to wrong input box for command options
+- Support multi-turn dialogue. Trigger once, play multiple times.
+- Support passing multiple slots value to scenario.
 
 
-## `Version: 2018-08-13 13:12:19`
-### Addred
-- Variable name "snipsMsgSiteId", access from scenario (Thanks to @fwehrle)
+## Update `0.0.15` - 07/11/2018
 
-### Improved
-- Versions checking (Thanks to @Hugo)
-- Repaired scenario lose efficacy when reload (If a intent name is not changed, this should still be useful in scenario)
-- TTS feedback, automatically select site
+**New Features**
 
-### Fixed
-- Message selection box (Thanks to @Hugo)
+- Support `callback scenario` for each intent.
+- Add variable `snipsMsgHotwordId`, which will be assigned with the detected hotword model id.
 
-## `Version: 2018-08-08 18:15:31`
-### Added
-- Only load intent which has Jeedom as a part of its name
-- Light shift for multi-light
+**Changes**
 
-### Fixed
-- Binary value mapping is always "0"
+- UI: display callback scenario status instead of language.
+- UI: intent card uses blue as main color.
+- Scenario tag passing config options on the plugin configuration page.
 
-## `Version: 2018-08-07 12:52:50`
-### Improved
-- Adaption: Jeedom 3.3.3
 
-### Changed
-- Disabled multi-dialog function for the moment
+## Update `0.0.14` - 21/09/2018
 
-## `Version: 2018-08-05 15:07:49`
-### Added
-- Support multi-feedback
-- Sites automatically detection
+**New Features**
 
-### Improved
-- Reload assistant with bidings
+- Support snips-used variables on the configuration page.
+- Support selecting scenario tags, which will be passed to execution.
+- Support snips/built-in type `duration`. (@Kiboost)
 
-## `Version: 2018-08-01 18:25:37`
-### Added
-- Allow to select a non-snips tts command
-- Support synonyms in conditon
 
-### Improved
-- Improved stability
+## Update `0.0.13` - 03/09/2018
 
-## `Version: 2018-07-29 20:55:36`
-### Changed
-- Updated Logo
-- More debug output
+**New Feature**
 
-## `Version: 2018-07-27 18:21:29`
-### Changed
-- Simplfied steps for loading assistant. 
+- Click the Snips device icon can test sound output.
 
-## `Version: 2018-07-26 16:08:40`
-### Changed
-- Moved to 'communication' cotegory from 'automation'
-- All the log will be shown udner snips(debug level)
+**Change**
 
-### Fixed
-- SSH2_disconnect not found. (Reported by @Cecece)
-- Some of the import binding data can not be displayed correctly.
+- Passing tags as original format.
 
-### Improved
-- Improved stability.
 
-## `Version: 2018-07-25 18:42:36`
-### Fixed
-- SSH can not fetch assistant. (Reported by @rudloffl)
+## Update `0.0.12` - 29/08/2018
+
+**New Features**
+
+- Support french interface translation.
+- Passing necessary information as default tags when a scenario is triggered.
+
+**Change**
+
+- Removed `Reset MQTT` option from intent management panel.
+
+**Bug Fix**
+
+- Losing request command in scenario ask command.
+
+
+## Update `0.0.11` - 24/08/2018
+
+**New Features**
+
+- Support 'ask' command.
+- Automatically reply tts message to the expected device(The device that received commend).
+- Support `dart sobre` ui theme.
+- Support tts playing for 'scenario_return'.
+- Support jeedom grammar for tts message, which use `[]` to contain the list and use `|` to separate.
+
+**Bug Fix**
+
+- ListEquipmentCmd button fills value to wrong input box for command options.
+
+
+## Update `0.0.10` - 13/08/2018
+
+**New Feature**
+
+- Add variable `snipsMsgSiteId`, it will be assigned `siteId` when a new message is received. (@fwehrle)
+
+**Changes**
+
+- Versions checking (@Hugo)
+- Repaired scenario losing effect when reload.
+- Tts feedback wii automatically select site.
+
+**Bug Fix**
+
+- Message selection box issue. (@Hugo)
+
+
+## Update `0.0.9` - 08/08/2018
+
+**New Feature**
+
+- Support multiple lights for light brightness shift function.
+
+**Change**
+
+- Only load intent which has `jeedom` sub-string in its name.
+
+**Bug Fix**
+
+- Binary value mapping is always "0".
+
+
+## Update `0.0.8` - 07/08/2018
+
+**New Feature**
+
+- Support `Jeedom 3.3.3`.
+
+**Change**
+
+- Disable multi-dialog function for the moment.
+
+
+## Update `0.0.7` - 05/08/2018
+
+**New Features**
+
+- Support reloading assistant with bindings option.
+- Support multi-feedback.
+
+**Change**
+
+- Automatically detect site information.
+
+
+## Update `0.0.6` - 01/08/2018
+
+**New Features**
+
+- Support using the third-party tts command.
+- Support synonyms for condition preset value.
+
+
+## Update `0.0.5` - 29/07/2018
+
+**Changes**
+
+- New logo.
+- More debug output.
+
+
+## Update `0.0.4` - 27/07/2018
+
+**Change**
+
+- Simplified loading assistant steps.
+
+
+## Update `0.0.3` - 26/07/2018
+
+**Changes**
+
+- Plugin category has been moved to `communication` from `automation`.
+- All the log information will be shown under snips(`debug` level).
+
+**Bug Fixes**
+
+- SSH2_disconnect not found. (@Cecece)
+- Some of the imported binding data can not be displayed correctly.
+
+
+## Update `0.0.2` - 25/07/2018
+
+**Bug Fix**
+
+- SSH can not fetch assistant. (@rudloffl)
