@@ -6,7 +6,7 @@
 .ftpconfig
 
 # Local test file
-test/*
+local_test/
 
 # Developing plan
 DEVELOP_DIARY.md
