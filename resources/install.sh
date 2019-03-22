@@ -1,5 +1,9 @@
 #! /bin/bash
 PROGRESS_FILE=/tmp/jeedom/snips/dependance
+SHELL_FOLDER=$(dirname $(readlink -f "$0"))
+if [ ! -z $1 ]; then
+	PROGRESS_FILE=$1
+fi
 echo "[jeedom-plugin-snips]"
 echo "--------------------------------"
 echo "[*] Start to install dependencies."
@@ -9,14 +13,14 @@ echo 0 > ${PROGRESS_FILE}
 
 echo "--------------------------------"
 echo "[*] Checking necessary working directories."
-if [ ! -d "../config_running" ]; then
+if [ ! -d "${SHELL_FOLDER}/../config_running" ]; then
     echo "[*] Creating config_running folder.."
-    mkdir ../config_running
+    mkdir ${SHELL_FOLDER}/../config_running
 fi
 
-if [ ! -d "../config_backup" ]; then
+if [ ! -d "${SHELL_FOLDER}/../config_backup" ]; then
     echo "[*] Creating config_backup folder.."
-    mkdir ../config_backup
+    mkdir ${SHELL_FOLDER}/../config_backup
 fi
 echo 5 > ${PROGRESS_FILE}
 

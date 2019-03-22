@@ -77,25 +77,35 @@ class snips extends eqLogic
     static function dependancy_install()
     {
         log::remove(__CLASS__ . '_dep');
-        $resource_path = realpath(dirname(__FILE__) . '/../../resources');
-        passthru(
-            'sudo /bin/bash '. $resource_path .'/install.sh '.
-            $resource_path .' > '. log::getPathToLog('snips_dep') .' 2>&1 &'
-        );
-        return true;
+        $install_script = dirname(__FILE__) .'/../../resources/install.sh';
+        $input = jeedom::getTmpFolder('snips') .'/dependance';
+        return [
+            'script' => $install_script.' '.$input,
+            'log' => log::getPathToLog(__CLASS__ .'_dep')
+        ];
     }
 
     /* return dependency status */
     static function dependancy_info()
     {
         $return = array();
-        $return['log'] = 'snips_dep';
+        $return['log'] = __CLASS__ . '_dep';
         $return['progress_file'] = jeedom::getTmpFolder('snips') .'/dependance';
         $return['state'] = 'nok';
-        $cmd = "dpkg -l | grep mosquitto";
-        exec($cmd, $output, $return_var);
+        $cmd_check_package = "dpkg -l | grep mosquitto";
+        exec($cmd, $output_package, $return_var);
         $libphp = extension_loaded('mosquitto');
-        if ($output[0] != "" && $libphp) {
+
+        $cmd_check_config_folder = 'ls '.dirname(__FILE__).'/../../';
+
+        exec($cmd_check_config_folder, $cmd_check_config_folder, $return_var);
+
+        if (
+            $cmd_check_package[0] != "" &&
+            in_array('config_backup', $cmd_check_config_folder) &&
+            in_array('config_running', $cmd_check_config_folder) &&
+            $libphp
+        ) {
             $return['state'] = 'ok';
         }
         return $return;
