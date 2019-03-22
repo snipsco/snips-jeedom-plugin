@@ -9,6 +9,10 @@
 - Re-constructed source code, they are now collaborating in a more logical way.
 - Callback scenario passes `#confidenceScore#` instead of `#probability#`.
 
+**Known Issue**
+
+- Temporarily disabled playing tts on the third part device. (New plugin structure doesn't support this feature yet)
+
 
 ## Update `0.0.16` - 24/01/2019
 
