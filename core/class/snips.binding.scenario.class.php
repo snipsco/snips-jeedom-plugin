@@ -34,7 +34,7 @@ class SnipsBindingScenario
         SnipsUtils::logger('construction done');
     }
 
-    public function execute()
+    function execute()
     {
         SnipsUtils::logger('scenario id: '. $this->scenario_id);
         $options = array();
@@ -42,7 +42,7 @@ class SnipsBindingScenario
         $options['action'] = $this->action;
         $options['tags'] = $this->get_all_scenario_tags();
 
-        $ret_msg = scenarioExpression::createAndExec('action', 'scenario', $options);
+        return scenarioExpression::createAndExec('action', 'scenario', $options);
     }
 
     private function get_all_scenario_tags()

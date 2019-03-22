@@ -61,7 +61,13 @@ class SnipsHandler
         // execute callback scenario
         $callback_scenario = $intentEq->get_callback_scenario();
         if ($callback_scenario) {
-            $callback_scenario->execute();
+            $_res_scenario = $callback_scenario->execute();
+            if ($_res_scenario){
+                $hermes->publish_start_session_notification(
+                    $payload->{'siteId'},
+                    SnipsTts::dump($_res_scenario)->get_message()
+                );
+            }
         }
 
         // get all the bindings belong to detected intent
@@ -86,6 +92,19 @@ class SnipsHandler
         // sync with execution
         sleep(1);
 
+        // if there is no binding found
+        if (!count($good_bindings) && !$callback_scenario) {
+            $_msg = config::byKey(
+                'defaultTTS',
+                'snips',
+                'Désolé, je n’ai pas compris'
+            );
+
+            $hermes->publish_start_session_notification(
+                $payload->{'siteId'},
+                SnipsTts::dump($_msg)->get_message()
+            );
+        }
         // reset saved runtime variables
         snips::reset_run_variable();
 
