@@ -129,13 +129,13 @@ class SnipsUtils
     /* either delete or create a variable */
     static function update_scenario_variable($var_name)
     {
-        if(!config::byKey($var_name, 'snips', 0)){
+        if (!config::byKey($var_name, 'snips', 0)) {
             $var = dataStore::byTypeLinkIdKey('scenario', -1, $var_name);
             if (is_object($var)) {
                 $var->remove();
+                self::logger('Removed variable '. $var_name, 'info');
             }
-            self::logger('Removed variable '. $var_name);
-        }else{
+        } else {
             $var = dataStore::byTypeLinkIdKey('scenario', -1, $var_name);
             if (!is_object($var)) {
                 $var = new dataStore();
