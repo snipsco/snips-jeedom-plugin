@@ -32,9 +32,7 @@ fi
 
 NEXT_NEW_VERSION="${SPLIT_VERSION[0]}.${SPLIT_VERSION[1]}.${SPLIT_VERSION[2]}"
 
-#perl -p -i -e "s/^#define VERSION \".*\"\$/#define VERSION \"$NEXT_NEW_VERSION\"/g" ../include/common.h
-#perl -p -i -e "s/^#define LAST_UPDATE \".*\"\$/#define LAST_UPDATE \"$TIME\"/g" ../include/common.h
-
-perl -p -i -e "s/snips--jeedom--plugin-v.*-blue.svg/snips--led--animation-v$NEXT_NEW_VERSION-blue.svg/g" ../README.md
+perl -p -i -e "s/version-.*-brightgreen.svg/version-$NEXT_NEW_VERSION-brightgreen.svg/g" ../README.md
+perl -p -i -e "s/<legend>\{\{Snips Voice Assistant\}\} - .*<\/legend>/<legend>\{\{Snips Voice Assistant\}\} - $NEXT_NEW_VERSION<\/legend>/g" ../desktop/php/snips.php
 
 echo -e "New version bumped to \033[1;32;32m$NEXT_NEW_VERSION\033[m"
