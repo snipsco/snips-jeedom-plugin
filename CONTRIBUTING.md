@@ -9,7 +9,7 @@ new features and patches.
 Getting Started
 ---------------
 * Make sure you have a GitHub account.
-* Open a [new issue](https://github.com/snipsco/snipsmanager/issues), assuming one does not already exist.
+* Open a [new issue](https://github.com/snipsco/snips-jeedom-plugin/issues), assuming one does not already exist.
 * Clearly describe the issue including steps to reproduce when it is a bug.
 
 Making Changes
@@ -30,43 +30,3 @@ Submitting Changes
 * Push your changes to a feature branch in your fork of the repository.
 * Submit a `Pull Request`.
 * Wait for maintainer feedback.
-
-## Programming styling
-
-### Function(Method) name:
-- Should be composed by one or more English words, which can clearly and simply describe what this function does
-- The first word should start with a lowercase letter
-- The non-first words should start with a capital letter
-
-Example:
-
-This is the function used to shift light brightness.
-```php
-function lightBrightnessShift($_json_lights) {}
-```
-
-### Local variable name:
-- Should be composed by one or more English words, which can clearly and simply describe the usage of this variable
-- All the letters should be lower case
-- Each word within the name should be separated by an underline sign ('\_')
-
-Example:
-
-This is the variable used to contain all the bindings which are ready to be executed (Condition checking passed).
-```php
-$bindings_with_correct_condition = array();
-```
-
-### Global variable name:
-- Should follow the same naming wat with local variables
-- All the words should be capital
-
-### Parameter name:
-- Should follow the same naming wat with local variables
-- Should start with a underline sign ('\_')
-
-Example:
-
-```php
-function lightBrightnessShift($_json_lights) {}
-```

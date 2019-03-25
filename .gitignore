@@ -1,1 +1,16 @@
+# Mac Os folder config file
 .DS_Store
+
+# FTP debug
+.ftpignore
+.ftpconfig
+
+# Local test file
+local_test/
+
+# Developing plan
+DEVELOP_DIARY.md
+
+# User file
+config_running/
+config_backup/

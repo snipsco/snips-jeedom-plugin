@@ -1,67 +1,71 @@
-<img align="right" src="/snips/plugin_info/snips_icon.png" width="180">
+<img align="right" src="/docs/AI_devices.png" width="350">
+
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/snipsco/snips-jeedom-plugin/blob/master/LICENSE)
+[![Version](https://img.shields.io/badge/version-0.1.0-brightgreen.svg)](https://github.com/snipsco/snips-jeedom-plugin/blob/master/CHANGE_LOG.md)
+
+# snips-jeedom-plugin
+
+This is the official Snips plugin designed for [Jeedom](https://www.jeedom.com/) home automation platform.
+
+This plugin comes with an user-friendly visual interface, which allows Jeedom user to bind their connected device action with Snips voice assistant.
 
 ## User Guide
 
 Please reach ***[Snips Dev Center](https://docs.snips.ai/)*** for the user documentation.
+
 - ***[English Version](https://docs.snips.ai/articles/raspberrypi/jeedom/en)***
 
-## Snips-Jeedom-Plugin
+## Installation
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/snipsco/snips-skill-respeaker/blob/master/LICENSE)
+### From Jeedom Plugin Market
 
-The Snips Voice Platform allows anyone to integrate AI powered voice interaction in their devices with ease. The end-to-end pipeline - Hotword detection, Automatic Speech Recognition (ASR) and Natural Language Understanding (NLU) - runs fully on device, powered by state of the art deep learning. By using Snips, you can avoid cloud provider costs, cloud latency, and protect user's privacy.
+<p align="center">
+    <img src="docs/snips_jeedom_market.png" width="650">
+</p>
 
-## Installation (As a developer)
+### Manual Installation
 
-### Step 1. Download plugin
-For this step, I would recommand you use `ssh` login your Jeedom site through console:
-```
-ssh <username>@<hostnme>
-```
-For example, if your Jeedom is running on a Raspberry, you can then use:
-```
-ssh pi@raspberry.local
-```
-As long as you have successfully loged in, you can simply use `git clone` command to download this repository:
-```
+**Step 1**
+
+Clone this repository onto your target device which holds Jeedom software:
+
+```bash
 git clone https://github.com/snipsco/Snips-Jeedom-Plugin.git
 ```
-Now you can do `ls` to check if `Snips-Jeedom-Plugin` is under your current directory:
-```
-ls Snips-Jeedom-Plugin
-```
-You should see the result:
-```
-README.md	    snips
-```
-### Step 2. Copy plugin to Jeedom folder
-Now you have the plugin file on your Jeedom site, but Jeedom an not detect this yet.
 
-Run the following command to copy snips plugin to Jeedom directory:
-```
-sudo cp -r Snips-Jeedom-Plugin/snips/ /var/www/html/plugins/
+**Step 2**
+
+Move source to Jeedom plugin directory:
+
+```bash
+sudo mv snips-jeedom-plugin/ /var/www/html/plugins/snips/
 ```
 
-### Step 3. Change permission
-Run following to add correct permission to all the file:
-```
+**Step 3**
+
+Change permission to `775`:
+
+```bash
 sudo chmod -R 775 /var/www/html/plugins/snips/
 ```
-Run following to change correct user group to all the file:
-```
+
+Change user group to `www-data`:
+
+```bash
 sudo chgrp -R www-data /var/www/html/plugins/snips/
 ```
-Run following to change correct ownership to all the file:
-```
+
+Change ownership to `www-data`:
+
+```bash
 sudo chown -R www-data /var/www/html/plugins/snips/
 ```
 
-### Step 4. Activate Snips plugin
-Now you can direct to your Jeedom platform, go to **Plugin Management**, find **Snips**, and then activate it.
+**Step 4**
 
-Then you need to set the correct IP address on the plugin configuration page.
+Open Jeedom plugin management page, select `snips`. Then activate plugin and install dependancy.
 
-(Use `sam devices` command to see the IP address of snips site)
+Once the deamon is successfully launched, Snips plugin is ready to fly.
 
 ## Contributing
 
