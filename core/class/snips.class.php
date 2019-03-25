@@ -138,7 +138,17 @@ class snips extends eqLogic
         }
         $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
         if (!is_object($cron)) {
-            throw new Exception(__('Can not find task corn ', __FILE__));
+            SnipsUtils::logger('didn\'t find task cron');
+            $cron = new cron();
+            $cron->setClass('snips');
+            $cron->setFunction('deamon_hermes');
+            $cron->setEnable(1);
+            $cron->setDeamon(1);
+            $cron->setSchedule('* * * * *');
+            $cron->setTimeout('1440');
+            $cron->save();
+            SnipsUtils::logger('created task cron: deamon_hermes');
+            //throw new Exception(__('Can not find task corn ', __FILE__));
         }
         $cron->run();
     }
