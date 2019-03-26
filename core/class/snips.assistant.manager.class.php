@@ -6,38 +6,10 @@ require_once dirname(__FILE__) . '/snips.utils.class.php';
 
 class SnipsAssistantManager
 {
-    /* create snips-intent object */
-    static function create_snips_object($assistant)
-    {
-        // since 3.3.3, use jeeObject instead of object as class name
-        if (version_compare(jeedom::version(), '3.3.3', '>=')) {
-            $obj_field = 'jeeObject';
-            SnipsUtils::logger('Jeedom >= 3.3.3');
-        }else{
-            $obj_field = 'object';
-            SnipsUtils::logger('Jeedom <= 3.3.3');
-        }
-
-        $obj = object::byName('Snips-Intents');
-        if (!isset($obj) || !is_object($obj)) {
-            $obj = new $obj_field();
-            $obj->setName('Snips-Intents');
-            SnipsUtils::logger('Created object: Snips-Intents');
-        }
-        $obj->setIsVisible(1);
-        $obj->setConfiguration('id', $assistant["id"]);
-        $obj->setConfiguration('name',$assistant["name"]);
-        $obj->setConfiguration('hotword', $assistant['hotword']);
-        $obj->setConfiguration('language', $assistant['language']);
-        $obj->setConfiguration('createdAt', $assistant['createdAt']);
-        $obj->save();
-    }
-
     /* create intent eq objects */
     static function create_intents_eq_cmd($raw_intents)
     {
-        $object_id = object::byName('Snips-Intents')->getId();
-
+        $object_id = SnipsUtils::get_snips_intent_object()->getId();
         foreach ($raw_intents as $intent) {
             if (strpos(strtolower($intent['name']), 'jeedom')) {
                 $elogic = snips::byLogicalId($intent['id'], 'snips');
@@ -91,7 +63,7 @@ class SnipsAssistantManager
         $json_string = file_get_contents($assistant_file);
         $assistant = json_decode($json_string, true);
 
-        self::create_snips_object($assistant);
+        SnipsUtils::create_snips_intent_object($assistant);
 
         self::create_intents_eq_cmd($assistant['intents']);
 
@@ -137,7 +109,7 @@ class SnipsAssistantManager
 
     /* create snips tts eq object */
     static function create_snips_device($site_id, $lang){
-        $obj = object::byName('Snips-Intents');
+        $obj = SnipsUtils::get_snips_intent_object();
         if (!$obj || !$site_id) {
             return;
         }

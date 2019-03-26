@@ -81,7 +81,7 @@ function snips_remove() {
         $cron->remove();
     }
 
-    $obj = object::byName('Snips-Intents');
+    $obj = SnipsUtils::get_snips_intent_object();
     if (is_object($obj)) {
         $obj->remove();
         SnipsUtils::logger('removed object: Snips-Intents');
