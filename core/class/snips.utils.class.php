@@ -12,6 +12,52 @@ class SnipsUtils
         log::add('snips', $level, $msg);
     }
 
+    /* create jeeObject following the current version */
+    static function create_snips_intent_object($assistant)
+    {
+        // since 3.3.3, use jeeObject instead of object as class name
+        if (version_compare(jeedom::version(), '3.3.3', '>=')) {
+            SnipsUtils::logger('Jeedom >= 3.3.3');
+            $obj = jeeObject::byName('Snips-Intents');
+            if (!is_object($obj)) {
+                $obj = new jeeObject();
+                $obj->setName('Snips-Intents');
+                SnipsUtils::logger('Created object: Snips-Intents');
+            }
+        } else {
+            SnipsUtils::logger('Jeedom <= 3.3.3');
+            $obj = object::byName('Snips-Intents');
+            if (!is_object($obj)) {
+                $obj = new object();
+                $obj->setName('Snips-Intents');
+                SnipsUtils::logger('Created object: Snips-Intents');
+            }
+        }
+
+        $obj->setIsVisible(1);
+        $obj->setConfiguration('id', $assistant["id"]);
+        $obj->setConfiguration('name',$assistant["name"]);
+        $obj->setConfiguration('hotword', $assistant['hotword']);
+        $obj->setConfiguration('language', $assistant['language']);
+        $obj->setConfiguration('createdAt', $assistant['createdAt']);
+        $obj->save();
+    }
+
+    /* get snips intent object id following the version number */
+    static function get_snips_intent_object()
+    {
+        if (version_compare(jeedom::version(), '3.3.3', '>=')) {
+            SnipsUtils::logger('Jeedom >= 3.3.3');
+            $obj = jeeObject::byName('Snips-Intents');
+            return is_object($obj) ? $obj: null;
+
+        } else {
+            SnipsUtils::logger('Jeedom <= 3.3.3');
+            $obj = object::byName('Snips-Intents');
+            return is_object($obj) ? $obj: null;
+        }
+    }
+
     /* return an array of jeedom intents (id or name) */
     static function get_intents_from_assistant_json($path, $if_id = false)
     {
@@ -96,7 +142,7 @@ class SnipsUtils
 
     /* play test sound on the specified device */
     static function find_device($site_id){
-        $lang = object::byName('Snips-Intents')->getConfiguration('language');
+        $lang = SnipsUtils::get_snips_intent_object()->getConfiguration('language');
 
         switch ($lang) {
             case 'fr':
