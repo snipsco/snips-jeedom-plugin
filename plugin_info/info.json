@@ -16,6 +16,6 @@
         "github": "https://github.com/snipsco/snips-jeedom-plugin/"
     },
     "language": ["fr_FR","en_US"],
-    "compatibility": ["Jeedom Smart", "Jeedom Pro","Raspberry Pi","Respeaker Core V2","DIY"],
+    "compatibility": ["miniplus","smart","rpi","docker","diy"],
     "licence": "MIT"
 }
