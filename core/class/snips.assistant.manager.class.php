@@ -9,28 +9,35 @@ class SnipsAssistantManager
     /* create intent eq objects */
     static function create_intents_eq_cmd($raw_intents)
     {
+        $count = 0;
         $object_id = SnipsUtils::get_snips_intent_object()->getId();
         foreach ($raw_intents as $intent) {
-            if (strpos(strtolower($intent['name']), 'jeedom')) {
-                $elogic = snips::byLogicalId($intent['id'], 'snips');
-                if (!is_object($elogic)) {
-                    $elogic = new snips();
-                    $elogic->setLogicalId($intent['id']);
-                    $elogic->setName($intent['name']);
-                    SnipsUtils::logger('Created intent entity: '.$intent['name']);
-                }
-                $elogic->setEqType_name('snips');
-                $elogic->setIsEnable(1);
-                $elogic->setConfiguration('snipsType', 'Intent');
-                $elogic->setConfiguration('slots', $intent['slots']);
-                $elogic->setConfiguration('isSnipsConfig', 1);
-                $elogic->setConfiguration('isInteraction', 0);
-                $elogic->setConfiguration('language', $intent['language']);
-                $elogic->setObject_id($object_id);
-                $elogic->save();
+            if (!strpos(strtolower($intent['name']), 'jeedom')) {
+                continue;
             }
+            // create intent
+            $elogic = snips::byLogicalId($intent['id'], 'snips');
+            if (!is_object($elogic)) {
+                $elogic = new snips();
+                $elogic->setLogicalId($intent['id']);
+                $elogic->setName($intent['name']);
+                SnipsUtils::logger('Created intent entity: '.$intent['name']);
+            }
+            $elogic->setEqType_name('snips');
+            $elogic->setIsEnable(1);
+            $elogic->setConfiguration('snipsType', 'Intent');
+            $elogic->setConfiguration('slots', $intent['slots']);
+            $elogic->setConfiguration('isSnipsConfig', 1);
+            $elogic->setConfiguration('isInteraction', 0);
+            $elogic->setConfiguration('language', $intent['language']);
+            $elogic->setObject_id($object_id);
+            $elogic->save();
+            // generate all the necessary command for this intent
             self::create_slots_cmd($elogic, $intent['slots']);
+            $count += 1;
         }
+
+        SnipsUtils::logger('loaded '. $count .' jeedom intent.', 'info');
     }
 
     /* create slots cmd for all the intent eq objects */
