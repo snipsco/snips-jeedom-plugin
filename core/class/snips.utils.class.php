@@ -70,7 +70,7 @@ class SnipsUtils
         }
 
         $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
-        if (!is_object($cron_new)) {
+        if (!is_object($cron)) {
             $cron = new cron();
             $cron->setClass('snips');
             $cron->setFunction('deamon_hermes');
@@ -81,6 +81,7 @@ class SnipsUtils
             $cron->save();
             SnipsUtils::logger('create snips task cron');
         }
+        return $cron;
     }
 
     /* remove snips task cron */

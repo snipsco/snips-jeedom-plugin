@@ -136,7 +136,7 @@ class snips extends eqLogic
         }
         $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
         if (!is_object($cron)) {
-            SnipsUtils::create_task_cron();
+            $cron = SnipsUtils::create_task_cron();
         }
         $cron->run();
     }
@@ -146,7 +146,7 @@ class snips extends eqLogic
     {
         $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
         if (!is_object($cron)) {
-            SnipsUtils::create_task_cron();
+            $cron = SnipsUtils::create_task_cron();
         }
         $cron->halt();
     }
