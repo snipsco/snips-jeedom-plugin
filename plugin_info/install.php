@@ -3,23 +3,8 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 require_once dirname(__FILE__) . '/../class/snips.utils.class.php';
 
 function snips_install() {
-    $cron = cron::byClassAndFunction('snips', 'mqttClient');
-    if (is_object($cron)) {
-        $cron->stop();
-        $cron->remove();
-    }
+    SnipsUtils::create_task_cron();
 
-    $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
-    if (!is_object($cron)) {
-        $cron = new cron();
-        $cron->setClass('snips');
-        $cron->setFunction('deamon_hermes');
-        $cron->setEnable(1);
-        $cron->setDeamon(1);
-        $cron->setSchedule('* * * * *');
-        $cron->setTimeout('1440');
-        $cron->save();
-    }
     $lang = translate::getLanguage();
     if ($lang == 'fr_FR') {
         config::save('defaultTTS', 'Désolé, je ne trouve pas les actions!', 'snips');
@@ -34,24 +19,7 @@ function snips_install() {
 }
 
 function snips_update() {
-    $cron = cron::byClassAndFunction('snips', 'mqttClient');
-    if (is_object($cron)) {
-        $cron->stop();
-        $cron->remove();
-    }
-
-    $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
-    if (!is_object($cron)) {
-        $cron = new cron();
-        $cron->setClass('snips');
-        $cron->setFunction('deamon_hermes');
-        $cron->setEnable(1);
-        $cron->setDeamon(1);
-        $cron->setSchedule('* * * * *');
-        $cron->setTimeout('1440');
-        $cron->save();
-    }
-
+    SnipsUtils::create_task_cron();
 
     config::save('dynamicSnipsTTS',1,'snips');
 
@@ -69,19 +37,9 @@ function snips_update() {
 }
 
 function snips_remove() {
-    $cron = cron::byClassAndFunction('snips', 'mqttClient');
-    if (is_object($cron)) {
-        $cron->stop();
-        $cron->remove();
-    }
+    SnipsUtils::delete_task_cron();
 
-    $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
-    if (is_object($cron)) {
-        $cron->stop();
-        $cron->remove();
-    }
-
-    $obj = object::byName('Snips-Intents');
+    $obj = SnipsUtils::get_snips_intent_object();
     if (is_object($obj)) {
         $obj->remove();
         SnipsUtils::logger('removed object: Snips-Intents');

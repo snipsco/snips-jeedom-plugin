@@ -1,3 +1,19 @@
+## Update `0.1.2` - 28/03/2019
+
+**Bug Fixes**
+
+- Only create cmd object for Jeedom intent.
+- Isolated task cron creation and deletion, added into `deamon_stop` function when no task cron found.
+
+
+## Update `0.1.1` - 26/03/2019
+
+**Bug Fixes**
+
+- Create a new task cron if it can not be found after update.
+- When creating/deleting `Snips-Intent` object, using class `object` if core version is under 3.3.3, using `jeeObject` if core version is over 3.3.3.
+
+
 ## Update `0.1.0` - 22/03/2019
 
 **New Feature**

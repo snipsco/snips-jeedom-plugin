@@ -12,6 +12,96 @@ class SnipsUtils
         log::add('snips', $level, $msg);
     }
 
+    /* create jeeObject following the current version */
+    static function create_snips_intent_object($assistant)
+    {
+        // since 3.3.3, use jeeObject instead of object as class name
+        if (version_compare(jeedom::version(), '3.3.3', '>=')) {
+            SnipsUtils::logger('Jeedom >= 3.3.3');
+            $obj = jeeObject::byName('Snips-Intents');
+            if (!is_object($obj)) {
+                $obj = new jeeObject();
+                $obj->setName('Snips-Intents');
+                SnipsUtils::logger('Created object: Snips-Intents');
+            }
+        } else {
+            SnipsUtils::logger('Jeedom <= 3.3.3');
+            $obj = object::byName('Snips-Intents');
+            if (!is_object($obj)) {
+                $obj = new object();
+                $obj->setName('Snips-Intents');
+                SnipsUtils::logger('Created object: Snips-Intents');
+            }
+        }
+
+        $obj->setIsVisible(1);
+        $obj->setConfiguration('id', $assistant["id"]);
+        $obj->setConfiguration('name',$assistant["name"]);
+        $obj->setConfiguration('hotword', $assistant['hotword']);
+        $obj->setConfiguration('language', $assistant['language']);
+        $obj->setConfiguration('createdAt', $assistant['createdAt']);
+        $obj->save();
+    }
+
+    /* get snips intent object id following the version number */
+    static function get_snips_intent_object()
+    {
+        if (version_compare(jeedom::version(), '3.3.3', '>=')) {
+            SnipsUtils::logger('Jeedom >= 3.3.3');
+            $obj = jeeObject::byName('Snips-Intents');
+            return is_object($obj) ? $obj: null;
+
+        } else {
+            SnipsUtils::logger('Jeedom <= 3.3.3');
+            $obj = object::byName('Snips-Intents');
+            return is_object($obj) ? $obj: null;
+        }
+    }
+
+    /* create snips task deamon, delete old deamon */
+    static function create_task_cron()
+    {
+        // remove the old cron if it's exist
+        $cron_old = cron::byClassAndFunction('snips', 'mqttClient');
+        if (is_object($cron_old)) {
+            $cron_old->stop();
+            $cron_old->remove();
+            SnipsUtils::logger('old snips task cron is removed');
+        }
+
+        $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
+        if (!is_object($cron_new)) {
+            $cron = new cron();
+            $cron->setClass('snips');
+            $cron->setFunction('deamon_hermes');
+            $cron->setEnable(1);
+            $cron->setDeamon(1);
+            $cron->setSchedule('* * * * *');
+            $cron->setTimeout('1440');
+            $cron->save();
+            SnipsUtils::logger('create snips task cron');
+        }
+    }
+
+    /* remove snips task cron */
+    static function delete_task_cron()
+    {
+        // remove the old cron if it's exist
+        $cron_old = cron::byClassAndFunction('snips', 'mqttClient');
+        if (is_object($cron_old)) {
+            $cron_old->stop();
+            $cron_old->remove();
+            SnipsUtils::logger('old snips task cron is removed');
+        }
+
+        $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
+        if (is_object($cron)) {
+            $cron->stop();
+            $cron->remove();
+            SnipsUtils::logger('snips task cron is removed');
+        }
+    }
+
     /* return an array of jeedom intents (id or name) */
     static function get_intents_from_assistant_json($path, $if_id = false)
     {
@@ -96,7 +186,7 @@ class SnipsUtils
 
     /* play test sound on the specified device */
     static function find_device($site_id){
-        $lang = object::byName('Snips-Intents')->getConfiguration('language');
+        $lang = SnipsUtils::get_snips_intent_object()->getConfiguration('language');
 
         switch ($lang) {
             case 'fr':

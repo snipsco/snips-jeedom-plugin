@@ -12,12 +12,10 @@ require_once dirname(__FILE__) . '/snips.binding.scenario.class.php';
 
 class snips extends eqLogic
 {
-    const NAME_OBJECT = 'Snips-Intents';
-
     /* get current assistant language */
     static function get_assistant_language()
     {
-        $obj = object::byName(self::NAME_OBJECT);
+        $obj = SnipsUtils::get_snips_intent_object();
         if (!$obj) {
             return false;
         }
@@ -138,7 +136,7 @@ class snips extends eqLogic
         }
         $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
         if (!is_object($cron)) {
-            throw new Exception(__('Can not find task corn ', __FILE__));
+            SnipsUtils::create_task_cron();
         }
         $cron->run();
     }
@@ -148,7 +146,7 @@ class snips extends eqLogic
     {
         $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
         if (!is_object($cron)) {
-            throw new Exception(__('Can not find taks corn', __FILE__));
+            SnipsUtils::create_task_cron();
         }
         $cron->halt();
     }
