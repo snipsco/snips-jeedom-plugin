@@ -16,6 +16,7 @@
 
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 require_once dirname(__FILE__) . '/snips.utils.class.php';
+require_once dirname(__FILE__) . '/snips.handler.class.php';
 
 class SnipsHermes{
 
