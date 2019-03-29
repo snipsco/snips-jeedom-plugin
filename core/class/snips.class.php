@@ -306,7 +306,7 @@ class snipsCmd extends cmd
         );
     }
 
-    function snips_ask()
+    function snips_ask($options = array())
     {
         SnipsUtils::logger('cmd: ask');
         preg_match_all("/(\[.*?\])/", $options['answer'][0], $match_intent);
