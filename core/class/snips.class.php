@@ -175,7 +175,7 @@ class snips extends eqLogic
     {
         return SnipsBinding::dump(
             $this->getConfiguration('bindings'),
-            $this->name
+            $this->id
         );
     }
 

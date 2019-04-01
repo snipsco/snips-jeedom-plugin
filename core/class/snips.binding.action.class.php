@@ -6,22 +6,22 @@ require_once dirname(__FILE__) . '/snips.utils.class.php';
 
 class SnipsBindingAction
 {
-    private $intent;
+    private $intent_id;
     private $cmd;
     private $options = array();
 
-    static function dump($actions_raw = array(), $intent)
+    static function dump($actions_raw = array(), $intent_id)
     {
         $actions = array();
         foreach($actions_raw as $action_raw){
-            $actions[] = new self($action_raw, $intent);
+            $actions[] = new self($action_raw, $intent_id);
         }
         return $actions;
     }
 
-    function __construct($action = array(), $intent)
+    function __construct($action = array(), $intent_id)
     {
-        $this->intent = $intent;
+        $this->intent_id = $intent_id;
         $this->cmd = $action['cmd'];
         $this->options = $action['options'];
     }
@@ -32,7 +32,7 @@ class SnipsBindingAction
         // exception: scenario
         if ($this->cmd == 'scenario') {
             $intentEq = eqLogic::byLogicalId(
-                $this->intent,
+                $this->intent_id,
                 'snips'
             );
             return $intentEq->get_callback_scenario(
@@ -48,9 +48,12 @@ class SnipsBindingAction
             key_exists('HT', $this->options)
         ) {
             $intentEq = eqLogic::byLogicalId(
-                $this->intent,
+                $this->intent_id,
                 'snips'
             );
+            if (!is_object($intentEq)) {
+                throw new Exception(__('Can not find eqLogic by intent id: '. $this->intent_id, __FILE__));
+            }
             $cmds = $intentEq->getCmd();
             foreach ($cmds as $cmd) {
                 $slot_type = $cmd->getConfiguration('entityId');

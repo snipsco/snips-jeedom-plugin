@@ -6,7 +6,7 @@ require_once dirname(__FILE__) . '/snips.binding.action.class.php';
 
 class SnipsBinding
 {
-    private $intent;
+    private $intent_id;
 
     public $name;
     public $enable;
@@ -22,19 +22,19 @@ class SnipsBinding
     private $nsr_slots = array();
 
     /* generate a list of binding objects by raw configuration array */
-    static function dump($bindings_raw = array(), $intent)
+    static function dump($bindings_raw = array(), $intent_id)
     {
         $bindings = array();
         foreach($bindings_raw as $key => $binding_raw){
-            $bindings[] = new self($binding_raw, $intent);
+            $bindings[] = new self($binding_raw, $intent_id);
         }
         return $bindings;
     }
 
-    function __construct($binding_raw, $intent)
+    function __construct($binding_raw, $intent_id)
     {
-        $this->intent = $intent;
-        
+        $this->intent_id = $intent_id;
+
         $this->name = $binding_raw['name'];
         $this->enable = $binding_raw['enable'] == '0' ? false : true;
 
@@ -47,7 +47,7 @@ class SnipsBinding
         );
         $this->actions = SnipsBindingAction::dump(
             $binding_raw['action'],
-            $intent
+            $intent_id
         );
 
         $this->nsr_slots = $binding_raw['nsr_slots'];
