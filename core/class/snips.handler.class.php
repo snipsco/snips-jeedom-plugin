@@ -66,7 +66,7 @@ class SnipsHandler
         $callback_scenario = $intentEq->get_callback_scenario();
         if ($callback_scenario) {
             $_res_scenario = $callback_scenario->execute();
-            if ($_res_scenario){
+            if (is_string($_res_scenario)){
                 $hermes->publish_start_session_notification(
                     $payload->{'siteId'},
                     SnipsTts::dump($_res_scenario)->get_message()
