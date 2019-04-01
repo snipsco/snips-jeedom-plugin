@@ -14,3 +14,6 @@ DEVELOP_DIARY.md
 # User file
 config_running/
 config_backup/
+
+# Docker mount
+.docker/
