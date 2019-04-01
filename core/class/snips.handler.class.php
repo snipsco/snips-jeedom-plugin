@@ -36,6 +36,10 @@ class SnipsHandler
             'snips'
         );
 
+        if (!is_object($intentEq)) {
+            throw new Exception(__('Can not find intent eqLogic by intent: '. $payload->{'intent'}->{'intentName'}, __FILE__));
+        }
+
         if ($intentEq->getConfiguration('isInteraction')) {
             // jeedom interaction, forward input then return
             $res = interactQuery::tryToReply($payload->{'input'});
