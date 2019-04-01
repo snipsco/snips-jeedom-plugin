@@ -71,7 +71,7 @@ class SnipsHermes{
     /* deconstructor */
     function __destruct()
     {
-        $this->client->disconnect();
+        //$this->client->disconnect();
         unset($this->client);
     }
 
