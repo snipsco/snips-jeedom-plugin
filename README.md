@@ -67,6 +67,74 @@ Open Jeedom plugin management page, select `snips`. Then activate plugin and ins
 
 Once the deamon is successfully launched, Snips plugin is ready to fly.
 
+## Setup Jeedom Developing Environment
+
+**Pré-requis**
+
+`Docker` need to be installed on your OS.
+
+> ***Note: setp 1-2 can be done by the script `dev_script/docker_setup.sh`***
+
+**Step 1**
+
+Get the mariadb image at tag 10.1.37 (Not the latest):
+
+```bash
+docker pull mariadb:10.1.37
+```
+
+Create the local container for mysql:
+
+```bash
+sudo docker run \
+    --name jeedom-mysql \
+    -v ${SHELL_FOLDER}/../.docker/mysql:/var/lib/mysql \
+    -e MYSQL_ROOT_PASSWORD=root \
+    -d mariadb:10.1.37
+```
+
+**Step 2**
+
+Get the latest jeedom image:
+
+```bash
+docker pull jeedom/jeedom
+```
+
+Create the local container for jeedom:
+
+```bash
+sudo docker run \
+    --name jeedom-server \
+    --link jeedom-mysql:mysql \
+    --privileged \
+    -v ${SHELL_FOLDER}/../.docker/server:/var/www/html \
+    -e ROOT_PASSWORD=root \
+    -p 9080:80 \
+    -p 9022:22 jeedom/jeedom
+```
+**Step 3**
+
+Access `localhost:9080` to install.
+
+| DB Parameters |  Value          |
+| :---:         |  :---:          |
+| hots          | See comment [1] |
+| port          | `3306`          |
+| user          | `root`          |
+| pass          | `root`          |
+| name          | `jeedom`        |
+
+> [1]
+>
+> To get the database ip address, looking into the MariaDB container
+>
+> `docker exec -it jeedom-mysql /bin/bash`
+>
+> Check the hosts binding
+>
+> `more /etc/hosts`
+
 ## Contributing
 
 Please see the [Contribution Guidelines](https://github.com/snipsco/Snips-Jeedom-Plugin/blob/master/CONTRIBUTING.md).
