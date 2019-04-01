@@ -408,38 +408,29 @@ class SnipsUtils
     }
 
     /* reset cmd object value to empty */
-    static function reset_slots_cmd($slots = false, $intent = false)
+    static function reset_slots_cmd()
     {
         self::logger();
-        if ($slots == false && $intent == false) {
-            // clear cmd value for all the intents
-            $eqs = eqLogic::byType('snips');
-            foreach ($eqs as $eq) {
-                $cmds = $eq->getCmd();
-                foreach ($cmds as $cmd) {
-                    $cmd->setCache('value', null);
-                    $cmd->setValue(null);
-                    $cmd->setConfiguration('orgVal', null);
-                    $cmd->save();
-                }
-            }
-
-            $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
-            if (is_object($var)) {
-                $var->setValue();
-                $var->save();
-                self::logger('set '.$var->getValue().' => snipsMsgSiteId');
-            }
-        } else {
-            // clear cmd value for a specified intent
-            $eq = eqLogic::byLogicalId($intent, 'snips');
-            foreach ($slots as $slot) {
-                $cmd = $eq->getCmd(null, $slot);
-                $cmd->setCache('value');
+        // clear cmd value for all the intents
+        $eqs = eqLogic::byType('snips');
+        if(!$eqs) {
+            throw new Exception(__('Can not find eqLogics by \'snips\' ', __FILE__));
+        }
+        foreach ($eqs as $eq) {
+            $cmds = $eq->getCmd();
+            foreach ($cmds as $cmd) {
+                $cmd->setCache('value', null);
                 $cmd->setValue(null);
                 $cmd->setConfiguration('orgVal', null);
                 $cmd->save();
             }
+        }
+
+        $var = dataStore::byTypeLinkIdKey('scenario', -1, 'snipsMsgSiteId');
+        if (is_object($var)) {
+            $var->setValue();
+            $var->save();
+            self::logger('set '.$var->getValue().' => snipsMsgSiteId');
         }
     }
 
