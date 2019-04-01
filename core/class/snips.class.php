@@ -90,7 +90,7 @@ class snips extends eqLogic
         $return['progress_file'] = jeedom::getTmpFolder('snips') .'/dependance';
         $return['state'] = 'nok';
         $cmd_check_package = "dpkg -l | grep mosquitto";
-        exec($cmd, $output_package, $return_var);
+        exec($cmd_check_package, $output_package, $return_var);
         $libphp = extension_loaded('mosquitto');
 
         $cmd_check_config_folder = 'ls '.dirname(__FILE__).'/../../';
