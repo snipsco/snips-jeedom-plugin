@@ -148,6 +148,12 @@ Access `localhost:9080` to install.
 >
 > `more /etc/hosts`
 
+## Working Mechanism
+
+<p align="center">
+    <img src="docs/flow_chart.png" width="780">
+</p>
+
 ## Contributing
 
 Please see the [Contribution Guidelines](https://github.com/snipsco/Snips-Jeedom-Plugin/blob/master/CONTRIBUTING.md).
