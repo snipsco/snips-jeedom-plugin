@@ -1,8 +1,20 @@
+## Update `0.1.3` - 2/04/2019
+
+**Bug Fixes**
+
+- `getCmd` on boolean by using `intent_id` issue. ([#13](https://github.com/snipsco/snips-jeedom-plugin/issues/13), [#16](https://github.com/snipsco/snips-jeedom-plugin/issues/16))
+- `Ask` command not working issue. ([#14](https://github.com/snipsco/snips-jeedom-plugin/issues/14))
+- Solved the error under PHP5: called to an undefined function. ([#15](https://github.com/snipsco/snips-jeedom-plugin/issues/15))
+- `Say` command not working issue.
+- Callback scenario returns '1' is being played issue.
+- Warning `Illegal string offset: scenario`  on the eqLogic card issue.
+
+
 ## Update `0.1.2` - 28/03/2019
 
 **Bug Fixes**
 
-- Only create cmd object for Jeedom intent.
+- Only create cmd object for Jeedom intent. ([#11](https://github.com/snipsco/snips-jeedom-plugin/issues/11))
 - Isolated task cron creation and deletion, added into `deamon_stop` function when no task cron found.
 
 

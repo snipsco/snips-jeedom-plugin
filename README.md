@@ -27,15 +27,15 @@ Please reach ***[Snips Dev Center](https://docs.snips.ai/)*** for the user docum
 
 **Step 1**
 
-Clone this repository onto your target device which holds Jeedom software:
+Clone this repository onto your target device holding Jeedom platform:
 
 ```bash
-git clone https://github.com/snipsco/Snips-Jeedom-Plugin.git
+git clone https://github.com/snipsco/snips-jeedom-plugin.git
 ```
 
 **Step 2**
 
-Move source to Jeedom plugin directory:
+Move plugin to Jeedom plugin directory:
 
 ```bash
 sudo mv snips-jeedom-plugin/ /var/www/html/plugins/snips/
@@ -65,7 +65,7 @@ sudo chown -R www-data /var/www/html/plugins/snips/
 
 Open Jeedom plugin management page, select `snips`. Then activate plugin and install dependancy.
 
-Once the deamon is successfully launched, Snips plugin is ready to fly.
+Once the daemon is successfully launched, Snips plugin is ready to fly.
 
 ## Setup Jeedom Developing Environment
 
@@ -73,7 +73,7 @@ Once the deamon is successfully launched, Snips plugin is ready to fly.
 
 `Docker` need to be installed on your OS.
 
-> ***Note: setp 1-2 can be done by the script `dev_script/docker_setup.sh`***
+> ***Note: setp 1-2 can be done by the script [`dev_script/docker_setup.sh`](https://github.com/snipsco/Snips-Jeedom-Plugin/blob/master/dev_script/docker_setup.sh)***
 
 **Step 1**
 
@@ -92,6 +92,11 @@ sudo docker run \
     -e MYSQL_ROOT_PASSWORD=root \
     -d mariadb:10.1.37
 ```
+
+> `--name`: container name.
+> `-v`: mount host volume to a container directory.
+> `-e`: set environment variable (root password).
+> `-d`: run the container as a daemon.
 
 **Step 2**
 
@@ -113,13 +118,21 @@ sudo docker run \
     -p 9080:80 \
     -p 9022:22 jeedom/jeedom
 ```
+
+> `--name`: container name.
+> `--link`: link to jeedom database container.
+> `--privileged`: assign real root permission to root user.
+> `-v`: mount a host directory to a container directory.
+> `-e`: set environment variable (root password).
+> `-p`: map host port to a contain port.
+
 **Step 3**
 
 Access `localhost:9080` to install.
 
 | DB Parameters |  Value          |
 | :---:         |  :---:          |
-| hots          | See comment [1] |
+| host          | See comment [1] |
 | port          | `3306`          |
 | user          | `root`          |
 | pass          | `root`          |
