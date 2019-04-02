@@ -175,7 +175,7 @@ class snips extends eqLogic
     {
         return SnipsBinding::dump(
             $this->getConfiguration('bindings'),
-            $this->id
+            $this->getLogicalId()
         );
     }
 
@@ -193,7 +193,6 @@ class snips extends eqLogic
             $raw_array['user_tags'] = $user_tags;
         }
         if (!$raw_array['scenario'] || $raw_array['scenario'] < 0) {
-            SnipsUtils::logger('No callback scenario found');
             return false;
         }
         return new SnipsBindingScenario($raw_array);
