@@ -192,7 +192,7 @@ class snips extends eqLogic
             $raw_array['action'] = $scenario_action;
             $raw_array['user_tags'] = $user_tags;
         }
-        if (!$raw_array['scenario']) {
+        if (!$raw_array['scenario'] || $raw_array['scenario'] < 0) {
             SnipsUtils::logger('No callback scenario found');
             return false;
         }

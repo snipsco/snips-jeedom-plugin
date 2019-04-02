@@ -99,7 +99,7 @@ foreach ($intent_eqs as $intent_eq) {
 
         foreach ($intent_eqs as $intent_eq) {
             $opacity = ($intent_eq->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-            echo '<span class="panel panel-info eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $intent_eq->getId() . '" style="width: 230px; height: 142px !important; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
+            echo '<span class="panel panel-info eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $intent_eq->getId() . '" style="width: 230px; height: 142px !important; text-align: left; margin-left : 20px; border-radius: 0px;' . $opacity . '" >';
             echo '<li class="panel-heading" style="padding: 5px 5px;list-style:none;"><strong style="font-size: 1em;">'. $intent_eq->getName() .'</strong></li>';
             echo '<li class="panel-body" style="padding: 0px;list-style:none;">';
 
@@ -107,7 +107,7 @@ foreach ($intent_eqs as $intent_eq) {
 
             //echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #337ab7;">'.$eqLogic->getConfiguration('language').'</span>{{Language}}</li>';
 
-            if ($intent_eq->getConfiguration('callbackScenario')['scenario'] > 0) {
+            if ($intent_eq->get_callback_scenario()) {
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #5cb85c;"> {{Yes}}</span>{{Callback Scenario}}</li>';
             }else{
               echo '<li class="list-group-item" style="padding: 4px 10px; border: 0px;"><span class="badge" style="background-color: #ec971f;"> {{No}}</span>{{Callback Scenario}}</li>';
