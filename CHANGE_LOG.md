@@ -1,4 +1,4 @@
-## Update `0.1.3` - 2/04/2019
+## Update `0.1.3` - 02/04/2019
 
 **Bug Fixes**
 
@@ -8,6 +8,7 @@
 - `Say` command not working issue.
 - Callback scenario returns '1' is being played issue.
 - Warning `Illegal string offset: scenario`  on the eqLogic card issue.
+- Scenario variables are not being created and updated. ([#17](https://github.com/snipsco/snips-jeedom-plugin/issues/18))
 
 
 ## Update `0.1.2` - 28/03/2019
