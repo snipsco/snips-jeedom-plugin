@@ -215,6 +215,7 @@ class snips extends eqLogic
     /* after saving the confguration, update snips variable */
     static function postConfiguration()
     {
+        config::save('dynamicSnipsTTS',1,'snips');
         SnipsUtils::update_scenario_variable('snipsMsgSession');
         SnipsUtils::update_scenario_variable('snipsMsgSiteId');
         SnipsUtils::update_scenario_variable('snipsMsgHotwordId');

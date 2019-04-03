@@ -12,27 +12,28 @@ function snips_install() {
         config::save('defaultTTS', 'Sorry, I cant find any actions!', 'snips');
     }
 
-    config::save('dynamicSnipsTTS',1,'snips');
-    config::save('isVarMsgSession',0,'snips');
-    config::save('isVarMsgSiteId',0,'snips');
-    config::save('isVarMsgHotwordId',0,'snips');
+    config::save('dynamicSnipsTTS', 1, 'snips');
+    // snips variables
+    config::save('snipsMsgSession', 0, 'snips');
+    config::save('snipsMsgSiteId', 0, 'snips');
+    config::save('snipsMsgHotwordId', 0, 'snips');
 }
 
 function snips_update() {
     SnipsUtils::create_task_cron();
 
-    config::save('dynamicSnipsTTS',1,'snips');
-
-    if (config::byKey('isVarMsgSession', 'snips', "NULL") == "NULL") {
-        config::save('isVarMsgSession',0,'snips');
+    config::save('dynamicSnipsTTS', 1, 'snips');
+    // snips variables
+    if (config::byKey('snipsMsgSession', 'snips', "NULL") == "NULL") {
+        config::save('snipsMsgSession', 0, 'snips');
     }
 
-    if (config::byKey('isVarMsgSiteId', 'snips', "NULL") == "NULL") {
-        config::save('isVarMsgSiteId',0,'snips');
+    if (config::byKey('snipsMsgSiteId', 'snips', "NULL") == "NULL") {
+        config::save('snipsMsgSiteId', 0, 'snips');
     }
 
-    if (config::byKey('isVarMsgHotwordId', 'snips', "NULL") == "NULL") {
-        config::save('isVarMsgHotwordId',0,'snips');
+    if (config::byKey('snipsMsgHotwordId', 'snips', "NULL") == "NULL") {
+        config::save('snipsMsgHotwordId', 0, 'snips');
     }
 }
 

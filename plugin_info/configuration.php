@@ -70,19 +70,19 @@ function snips_postSaveConfiguration(){
         <div class="form-group">
             <label class="col-lg-4 control-label" >{{Snips Variables}}</label>
             <div class="col-lg-4">
-                <input type="checkbox" class="configKey" data-l1key="isVarMsgSession"> {{snipsMsgSession}}</input>
+                <input type="checkbox" class="configKey" data-l1key="snipsMsgSession"> {{snipsMsgSession}}</input>
             </div>
             <div class="alert alert-info col-lg-3" role="alert"> {{Updated when a session is started and ended.}}</div>
 
             <label class="col-lg-4 control-label" ></label>
             <div class="col-lg-4">
-                <input type="checkbox" class="configKey" data-l1key="isVarMsgSiteId"> {{snipsMsgSiteId}}</input>
+                <input type="checkbox" class="configKey" data-l1key="snipsMsgSiteId"> {{snipsMsgSiteId}}</input>
             </div>
             <div class="alert alert-info col-lg-3" role="alert"> {{Assigned with snips device id which received the command when triggered.}}</div>
 
             <label class="col-lg-4 control-label" ></label>
             <div class="col-lg-4">
-                <input type="checkbox" class="configKey" data-l1key="isVarMsgHotwordId"> {{snipsMsgHotwordId}}</input>
+                <input type="checkbox" class="configKey" data-l1key="snipsMsgHotwordId"> {{snipsMsgHotwordId}}</input>
             </div>
             <div class="alert alert-info col-lg-3" role="alert"> {{Assigned with detected hotword model id when triggered.}}</div>
         </div>
