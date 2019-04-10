@@ -44,14 +44,14 @@ if [ "$archi" == "x86_64" ]; then
         apt-key add mosquitto-repo.gpg.key
         cd /etc/apt/sources.list.d/
         if [ `lsb_release -c -s` == "jessie" ]; then
-            if [ ! -e "./mosquitto-jessie.list" ]; then
-                rm mosquitto-jessie.list
+            if [ -e "./mosquitto-jessie.list" ]; then
+                rm mosquitto-jessie.list*
             fi
             wget http://repo.mosquitto.org/debian/mosquitto-jessie.list
         fi
         if [ `lsb_release -c -s` == "stretch" ]; then
-            if [ ! -e "./mosquitto-stretch.list" ]; then
-                rm mosquitto-stretch.list
+            if [ -e "./mosquitto-stretch.list" ]; then
+                rm mosquitto-stretch.list*
             fi
             wget http://repo.mosquitto.org/debian/mosquitto-stretch.list
         fi
