@@ -18,6 +18,7 @@
 <?php
 $intent_eqs = snips::dump_eq_intent();
 foreach ($intent_eqs as $intent_eq) {
+    $opacity = ($intent_eq->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
     echo '<li class="cursor li_eqLogic" data-eqLogic_id="' . $intent_eq->getId() . '" style="' . $opacity .'"><a>' . $intent_eq->getHumanName(true) . '</a></li>';
 }
 ?>
