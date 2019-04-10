@@ -1,3 +1,13 @@
+## Update `0.1.4` - 10/04/2019
+
+**Bug Fixes**
+
+- Warning `Notice: Undefined variable: opacity` on the eqLogic side bar.
+- Warning `Illegal string offset: scenario` on the eqLogic card issue. ([#19](https://github.com/snipsco/snips-jeedom-plugin/issues/19))
+- Remove the exist Mosquitto source list before fetch the new one. ([#20](https://github.com/snipsco/snips-jeedom-plugin/issues/20))
+- Corrected the typo in `snips.hermes.class.php`. ([#21](https://github.com/snipsco/snips-jeedom-plugin/issues/21))
+
+
 ## Update `0.1.3` - 02/04/2019
 
 **Bug Fixes**
@@ -7,7 +17,6 @@
 - Solved the error under PHP5: called to an undefined function. ([#15](https://github.com/snipsco/snips-jeedom-plugin/issues/15))
 - `Say` command not working issue.
 - Callback scenario returns '1' is being played issue.
-- Warning `Illegal string offset: scenario`  on the eqLogic card issue.
 - Scenario variables are not being created and updated. ([#17](https://github.com/snipsco/snips-jeedom-plugin/issues/18))
 
 
