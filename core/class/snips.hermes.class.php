@@ -128,7 +128,7 @@ class SnipsHermes{
     ) {
         $payload = array();
         if ($site_id) {
-            $payload['siteId'] = $session_id;
+            $payload['siteId'] = $site_id;
         }
 
         $init = array(
