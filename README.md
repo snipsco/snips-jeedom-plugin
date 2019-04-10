@@ -1,7 +1,7 @@
 <img align="right" src="/docs/AI_devices.png" width="350">
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/snipsco/snips-jeedom-plugin/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.3-brightgreen.svg)](https://github.com/snipsco/snips-jeedom-plugin/blob/master/CHANGE_LOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.4-brightgreen.svg)](https://github.com/snipsco/snips-jeedom-plugin/blob/master/CHANGE_LOG.md)
 
 # snips-jeedom-plugin
 
