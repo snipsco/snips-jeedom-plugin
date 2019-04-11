@@ -52,7 +52,7 @@ class SnipsBindingAction
                 'snips'
             );
             if (!is_object($intentEq)) {
-                throw new Exception(__('Can not find eqLogic by intent id: '. $this->intent_id, __FILE__));
+                SnipsUtils::logger('can not find eqLogic by intent id: '. $this->intent_id, 'error');
             }
             $cmds = $intentEq->getCmd();
             foreach ($cmds as $cmd) {
@@ -72,6 +72,7 @@ class SnipsBindingAction
             }
         }
 
+        SnipsUtils::logger('cmd: '. cmd::cmdToHumanReadable('#'.$this->cmd.'#'), 'info');
         return scenarioExpression::createAndExec(
             'action',
             $this->cmd,

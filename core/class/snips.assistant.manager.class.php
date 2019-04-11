@@ -21,7 +21,7 @@ class SnipsAssistantManager
                 $elogic = new snips();
                 $elogic->setLogicalId($intent['id']);
                 $elogic->setName($intent['name']);
-                SnipsUtils::logger('Created intent entity: '.$intent['name']);
+                SnipsUtils::logger('created intent entity: '.$intent['name'], 'info');
             }
             $elogic->setEqType_name('snips');
             $elogic->setIsEnable(1);
@@ -37,7 +37,7 @@ class SnipsAssistantManager
             $count += 1;
         }
 
-        SnipsUtils::logger('loaded '. $count .' jeedom intent.', 'info');
+        SnipsUtils::logger('loaded '. $count .' jeedom intent', 'info');
     }
 
     /* create slots cmd for all the intent eq objects */
@@ -46,7 +46,7 @@ class SnipsAssistantManager
         foreach ($raw_slots as $slot) {
             $slot_cmd = $eq->getCmd(null, $slot['name']);
             if (!is_object($slot_cmd)) {
-                SnipsUtils::logger('Created slot cmd: '.$slot['name']);
+                SnipsUtils::logger('created slot cmd: '.$slot['name'], 'info');
                 $slot_cmd = new snipsCmd();
             }
             $slot_cmd->setName($slot['name']);
@@ -65,7 +65,7 @@ class SnipsAssistantManager
     /* load an assistant from assistant.json  */
     static function load_assistant()
     {
-        SnipsUtils::logger('Assistant is being reloaded!');
+        SnipsUtils::logger('assistant is successfully reloaded', 'info');
         $assistant_file = dirname(__FILE__) . '/../../config_running/assistant.json';
         $json_string = file_get_contents($assistant_file);
         $assistant = json_decode($json_string, true);
@@ -77,7 +77,6 @@ class SnipsAssistantManager
         self::load_snips_devices();
 
         self::recover_cenario_expressions();
-        SnipsUtils::logger('Assistant loaded, restarting deamon');
         snips::deamon_start();
     }
 
@@ -127,7 +126,7 @@ class SnipsAssistantManager
             $elogic = new snips();
             $elogic->setName('Snips-TTS-'.$site_id);
             $elogic->setLogicalId('Snips-TTS-'.$site_id);
-            SnipsUtils::logger('Created TTS device: Snips-TTS-'. $site_id);
+            SnipsUtils::logger('created TTS device: Snips-TTS-'. $site_id, 'info');
 
             $elogic->setEqType_name('snips');
             $elogic->setIsEnable(1);
@@ -261,7 +260,7 @@ class SnipsAssistantManager
                             '#'. $slots_string. '#',
                             $old_expression_content
                         );
-                        SnipsUtils::logger('Old command entity: '.$slots_string.' with id: '.$id);
+                        SnipsUtils::logger('old command entity: '.$slots_string.' with id: '.$id);
                         $expression->setExpression($new_expression);
                     }
                 }

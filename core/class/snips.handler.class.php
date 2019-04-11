@@ -28,7 +28,7 @@ class SnipsHandler
             $hermes->publish_end_session($payload->{'sessionId'});
         }
 
-        SnipsUtils::logger('found intent name is :'. $payload->{'intent'}->{'intentName'});
+        SnipsUtils::logger('jeedom intent detected :'. $payload->{'intent'}->{'intentName'}, 'info');
 
         // get the intent eq object
         $intentEq = eqLogic::byLogicalId(
@@ -37,7 +37,7 @@ class SnipsHandler
         );
 
         if (!is_object($intentEq)) {
-            throw new Exception(__('Can not find intent eqLogic by intent: '. $payload->{'intent'}->{'intentName'}, __FILE__));
+            SnipsUtils::logger('can not find eqLogic by intent: '. $payload->{'intent'}->{'intentName'}, 'error');
         }
 
         if ($intentEq->getConfiguration('isInteraction')) {

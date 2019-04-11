@@ -19,11 +19,9 @@ class SnipsBindingScenario
 
     function __construct($scenario = array())
     {
-        SnipsUtils::logger('start construction');
         $this->scenario_id = $scenario['scenario'];
         $this->action = $scenario['action'];
         $this->user_tags = $scenario['user_tags'];
-        SnipsUtils::logger('middle way of contruction');
         $this->isTagPlugin = $scenario['isTagPlugin'];
         $this->isTagIdentifier = $scenario['isTagIdentifier'];
         $this->isTagIntent = $scenario['isTagIntent'];
@@ -31,12 +29,11 @@ class SnipsBindingScenario
         $this->isTagSiteId = $scenario['isTagSiteId'];
         $this->isTagQuery = $scenario['isTagQuery'];
         $this->isTagConfidenceScore = $scenario['isTagConfidenceScore'];
-        SnipsUtils::logger('construction done');
     }
 
     function execute()
     {
-        SnipsUtils::logger('scenario id: '. $this->scenario_id);
+        SnipsUtils::logger('scenario: '. scenario::byId($this->scenario_id)->getName(), 'info');
         $options = array();
         $options['scenario_id'] = $this->scenario_id;
         $options['action'] = $this->action;

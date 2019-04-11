@@ -414,7 +414,7 @@ class SnipsUtils
         // clear cmd value for all the intents
         $eqs = eqLogic::byType('snips');
         if(!$eqs) {
-            throw new Exception(__('Can not find eqLogics by \'snips\' ', __FILE__));
+            self::logger('can not find eqLogics by \'snips\' ' ,'error');
         }
         foreach ($eqs as $eq) {
             $cmds = $eq->getCmd();

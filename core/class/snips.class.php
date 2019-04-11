@@ -131,7 +131,7 @@ class snips extends eqLogic
         self::deamon_stop();
         $deamon_info = self::deamon_info();
         if ($deamon_info['launchable'] != 'ok') {
-            throw new Exception(__('Please check your configuration', __FILE__));
+            SnipsUtils::logger('please check your configuration', 'error');
         }
         $cron = cron::byClassAndFunction('snips', 'deamon_hermes');
         if (!is_object($cron)) {
@@ -298,7 +298,7 @@ class snipsCmd extends cmd
 
     function snips_say($options = array())
     {
-        SnipsUtils::logger('cmd: say, text: '.$options['message']);
+        SnipsUtils::logger('text: '.$options['message'], 'info');
         snips::hermes()->publish_start_session_notification(
             $this->getConfiguration('siteId'),
             $options['message']
@@ -307,7 +307,7 @@ class snipsCmd extends cmd
 
     function snips_ask($options = array())
     {
-        SnipsUtils::logger('cmd: ask');
+        SnipsUtils::logger('question: '.$options['message'], 'info');
         preg_match_all("/(\[.*?\])/", $options['answer'][0], $match_intent);
         $ans_intent = str_replace('[', '', $match_intent[0][0]);
         $ans_intent = str_replace(']', '', $ans_intent);

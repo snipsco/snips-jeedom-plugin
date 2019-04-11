@@ -79,7 +79,7 @@ class SnipsBinding
         foreach ($bindings as $binding) {
             // compare the slots number with necessary slots number
             if (count($binding->nsr_slots) == count($slots)) {
-                SnipsUtils::logger('Binding has good number of slot: '. $binding->name);
+                SnipsUtils::logger('binding has good number of slot: '. $binding->name);
                 // slot all exist indicator
                 $indicator = 1;
                 foreach ($binding->nsr_slots as $nsr_slot) {
