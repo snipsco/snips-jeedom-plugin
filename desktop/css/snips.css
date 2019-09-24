@@ -1,30 +1,13 @@
 @font-face {
   font-family: 'Glyphicons Halflings';
-
   src: url('../fonts/glyphicons-halflings-regular.eot');
   src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 
 
-.section-title{
-	padding-bottom: 20px;
-}
-
-.eqLogicDisplayCard:hover{
-	opacity: 0.6;
-}
-
-.eqLogicAction:hover{
-	opacity: 0.6;
-}
-.testSite:hover{
-    opacity: 0.6;
-}
-
-.testSite .badge{
-    background-color: #d9edf7;
-    font-size: 0.9em;
-    color: #31708f;
+[data-page="snips"] .panel-heading {
+	text-align: center;
+	list-style:none;
 }
 
 #bt_addNewBinding:hover{
@@ -33,18 +16,12 @@
 	color: #5cb85c !important;
 }
 
-.snips_intent{
-	/*border: 0px !important;*/
-	min-height:142px !important;
-	font-size: 1em!important;
-	border-radius: 0px!important;
-	padding-top: 0px!important;
-}
-.eqLogicThumbnailContainer{
-    min-height: 160px;
+
+[data-page="snips"] .eqLogicThumbnailContainer {
+    min-height: 140px;
 }
 
-.callbackScenarioTags{
+.callbackScenarioTags {
 	margin-right: 40px;
 	display: inline-flex;
 }
