@@ -15,23 +15,11 @@ class SnipsUtils
     /* create jeeObject following the current version */
     static function create_snips_intent_object($assistant)
     {
-        // since 3.3.3, use jeeObject instead of object as class name
-        if (version_compare(jeedom::version(), '3.3.3', '>=')) {
-            SnipsUtils::logger('Jeedom >= 3.3.3');
-            $obj = jeeObject::byName('Snips-Intents');
-            if (!is_object($obj)) {
-                $obj = new jeeObject();
-                $obj->setName('Snips-Intents');
-                SnipsUtils::logger('Created object: Snips-Intents');
-            }
-        } else {
-            SnipsUtils::logger('Jeedom <= 3.3.3');
-            $obj = object::byName('Snips-Intents');
-            if (!is_object($obj)) {
-                $obj = new object();
-                $obj->setName('Snips-Intents');
-                SnipsUtils::logger('Created object: Snips-Intents');
-            }
+        $obj = jeeObject::byName('Snips-Intents');
+        if (!is_object($obj)) {
+            $obj = new jeeObject();
+            $obj->setName('Snips-Intents');
+            SnipsUtils::logger('Created object: Snips-Intents');
         }
 
         $obj->setIsVisible(1);
@@ -46,16 +34,8 @@ class SnipsUtils
     /* get snips intent object id following the version number */
     static function get_snips_intent_object()
     {
-        if (version_compare(jeedom::version(), '3.3.3', '>=')) {
-            SnipsUtils::logger('Jeedom >= 3.3.3');
-            $obj = jeeObject::byName('Snips-Intents');
-            return is_object($obj) ? $obj: null;
-
-        } else {
-            SnipsUtils::logger('Jeedom <= 3.3.3');
-            $obj = object::byName('Snips-Intents');
-            return is_object($obj) ? $obj: null;
-        }
+        $obj = jeeObject::byName('Snips-Intents');
+        return is_object($obj) ? $obj: null;
     }
 
     /* create snips task deamon, delete old deamon */
@@ -414,7 +394,7 @@ class SnipsUtils
         // clear cmd value for all the intents
         $eqs = eqLogic::byType('snips');
         if(!$eqs) {
-            self::logger('can not find eqLogics by \'snips\' ' ,'error');
+            throw new Exception(__('Can not find eqLogics by \'snips\' ', __FILE__));
         }
         foreach ($eqs as $eq) {
             $cmds = $eq->getCmd();
