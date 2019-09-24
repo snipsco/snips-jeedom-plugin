@@ -22,8 +22,6 @@ MASTER_DEVICES = null;
 }) (jQuery.fn.clone);
 
 $(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-
     if ($('input[name=reaction]').is(":checked")) {
         $(this).closest('label').addClass('active');
     } else {
@@ -46,6 +44,7 @@ $(function () {
 $(document).on('change', '#intentName', function () {
     INTENT = $('#intentName').val();
     INTENT_ID = $('#intentId').val();
+    $('a[href="#intenttab"]').html('<i class="fas fa-brain"></i> ' + $('#intentName').val())
 
     jeedom.eqLogic.getCmd({
         id: $('#intentId').val(),
@@ -67,7 +66,7 @@ $(document).on('change', '#intentName', function () {
             handleAjaxError(request, status, error);
         },
         success: function (data) {
-            MASTER_DEVICES = data.result; 
+            MASTER_DEVICES = data.result;
             console.log('Master:'+MASTER_DEVICES);
         }
     });
@@ -76,10 +75,8 @@ $(document).on('change', '#intentName', function () {
 $(document).on('change', 'input[name=reaction]', function () {
     if ($(this).is(":checked")) {
         $(this).closest('label').addClass('active');
-
     } else {
         $(this).closest('label').removeClass('active');
-
     }
 });
 
@@ -121,7 +118,6 @@ $(document).on('click', '.testSite', function () {
 });
 
 $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_insertCmdValue_object select', function () {
-
     if ($(this).find("option:selected").text() == 'Snips-Intents') {
         $('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
             '<tr>' +
@@ -130,8 +126,6 @@ $(document).on('change', '#table_mod_insertCmdValue_valueEqLogicToMessage .mod_i
             '<th style="width: 150px;">Slots</th>' +
             '</tr>'
         );
-
-
     } else {
         $('#table_mod_insertCmdValue_valueEqLogicToMessage').find('thead').html(
             '<tr>' +
@@ -182,7 +176,7 @@ $("body").off('click', '.listCmdAction').on('click', '.listCmdAction', function 
                     'var el = $(this);jeedom.cmd.getSelectModal');
 
                 html = html.replace(
-                    '.atCaret(\'insert\', result.human);', 
+                    '.atCaret(\'insert\', result.human);',
                     '.atCaret(\'insert\', result.human);$.ajax({type:"POST",url:"plugins/snips/core/ajax/snips.ajax.php",data:{action:"getSnipsType",cmd:result.cmd.id,},dataType:"json",global:false,error:function(request,status,error){handleAjaxError(request,status,error)},success:function(data){if(data.result=="snips/percentage"){el.closest(".action").find(".slotsOptions").empty();displayValueMap(el.closest(".action").find(".slotsOptions"))}else{el.closest(".action").find(".slotsOptions").empty()}}});'
                     );
             }
@@ -273,7 +267,6 @@ $('#div_bindings').off('click', '.bt_duplicateBinding').on('click', '.bt_duplica
             binding.find('.bindingAttr[data-l1key=name]').html(result);
             binding.find('.name').html(result);
             $('#div_bindings').append(binding);
-            //$('.collapse').collapse();
         }
     });
 });
@@ -292,9 +285,7 @@ $('#div_bindings').off('click', '.panel-heading').on('click', '.panel-heading', 
 
 $("#div_bindings").delegate(".isActivated", 'change', function () {
     var el = $(this);
-
     var btn = el.closest('div').find('label').find('a');
-
     if (el.is(":checked")) {
         btn.removeClass('btn-success');
         btn.addClass('btn-danger');
@@ -307,21 +298,16 @@ $("#div_bindings").delegate(".isActivated", 'change', function () {
 });
 
 $("#div_bindings").delegate(".feedbackSpeech", 'keyup', function () {
-
     var el = $(this).closest('.binding');
-
     var listVarCount = el.find('.div_infoCmd').find('.varCmd').length;
     var textVarCount = $(this).val().split('{#}').length - 1;
-
     var count = 0;
     while (listVarCount != textVarCount) {
         count += 1;
         if (listVarCount > textVarCount) {
             el.find('.div_infoCmd').find('.varCmd:last').remove();
-
         } else if (listVarCount < textVarCount) {
             addInfoCmd({}, el);
-
         }
         var listVarCount = el.find('.div_infoCmd').find('.varCmd').length;
         var textVarCount = $(this).val().split('{#}').length - 1;
@@ -340,13 +326,10 @@ $("#div_bindings").sortable({
     forcePlaceholderSize: true
 });
 
-
 $('.reload').on('click', function () {
-
     var reloadConfirm = 0;
     var username = '';
     var psssword = '';
-
     bootbox.prompt({
         title: '<i class="fa fa-exclamation-triangle"></i> {{Beware: Please choose your operation carefully!}}',
         inputType: 'select',
@@ -380,7 +363,7 @@ $('.reload').on('click', function () {
         },
         callback: function (result) {
             if (result == 'mode_1' || result == 'mode_2') {
-                var mode = result; 
+                var mode = result;
                 var loading = bootbox.dialog({
                     message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> {{Trying to load assistant...}}</div>',
                     closeButton: false
@@ -544,7 +527,7 @@ $('.reload').on('click', function () {
                     }
                 }
             });
-            }     
+            }
         }
     });
 });
@@ -597,10 +580,9 @@ $('.exportConfigration').on('click', function () {
                     message: '{{Please specify a name!}}',
                     level: 'warning'
                 });
-            }   
+            }
         }
     });
-
 });
 
 $('.importConfigration').on('click', function () {
@@ -683,66 +665,10 @@ $('.importConfigration').on('click', function () {
     });
 });
 
-
-// $('.removeAll').on('click', function () {
-//     bootbox.confirm({
-//         title: "Attention",
-//         message: "This operation will delete all the intents and its binding records! Would you continue?",
-//         buttons: {
-//             confirm: {
-//                 label: '<i class="fa fa-check"></i> Yes',
-//                 className: 'btn-success'
-//             },
-//             cancel: {
-//                 label: '<i class="fa fa-times"></i> No',
-//                 className: 'btn-danger'
-//             }
-//         },
-//         callback: function (result) {
-//             if (result) {
-//                 $('#div_alert').showAlert({
-//                     message: 'Removing all the skills',
-//                     level: 'danger'
-//                 });
-
-//                 $.ajax({
-//                     type: "POST",
-//                     url: "plugins/snips/core/ajax/snips.ajax.php",
-//                     data: {
-//                         action: "removeAll",
-//                     },
-//                     dataType: 'json',
-//                     global: false,
-//                     error: function (request, status, error) {
-//                         handleAjaxError(request, status, error);
-//                     },
-//                     success: function (data) {
-//                         if (data.state != 'ok') {
-//                             $('#div_alert').showAlert({
-//                                 message: data.result,
-//                                 level: 'danger'
-//                             });
-//                             return;
-//                         }
-//                         $('#div_alert').showAlert({
-//                             message: 'Successfully removed all the skills!',
-//                             level: 'success'
-//                         });
-//                         location.reload();
-//                     }
-//                 });
-//             }
-//         }
-//     });
-// });
-
 $("#div_bindings").delegate(".playFeedback", 'click', function () {
-
     var org_text = $(this).closest('.binding').find('.feedbackSpeech').val();
     var vars = [];
-
     vars = $(this).closest('.binding').find('.varCmd').getValues('.ttsVarAttr');
-
     var language = $('span[data-l1key=configuration][data-l2key=language]').text();
     var cmdPlayer = $(this).closest('.binding').find('input[data-l1key=ttsPlayer]').val();
     $.ajax({
@@ -773,7 +699,6 @@ $("#div_bindings").delegate(".playFeedback", 'click', function () {
 });
 
 $('.resetMqtt').on('click', function () {
-
     $.ajax({
         type: "POST",
         url: "plugins/snips/core/ajax/snips.ajax.php",
@@ -802,7 +727,6 @@ $('.resetMqtt').on('click', function () {
 });
 
 $('.resetSlotsCmd').on('click', function () {
-
     $.ajax({
         type: "POST",
         url: "plugins/snips/core/ajax/snips.ajax.php",
@@ -831,7 +755,6 @@ $('.resetSlotsCmd').on('click', function () {
 });
 
 $('.fetchAssistant').on('click', function () {
-
     $.ajax({
         type: "POST",
         url: "plugins/snips/core/ajax/snips.ajax.php",
@@ -884,7 +807,6 @@ function printEqLogic(_eqLogic) {
                 taAutosize();
             }
         });
-
     }
 }
 
@@ -892,7 +814,6 @@ function saveEqLogic(_eqLogic) {
     if (!isset(_eqLogic.configuration)) {
         _eqLogic.configuration = {};
     }
-
     _eqLogic.configuration.bindings = [];
     $('#div_bindings .binding').each(function () {
         var binding = $(this).getValues('.bindingAttr')[0];
@@ -903,7 +824,6 @@ function saveEqLogic(_eqLogic) {
     });
     return _eqLogic;
 }
-
 
 function addBinding(_binding) {
     if (init(_binding.name) == '') {
@@ -917,9 +837,7 @@ function addBinding(_binding) {
     var random = Math.floor((Math.random() * 1000000) + 1);
 
     var div = '<div class="binding panel panel-default" style="margin-bottom:10px;border-radius: 0px;">';
-
     div += '<div class="panel-heading" style="background-color:#fff;">';
-
     div += '<h4 class="panel-title">';
     div += '<a data-toggle="collapse" data-parent="#div_bindings" href="#collapse' + random + '">';
     div += '<div class="name" style="display:inline-block;width: 50%;height: 100%; ">' + _binding.name + '</div>';
@@ -927,26 +845,26 @@ function addBinding(_binding) {
     div += '<span class="pull-right">';
 
     if (isset(_binding.action)) {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #337ab7;">' + _binding.action.length + ' {{actions}}</span>';
+        div += '<span class="btn-sm label-info" style="margin-right: 20px;">' + _binding.action.length + ' {{actions}}</span>';
     } else {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #f0ad4e;">{{No action}}</span>';
+        div += '<span class="btn-sm label-warning" style="margin-right: 20px;">{{No action}}</span>';
     }
 
     if (isset(_binding.nsr_slots)) {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #337ab7;">' + _binding.nsr_slots.length + ' {{slots}}</span>';
+        div += '<span class="btn-sm label-success" style="margin-right: 20px;">' + _binding.nsr_slots.length + ' {{slots}}</span>';
     } else {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #f0ad4e;">{{No slot}}</span>';
+        div += '<span class="btn-sm label-warning" style="margin-right: 20px;">{{No slot}}</span>';
     }
 
     if (_binding.enable == 1) {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #5cb85c;">{{Enabled}}</span>';
+        div += '<span class="btn-sm label-success" style="margin-right: 20px;">{{Enabled}}</span>';
     } else {
-        div += '<span class="badge" style="margin-right: 20px;font-size: 0.8em; background-color: #d9534f;">{{Disabled}}</span>';
+        div += '<span class="btn-sm label-danger" style="margin-right: 20px;">{{Disabled}}</span>';
     }
 
     div += '<span class="btn-group" role="group">';
-    div += '<a class="btn btn-xs btn-default bt_duplicateBinding"><i class="fa fa-files-o"></i> {{Duplicate}}</a>';
-    div += '<a class="btn btn-xs btn-danger bt_removeBinding"><i class="fa fa-minus-circle"></i></a>';
+    div += '<a class="btn btn-sm btn-default bt_duplicateBinding"><i class="fa fa-files-o"></i> {{Duplicate}}</a>';
+    div += '<a class="btn btn-sm btn-danger bt_removeBinding"><i class="fa fa-minus-circle"></i></a>';
     div += '</span>';
     div += '</span>';
     div += '</h4>';
@@ -954,7 +872,7 @@ function addBinding(_binding) {
 
 
     div += '<div id="collapse' + random + '" class="panel-collapse collapse in">';
-    div += '<div class="panel-body"  style="background-color:#f5f7f9;>';
+    div += '<div class="panel-body">';
     div += '<div>';
     div += '<form class="form-horizontal" role="form">';
 
@@ -1144,7 +1062,6 @@ function addAction(_action, _el) {
     div += '<span class="slotsOptions">';
 
     if (isset(_action.options.HT) && isset(_action.options.LT)) {
-
         div += '<span class="input-group input-group-sm">';
         div += '<span class="input-group-addon" style="width: 100px">0% => </span>';
         div += '<input class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="LT">';
@@ -1152,20 +1069,15 @@ function addAction(_action, _el) {
         div += '<span class="input-group-addon" style="width: 100px">100% => </span>';
         div += '<input class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="HT">';
         div += '<span>'
-
     }
 
     div += '</span>';
-
     div += '</div>';
-
-
     div += '</div>';
 
     if (isset(_el)) {
         _el.find('.div_action').append(div);
         _el.find('.action:last').setValues(_action, '.expressionAttr');
-
     } else {
         $('#div_action').append(div);
         $('#div_action .action:last').setValues(_action, '.expressionAttr');
@@ -1196,18 +1108,18 @@ function addCondition(_condition, _el) {
     div += '<a class="btn btn-default bt_removeCondition btn-sm" data-type="condition"><i class="fa fa-minus-circle"></i></a>';
     div += '</span>';
 
-    div += '<span class="input-group-addon" style="width: 100px" >{{ONLY IF}}</span>';
+    div += '<span class="input-group-addon">{{ONLY IF}}</span>';
 
     var selectSlotsId = uniqId();
 
-    div += '<select class="conditionAttr form-control input-sm" data-l1key="pre" id="' + selectSlotsId + '" style="-webkit-appearance: none; border-radius: 0;">';
+    div += '<select class="conditionAttr form-control input-sm" data-l1key="pre" id="' + selectSlotsId + '">';
     div += '</select>';
 
     div += '</div></div>'
 
     div += '<div class="col-sm-6">';
-    div += '<div class="input-group input-group-sm" style="width: 100%;">';
-    div += '<span class="conditionAttr input-group-addon" data-l1key="relation" style="width: 100px" >=</span>';
+    div += '<div class="input-group input-group-sm">';
+    div += '<span class="conditionAttr input-group-addon" data-l1key="relation">=</span>';
 
     div += '<input class="conditionAttr form-control input-sm" data-l1key="aft">';
     div += '</div>';
@@ -1215,20 +1127,17 @@ function addCondition(_condition, _el) {
 
     if (isset(_el)) {
         _el.find('.div_condition').append(div);
-
         displaySlots(selectSlotsId);
         _el.find('.condition:last').setValues(_condition, '.conditionAttr');
 
     } else {
         $('#div_condition').append(div);
-
         displaySlots(selectSlotsId);
         $('#div_condition .condition:last').setValues(_condition, '.conditionAttr');
     }
 }
 
 function addInfoCmd(_infoCmd, _el) {
-
     var div = '<div class="varCmd" style="width: 100%; margin-bottom: 5px;">';
     div += '<div class="input-group input-group-sm infoCmd" >';
     div += '<span class="input-group-btn ">';
@@ -1244,7 +1153,6 @@ function addInfoCmd(_infoCmd, _el) {
     div += '<div class="infoOptions">';
 
     if (isset(_infoCmd.options)) {
-
         div += '<span class="input-group input-group-sm">';
         div += '<span class="input-group-addon" style="width: 100px">Status "0" => </span>';
         div += '<input class="ttsVarAttr form-control input-sm" data-l1key="options" data-l2key="zero">';
@@ -1252,7 +1160,6 @@ function addInfoCmd(_infoCmd, _el) {
         div += '<span class="input-group-addon" style="width: 100px">Status "1" => </span>';
         div += '<input class="ttsVarAttr form-control input-sm" data-l1key="options" data-l2key="one">';
         div += '<span>'
-
     }
 
     div += '</div>';
@@ -1283,7 +1190,6 @@ function addCmdToTable(_cmd) {
     }
     jeedom.cmd.changeType($('#table_cmd div:last'), init(_cmd.subType));
 }
-
 
 function displaySlots(_selectSlotsId) {
     jeedom.eqLogic.getCmd({
