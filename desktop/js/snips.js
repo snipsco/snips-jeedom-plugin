@@ -67,7 +67,6 @@ $(document).on('change', '#intentName', function () {
         },
         success: function (data) {
             MASTER_DEVICES = data.result;
-            console.log('Master:'+MASTER_DEVICES);
         }
     });
 });
@@ -626,7 +625,6 @@ $('.importConfigration').on('click', function () {
                         }
                     },
                     callback: function (result) {
-                        console.log('Result: ' + result);
                         if (result != null && result != '') {
                             $.ajax({
                                 type: "POST",
@@ -1129,7 +1127,11 @@ function addCondition(_condition, _el) {
         _el.find('.div_condition').append(div);
         displaySlots(selectSlotsId);
         _el.find('.condition:last').setValues(_condition, '.conditionAttr');
-
+      	var select = $('#' + selectSlotsId)
+        if (select.val() == "-1" && select.children().length >= 2) {
+          let value = select.find('option:eq(1)').val()
+          select.val(value).change()
+      	}
     } else {
         $('#div_condition').append(div);
         displaySlots(selectSlotsId);
