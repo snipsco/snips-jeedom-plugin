@@ -3,7 +3,7 @@
     "author": "Coor Fang - Snips",
     "name": "Snips Voice Assistant",
     "description": "Triggering actions, scenarios by using voice. ",
-    "require": "2.4",
+  "require": "4.0",
     "version": "0.1.4",
     "category": "communication",
     "hasDependency": 1,
