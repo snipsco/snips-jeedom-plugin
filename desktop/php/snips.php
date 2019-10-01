@@ -62,7 +62,7 @@
   <div class="eqLogicThumbnailContainer" >
   <?php
       if (!$eqLogics) {
-          echo '<center><span style="color:#767676;font-size:1.2em;font-weight: bold;">Please load assistant</span></center>';
+          echo '<center>{{Please load assistant}}</center>';
       } else {
           $intent_eqs = snips::dump_eq_intent();
 
@@ -72,7 +72,7 @@
               $intent = '';
               $intent .= '<span class="panel panel-info eqLogicDisplayCard cursor snips_intent" data-eqLogic_id="' . $intent_eq->getId() . '" style="width: 230px; height: 142px !important; text-align: left; margin: 5px!important' . $opacity . '" >';
               $intent .= '<li class="panel-heading" style="padding: 5px 5px;">'. $intent_eq->getName() .'<span class="name" style="display:none">'. $intent_eq->getName() .'</span></li>';
-              $intent .= '<li class="panel-body" style="padding: 0px;">';
+              $intent .= '<li class="panel-body" style="padding: 0px; list-style-type: none;">';
 
               $intent .= '<ul class="list-group" style="margin: 0;">';
               if ($intent_eq->get_callback_scenario()) {
