@@ -835,12 +835,12 @@ function addBinding(_binding) {
     var random = Math.floor((Math.random() * 1000000) + 1);
 
     var div = '<div class="binding panel panel-default" style="margin-bottom:10px;border-radius: 0px;">';
-    div += '<div class="panel-heading" style="background-color:#fff;">';
+    div += '<div class="panel-heading">';
     div += '<h4 class="panel-title">';
     div += '<a data-toggle="collapse" data-parent="#div_bindings" href="#collapse' + random + '">';
     div += '<div class="name" style="display:inline-block;width: 50%;height: 100%; ">' + _binding.name + '</div>';
     div += '</a>';
-    div += '<span class="pull-right">';
+    div += '<span class="pull-right" style="top: 0px !important;">';
 
     if (isset(_binding.action)) {
         div += '<span class="btn-sm label-info" style="margin-right: 20px;">' + _binding.action.length + ' {{actions}}</span>';
