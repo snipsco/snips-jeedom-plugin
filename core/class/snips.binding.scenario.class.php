@@ -45,7 +45,7 @@ class SnipsBindingScenario
     private function get_all_scenario_tags()
     {
         $tags = array();
-        $args = arg2array($thsi->user_tags);
+        $args = arg2array($this->user_tags);
 
         $run_variable = snips::get_run_variable();
         $payload = $run_variable['payload'];
