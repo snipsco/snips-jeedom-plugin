@@ -27,7 +27,7 @@ foreach ($intent_eqs as $intent_eq) {
    </div>
 
    <div class="col-lg-10 col-md-9 col-sm-8 eqLogicThumbnailDisplay" style="border-left: solid 1px #EEE; padding-left: 25px;">
-    <legend>{{Snips Voice Assistant}} - 0.1.4</legend>
+    <legend>{{Snips Voice Assistant}} - 0.1.5</legend>
   <legend><i class="fa fa-cog"></i>  {{Manage}}</legend>
 
   <div class="eqLogicThumbnailContainer">
