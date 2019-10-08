@@ -1,3 +1,13 @@
+## Update `0.1.5` - 08/10/2019
+
+**Bug Fix**
+
+- Typo in the code. ([#28](https://github.com/snipsco/snips-jeedom-plugin/issues/28))
+
+**Change**
+
+- Install `mosquitto-beta` package, better support php7. ([#24](https://github.com/snipsco/snips-jeedom-plugin/issues/24))
+
 ## Update `0.1.4` - 10/04/2019
 
 **Bug Fixes**
@@ -6,7 +16,6 @@
 - Warning `Illegal string offset: scenario` on the eqLogic card issue. ([#19](https://github.com/snipsco/snips-jeedom-plugin/issues/19))
 - Remove the exist Mosquitto source list before fetch the new one. ([#20](https://github.com/snipsco/snips-jeedom-plugin/issues/20))
 - Corrected the typo in `snips.hermes.class.php`. ([#21](https://github.com/snipsco/snips-jeedom-plugin/issues/21))
-
 
 ## Update `0.1.3` - 02/04/2019
 
@@ -19,7 +28,6 @@
 - Callback scenario returns '1' is being played issue.
 - Scenario variables are not being created and updated. ([#17](https://github.com/snipsco/snips-jeedom-plugin/issues/18))
 
-
 ## Update `0.1.2` - 28/03/2019
 
 **Bug Fixes**
@@ -27,14 +35,12 @@
 - Only create cmd object for Jeedom intent. ([#11](https://github.com/snipsco/snips-jeedom-plugin/issues/11))
 - Isolated task cron creation and deletion, added into `deamon_stop` function when no task cron found.
 
-
 ## Update `0.1.1` - 26/03/2019
 
 **Bug Fixes**
 
 - Create a new task cron if it can not be found after update.
 - When creating/deleting `Snips-Intent` object, using class `object` if core version is under 3.3.3, using `jeeObject` if core version is over 3.3.3.
-
 
 ## Update `0.1.0` - 22/03/2019
 
@@ -51,14 +57,12 @@
 
 - Temporarily disabled playing tts on the third part device. (New plugin structure doesn't support this feature yet)
 
-
 ## Update `0.0.16` - 24/01/2019
 
 **New Features**
 
 - Support multi-turn dialogue. Trigger once, play multiple times.
 - Support passing multiple slots value to scenario.
-
 
 ## Update `0.0.15` - 07/11/2018
 
@@ -73,7 +77,6 @@
 - UI: intent card uses blue as main color.
 - Scenario tag passing config options on the plugin configuration page.
 
-
 ## Update `0.0.14` - 21/09/2018
 
 **New Features**
@@ -81,7 +84,6 @@
 - Support snips-used variables on the configuration page.
 - Support selecting scenario tags, which will be passed to execution.
 - Support snips/built-in type `duration`. (@Kiboost)
-
 
 ## Update `0.0.13` - 03/09/2018
 
@@ -92,7 +94,6 @@
 **Change**
 
 - Passing tags as original format.
-
 
 ## Update `0.0.12` - 29/08/2018
 
@@ -109,7 +110,6 @@
 
 - Losing request command in scenario ask command.
 
-
 ## Update `0.0.11` - 24/08/2018
 
 **New Features**
@@ -123,7 +123,6 @@
 **Bug Fix**
 
 - ListEquipmentCmd button fills value to wrong input box for command options.
-
 
 ## Update `0.0.10` - 13/08/2018
 
@@ -141,7 +140,6 @@
 
 - Message selection box issue. (@Hugo)
 
-
 ## Update `0.0.9` - 08/08/2018
 
 **New Feature**
@@ -156,7 +154,6 @@
 
 - Binary value mapping is always "0".
 
-
 ## Update `0.0.8` - 07/08/2018
 
 **New Feature**
@@ -166,7 +163,6 @@
 **Change**
 
 - Disable multi-dialog function for the moment.
-
 
 ## Update `0.0.7` - 05/08/2018
 
@@ -179,14 +175,12 @@
 
 - Automatically detect site information.
 
-
 ## Update `0.0.6` - 01/08/2018
 
 **New Features**
 
 - Support using the third-party tts command.
 - Support synonyms for condition preset value.
-
 
 ## Update `0.0.5` - 29/07/2018
 
@@ -195,13 +189,11 @@
 - New logo.
 - More debug output.
 
-
 ## Update `0.0.4` - 27/07/2018
 
 **Change**
 
 - Simplified loading assistant steps.
-
 
 ## Update `0.0.3` - 26/07/2018
 
@@ -214,7 +206,6 @@
 
 - SSH2_disconnect not found. (@Cecece)
 - Some of the imported binding data can not be displayed correctly.
-
 
 ## Update `0.0.2` - 25/07/2018
 

@@ -12,7 +12,7 @@
 <div class="row row-overflow">
   <div class="col-xs-12 eqLogicThumbnailDisplay">
 
-    <legend><i class="fa fa-cog"></i> {{Gestion}} | {{Snips Voice Assistant}} - 0.1.4</legend>
+    <legend><i class="fa fa-cog"></i> {{Gestion}} | {{Snips Voice Assistant}} - 0.1.5</legend>
     <div class="eqLogicThumbnailContainer">
         <div class="cursor eqLogicAction reload">
           <img src="/plugins/snips/3rdparty/icons/rocket.png" style="width:55px!important">

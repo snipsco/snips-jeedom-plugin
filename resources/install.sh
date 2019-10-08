@@ -76,7 +76,7 @@ if [[ -d "/etc/php5/" ]]; then
     echo "[*] Configuring PHP5 extension.."
     apt-get -y install php5-dev
     if [[ -d "/etc/php5/cli/" && ! `cat /etc/php5/cli/php.ini | grep "mosquitto"` ]]; then
-        echo "" | pecl install Mosquitto-alpha
+        echo "" | pecl install Mosquitto-beta
         echo "extension=mosquitto.so" | tee -a /etc/php5/cli/php.ini
     fi
     if [[ -d "/etc/php5/fpm/" && ! `cat /etc/php5/fpm/php.ini | grep "mosquitto"` ]]; then
@@ -95,7 +95,7 @@ if [[ -d "/etc/php/7.0" ]]; then
     echo "[*] Configuring PHP7.0 extension.."
     apt-get -y install php7.0-dev
     if [[ -d "/etc/php/7.0/cli/" && ! `cat /etc/php/7.0/cli/php.ini | grep "mosquitto"` ]]; then
-        echo "" | pecl install Mosquitto-alpha
+        echo "" | pecl install Mosquitto-beta
         echo "extension=mosquitto.so" | tee -a /etc/php/7.0/cli/php.ini
     fi
     if [[ -d "/etc/php/7.0/apache2/" && ! `cat /etc/php/7.0/apache2/php.ini | grep "mosquitto"` ]]; then
