@@ -33,7 +33,7 @@ fi
 NEXT_NEW_VERSION="${SPLIT_VERSION[0]}.${SPLIT_VERSION[1]}.${SPLIT_VERSION[2]}"
 
 perl -p -i -e "s/version-.*-brightgreen.svg/version-$NEXT_NEW_VERSION-brightgreen.svg/g" ../README.md
-perl -p -i -e "s/<legend>\{\{Snips Voice Assistant\}\} - .*<\/legend>/<legend>\{\{Snips Voice Assistant\}\} - $NEXT_NEW_VERSION<\/legend>/g" ../desktop/php/snips.php
+perl -p -i -e "s/\{\{Snips Voice Assistant\}\} - .*<\/legend>/\{\{Snips Voice Assistant\}\} - $NEXT_NEW_VERSION<\/legend>/g" ../desktop/php/snips.php
 perl -p -i -e "s/\"version\": \".*\",/\"version\": \"$NEXT_NEW_VERSION\",/g" ../plugin_info/info.json
 
 echo -e "New version bumped to \033[1;32;32m$NEXT_NEW_VERSION\033[m"
