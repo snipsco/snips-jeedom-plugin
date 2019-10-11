@@ -33,6 +33,10 @@ class SnipsBindingScenario
 
     function execute()
     {
+        if (!is_object(scenario::byId($this->scenario_id))) {
+            SnipsUtils::logger('scenario: id '. $this->scenario_id .' does not exist', 'error');
+            return false;
+        }
         SnipsUtils::logger('scenario: '. scenario::byId($this->scenario_id)->getName(), 'info');
         $options = array();
         $options['scenario_id'] = $this->scenario_id;
