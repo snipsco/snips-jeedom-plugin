@@ -4,7 +4,7 @@
   "name": "Snips Voice Assistant",
   "description": "Triggering actions, scenarios by using voice. ",
   "require": "4.0",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "category": "communication",
   "hasDependency": 1,
   "hasOwnDeamon": 1,

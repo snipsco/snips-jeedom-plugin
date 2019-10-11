@@ -1,3 +1,9 @@
+## Update `0.1.6` - 11/10/2019
+
+**Change**
+
+- Adapted to Jeedom V4 UI. ([PR #26](https://github.com/snipsco/snips-jeedom-plugin/pull/26))
+
 ## Update `0.1.5` - 08/10/2019
 
 **Bug Fix**
